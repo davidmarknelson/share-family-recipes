@@ -1,1 +1,25 @@
-/* You can add global styles to this file, and also import other style files */
+// ==================
+// Bulma Variables
+// ==================
+
+// Typography
+$family-sans-serif: Arial, Helvetica, sans-serif;
+$family-secondary: 'Fredoka One', cursive;
+$text: #232323;
+
+// Color
+$primary: #BEE0C0;
+
+// ==================
+// Bulma Imports
+// ==================
+@import "../node_modules/bulma/sass/utilities/_all.sass";
+@import "../node_modules/bulma/sass/base/_all.sass";
+@import "../node_modules/bulma/sass/layout/_all.sass";
+@import "../node_modules/bulma/sass/grid/columns.sass";
+
+
+
+// ==================
+// Global Styles
+// ==================
