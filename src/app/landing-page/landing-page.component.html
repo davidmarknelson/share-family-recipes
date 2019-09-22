@@ -11,8 +11,8 @@
   </div>
 </section>
 
-<div class='chevron-container'>
-  <a (click)='scroll()'><fa-icon [icon]="faChevronDown" size='2x' class='has-text-secondary-dark'></fa-icon></a>
+<div class='chevron-container' id='chevron'>
+  <a pageScroll href="#chevron" [pageScrollDuration]="600" [pageScrollEasing]="myEasing"><fa-icon [icon]="faChevronDown" size='2x' class='has-text-secondary-dark'></fa-icon></a>
 </div>
 
 <!-- Action button -->
