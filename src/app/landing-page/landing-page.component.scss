@@ -1,0 +1,64 @@
+.container {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.hero {
+  &__title {
+    letter-spacing: 1px;
+    font-size: 4rem;
+  }
+  
+  &__background {
+    background-image: url(../../assets/images/landing-page-img/hero-circles.svg);
+    background-position: bottom;
+    background-size: contain;
+    background-origin: border-box;
+  }
+}
+
+.chevron-container {
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  &__center {
+    display: flex;
+    justify-content: center;
+    margin: 150px 0 150px 0;
+  }
+
+  &__bottom {
+    width: 125px;
+    margin: 0 15px 0 15px;
+  }
+}
+
+.info {
+  margin-top: 250px;
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: 40px 20px 40px 20px;
+
+    &--padding-bottom {
+      padding-bottom: 0;
+    }
+
+    &--padding-top {
+      padding-top: 0;
+    }
+  }
+
+  &__title {
+    margin-bottom: 35px;
+  }
+
+  &__image {
+    max-height: 300px;
+  }
+}

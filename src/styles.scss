@@ -2,13 +2,29 @@
 // Bulma Variables
 // ==================
 
+// Color
+$primary: #bddfbf; 
+$secondary: #11672C;
+$secondary-dark: #114910;
+$accent: #ffff77;
+$dark-black: #232323;
+$light-black: #353535;
+$primary-invert: $dark-black;
+$warning-invert: $dark-black;
+
+
 // Typography
 $family-sans-serif: Arial, Helvetica, sans-serif;
 $family-secondary: 'Fredoka One', cursive;
-$text: #232323;
+$text: $dark-black;
+$title-color: $dark-black;
+$subtitle-color: $dark-black;
 
-// Color
-$primary: #BEE0C0;
+// Navbar
+$navbar-background-color: $primary;
+$navbar-item-color: $dark-black;
+$navbar-item-hover-background-color: $secondary;
+$navbar-item-hover-color: #FFF;
 
 // ==================
 // Bulma Imports
@@ -16,10 +32,46 @@ $primary: #BEE0C0;
 @import "../node_modules/bulma/sass/utilities/_all.sass";
 @import "../node_modules/bulma/sass/base/_all.sass";
 @import "../node_modules/bulma/sass/layout/_all.sass";
+@import "../node_modules/bulma/sass/elements/other.sass";
+@import "../node_modules/bulma/sass/components/navbar.sass";
+@import "../node_modules/bulma/sass/elements/button.sass";
+@import "../node_modules/bulma/sass/elements/container.sass";
+@import "../node_modules/bulma/sass/elements/title.sass";
+@import "../node_modules/bulma/sass/elements/image.sass";
 @import "../node_modules/bulma/sass/grid/columns.sass";
-
 
 
 // ==================
 // Global Styles
 // ==================
+
+// Typography
+.has-text-secondary {
+  color: $secondary;
+}
+
+.has-text-secondary-dark {
+  color: $secondary-dark;
+}
+
+// Action Button
+.action-btn {
+  background-color: $accent;
+  color: $dark-black;
+  border: none;
+  -webkit-box-shadow: 2px 2px 4px 0px hsl(0, 0%, 86%);
+  -moz-box-shadow: 2px 2px 4px 0px hsl(0, 0%, 86%);
+  box-shadow: 2px 2px 4px 0px hsl(0, 0%, 86%);
+  transition: 
+    transform 200ms, 
+    box-shadow 200ms;
+
+  &:hover {
+    -webkit-transform: scale(1.1);
+    -ms-transform: scale(1.1);
+    transform: scale(1.1);
+    -webkit-box-shadow: 2px 2px 2px 0px hsl(0, 0%, 86%);
+    -moz-box-shadow: 2px 2px 2px 0px hsl(0, 0%, 86%);
+    box-shadow: 2px 2px 2px 0px hsl(0, 0%, 86%);
+  }
+}

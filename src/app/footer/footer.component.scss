@@ -1,0 +1,22 @@
+footer {
+  margin-top: 300px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  &__items {
+    margin: 5px 0 5px 0;
+    color: #363636;
+  }
+
+  &__items:hover {
+    color: #11571C;
+  }
+
+  &--right {
+    margin-left: auto;
+  }
+}
