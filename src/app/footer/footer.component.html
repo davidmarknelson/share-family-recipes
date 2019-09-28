@@ -3,16 +3,17 @@
     <div class="columns is-mobile">
       <div class="column">
         <div class='info'>
-          <a routerLink='/recipes' class='info__items'>View Recipes</a>
-          <a routerLink='/create' class='info__items'>Create a Recipe</a>
-          <a routerLink='/signup' class='info__items'>Sign Up</a>
-          <a routerLink='/login' class='info__items'>Log In</a>
+          <a routerLink='/' class='info__items' data-test='footer-home'>Home</a>
+          <a routerLink='/recipes' class='info__items' data-test='footer-recipes'>View Recipes</a>
+          <a routerLink='/create' class='info__items' data-test='footer-create'>Create a Recipe</a>
+          <a routerLink='/signup' class='info__items' data-test='footer-signup'>Sign Up</a>
+          <a routerLink='/login' class='info__items' data-test='footer-login'>Log In</a>
         </div>
       </div>
       <div class="column">
         <div class='info'>
-          <a routerLink='/about' class='info__items info--right'>About Us</a>
-          <a routerLink='/contact' class='info__items info--right'>Contact</a>
+          <a routerLink='/about' class='info__items info__items--right' data-test='footer-about'>About Us</a>
+          <a routerLink='/contact' class='info__items info__items--right' data-test='footer-contact'>Contact</a>
         </div>
       </div>
     </div>

@@ -1,0 +1,247 @@
+<section class="section page-header">
+  <h1 class="title page-header__title has-text-centered">Sign Up</h1>
+  <p class="subtitle has-text-centered">Create a new account.</p>
+</section>
+
+
+<div class="form__container">
+  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
+    <p class="has-text-right is-size-7">* required</p>
+    <div class="columns">
+      <div class="column">
+        <div class="field">
+          <label class="label" for="firstName">First Name *</label>
+          <div class="control">
+            <input 
+              class="input is-rounded" 
+              type="text" 
+              id="firstName" 
+              formControlName="firstName" 
+              placeholder="John"
+              [class.is-danger]="firstName.invalid && (firstName.dirty || firstName.touched || submitted)"
+              [class.is-success]="firstName.valid">
+          </div>
+          <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched || submitted)" class="has-text-danger">
+            <p *ngIf="firstName.errors.required">First name is required</p>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="field">
+          <label class="label" for="lastName">Last Name *</label>
+          <div class="control">
+            <input 
+              class="input is-rounded" 
+              type="text" 
+              id="lastName" 
+              formControlName="lastName" 
+              placeholder="Doe"
+              [class.is-danger]="lastName.invalid && (lastName.dirty || lastName.touched || submitted)"
+              [class.is-success]="lastName.valid">
+          </div>
+          <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched || submitted)" class="has-text-danger">
+            <p *ngIf="lastName.errors.required">Last name is required</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns">
+      <div class="column">
+        <div class="field">
+          <label class="label" for="email">Email *</label>
+          <div class="control has-icons-left">
+            <input 
+              class="input is-rounded" 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              placeholder="example@email.com"
+              [class.is-danger]="email.invalid && (email.dirty || email.touched || submitted)"
+              [class.is-success]="email.valid && !takenEmail"
+              [class.is-danger]="takenEmail">
+            <span class="icon is-left">
+              <fa-icon [icon]="faEnvelope"></fa-icon>
+            </span>
+            <div *ngIf="email.invalid && (email.dirty || email.touched || submitted)" class="has-text-danger">
+              <p *ngIf="email.errors.required">Email is required</p>
+              <p *ngIf="email.errors.email">This must be an email</p>
+            </div>
+            <div *ngIf="takenEmail" class="has-text-danger">
+              <p>This email account is already in use.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="columns">
+      <div class="column">
+        <div class="field">
+          <label class="label" for="username">
+            Username * 
+            <span class="has-text-weight-light is-size-7">
+              between 5 and 15 characters
+            </span>
+          </label>
+          <div class="control has-icons-left">
+            <input 
+              class="input is-rounded" 
+              type="text" 
+              id="username" 
+              formControlName="username" 
+              placeholder="JohnDoe2019"
+              [class.is-danger]="unavailableUsername"
+              [class.is-success]="availableUsername"
+              [class.is-danger]="username.invalid && (username.dirty || username.touched || submitted)">
+            <span class="icon is-left">
+              <fa-icon [icon]="faUser"></fa-icon>
+            </span>
+            <div *ngIf="username.invalid && (username.dirty || username.touched || submitted)" class="has-text-danger">
+              <p *ngIf="username.errors.required">Username is required</p>
+              <p *ngIf="username.errors.minlength">Username must be at least 5 characters</p>
+              <p *ngIf="username.errors.maxlength">Username must not be more than 15 characters</p>
+            </div>
+            <div *ngIf="availableUsername" class="has-text-success">
+              <p>This username is available</p>
+            </div>
+            <div *ngIf="unavailableUsername" class="has-text-danger">
+              <p>This username is already taken</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns">
+      <div class="column">
+        <div class="field">
+          <label class="label" for="password">
+            Password *
+            <span class="has-text-weight-light is-size-7">
+              at least 8 characters
+            </span>
+          </label>
+          <div class="control has-icons-left">
+            <input 
+              class="input is-rounded" 
+              type="password" 
+              id="password" 
+              formControlName="password" 
+              placeholder="Password"
+              [class.is-danger]="password.invalid && (password.dirty || password.touched || submitted)"
+              [class.is-success]="password.valid && (password.value === passwordConfirmation.value)">
+            <span class="icon is-left">
+              <fa-icon [icon]="faLock"></fa-icon>
+            </span>
+            <div *ngIf="password.invalid && (password.dirty || password.touched || submitted)" class="has-text-danger">
+              <p *ngIf="password.errors.required">Password is required</p>
+              <p *ngIf="password.errors.minlength">Password must be at least 8 characters</p>
+            </div>
+            <div class="has-text-success" *ngIf="password.valid && (password.value === passwordConfirmation.value)">
+              <p>Passwords match</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="field">
+          <label class="label" for="passwordConfirmation">
+            Password Confirmation *
+            <span class="has-text-weight-light is-size-7">
+              at least 8 characters
+            </span>
+          </label>
+          <div class="control has-icons-left">
+            <input 
+              class="input is-rounded" 
+              type="password" 
+              id="passwordConfirmation" 
+              formControlName="passwordConfirmation" 
+              placeholder="Password"
+              [class.is-danger]="passwordConfirmation.invalid && (passwordConfirmation.dirty || passwordConfirmation.touched || submitted)"
+              [class.is-success]="password.valid && (password.value === passwordConfirmation.value)">
+            <span class="icon is-left">
+              <fa-icon [icon]="faLock"></fa-icon>
+            </span>
+            <div *ngIf="passwordConfirmation.invalid && (passwordConfirmation.dirty || passwordConfirmation.touched || submitted)" class="has-text-danger">
+              <p *ngIf="passwordConfirmation.errors.required">Password is required</p>
+              <p *ngIf="passwordConfirmation.errors.minlength">Password must be at least 8 characters</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="columns">
+      <div class="column">
+        <div class="field">
+          <label class="label" for="profilePic">
+            Profile Picture
+            <span class="has-text-weight-light is-size-7">
+              must be JPEG
+            </span>
+          </label>
+          <div class="file has-name">
+            <label class="file-label">
+              <input 
+                class="file-input" 
+                type="file" 
+                name="profilePic" 
+                id="profilePic" 
+                formControlName="profilePic" 
+                (change)="onFileSelected($event)">
+              <span class="file-cta form--rounded-left">
+                <span class="file-icon">
+                  <fa-icon [icon]="faFileUpload"></fa-icon>
+                </span>
+                <span class="file-label">
+                  Choose a file…
+                </span>
+              </span>
+              <span class="file-name form--rounded-right" [class.has-text-secondary]="selectedFile">
+                {{ profilePicName }}
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <a href="javascript:void(0)" (click)='toggleAdminField()' *ngIf='!showAdminField'>I have an admin code.</a>
+        <div class="field" *ngIf='showAdminField'>
+          <label class="label" for="adminCode">Admin Code</label>
+          <div class="control">
+            <input 
+              class="input is-rounded" 
+              type="text" 
+              id="adminCode" 
+              formControlName="adminCode" 
+              placeholder="Enter code here">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notification is-danger" *ngIf="formError">
+      <button class="delete" (click)='clearErrorMessage()'></button>
+      {{ formError }}
+    </div>
+    
+    <div class="field is-grouped is-grouped-right form-btns">
+      <p class="control">
+        <a class="button is-light is-rounded">
+          Back
+        </a>
+      </p>
+      <p class="control">
+        <button 
+          class="button is-accent is-rounded" 
+          type="submit" 
+          [class.is-loading]="sendingForm">
+          Submit
+        </button>
+      </p>
+    </div>
+  </form>
+</div>

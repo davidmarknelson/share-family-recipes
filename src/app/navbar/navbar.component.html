@@ -1,36 +1,42 @@
-<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item" routerLink='/'>
-      <img src="../../assets/images/navbar-img/sfr-logo.svg" width="112" height="28">
-    </a>
-
-    <a role="button" class="navbar-burger burger" [class.is-active]="showMenu" aria-label="menu" aria-expanded="false" data-target="navbarMenu" (click)='toggleMenu()'>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-
-  <div id="navbarMenu" class="navbar-menu" [class.is-active]="showMenu">
-    <div class="navbar-start">
-      <a class="navbar-item transition" routerLink='/recipes' >
-        Recipes
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="container">
+    <div class="navbar-brand">
+      <a class="navbar-item" routerLink='/' data-test='navbar-brand'>
+        <img src="../../assets/images/navbar-img/sfr-logo.svg" width="112" height="28">
       </a>
-
-      <a class="navbar-item transition" routerLink='/create' >
-        Create Recipe
+  
+      <a role="button" class="navbar-burger burger" [class.is-active]="showMenu" aria-label="menu" aria-expanded="false" data-target="navbarMenu" (click)='toggleMenu()'>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
       </a>
     </div>
-
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="buttons">
-          <a class="button is-primary is-rounded is-outlined is-inverted transition" routerLink='/login'>
-            Log in
-          </a>
-          <a class="button is-primary is-rounded is-outlined is-inverted transition" routerLink='/signup'>
-            <strong>Sign up</strong>
-          </a>
+  
+    <div id="navbarMenu" class="navbar-menu" [class.is-active]="showMenu">
+      <div class="navbar-start">
+        <a class="navbar-item transition" routerLink='/recipes' data-test='navbar-recipes'>
+          Recipes
+        </a>
+  
+        <a class="navbar-item transition" routerLink='/create' data-test='navbar-create'>
+          Create Recipe
+        </a>
+      </div>
+  
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="buttons">
+            <a 
+              class="button is-primary is-rounded is-outlined is-inverted transition" 
+              routerLink='/login' data-test='navbar-login'>
+              Log in
+            </a>
+            <a 
+              class="button is-primary is-rounded is-outlined is-inverted transition" 
+              routerLink='/signup' data-test='navbar-signup'>
+              <strong>Sign up</strong>
+            </a>
+          </div>
         </div>
       </div>
     </div>

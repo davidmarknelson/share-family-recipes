@@ -1,5 +1,5 @@
 footer {
-  margin-top: 300px;
+  margin-top: 350px;
 }
 
 .info {
@@ -10,13 +10,13 @@ footer {
   &__items {
     margin: 5px 0 5px 0;
     color: #363636;
+
+    &--right {
+      margin-left: auto;
+    }
   }
 
   &__items:hover {
     color: #11571C;
-  }
-
-  &--right {
-    margin-left: auto;
   }
 }

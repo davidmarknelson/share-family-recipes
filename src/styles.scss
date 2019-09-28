@@ -32,20 +32,50 @@ $navbar-item-hover-color: #FFF;
 @import "../node_modules/bulma/sass/utilities/_all.sass";
 @import "../node_modules/bulma/sass/base/_all.sass";
 @import "../node_modules/bulma/sass/layout/_all.sass";
-@import "../node_modules/bulma/sass/elements/other.sass";
 @import "../node_modules/bulma/sass/components/navbar.sass";
+@import "../node_modules/bulma/sass/elements/other.sass";
 @import "../node_modules/bulma/sass/elements/button.sass";
 @import "../node_modules/bulma/sass/elements/container.sass";
 @import "../node_modules/bulma/sass/elements/title.sass";
 @import "../node_modules/bulma/sass/elements/image.sass";
+@import "../node_modules/bulma/sass/elements/icon.sass";
+@import "../node_modules/bulma/sass/elements/notification.sass";
 @import "../node_modules/bulma/sass/grid/columns.sass";
+@import "../node_modules/bulma/sass/form/shared.sass";
+@import "../node_modules/bulma/sass/form/input-textarea.sass";
+@import "../node_modules/bulma/sass/form/file.sass";
+@import "../node_modules/bulma/sass/form/tools.sass";
 
 
+
+
+
+// ==================
 // ==================
 // Global Styles
 // ==================
+// ==================
 
+.is-accent {
+  background-color: $accent;
+  border: none;
+
+  &:hover {
+    background-color: #f7f772;
+  }
+
+  // This changes the loading spinner to a darker color
+  &.is-loading::after {
+    border: 2px solid #232323;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    content: "";
+  }
+}
+
+// ==================
 // Typography
+// ==================
 .has-text-secondary {
   color: $secondary;
 }
@@ -54,24 +84,56 @@ $navbar-item-hover-color: #FFF;
   color: $secondary-dark;
 }
 
-// Action Button
-.action-btn {
-  background-color: $accent;
-  color: $dark-black;
-  border: none;
-  -webkit-box-shadow: 2px 2px 4px 0px hsl(0, 0%, 86%);
-  -moz-box-shadow: 2px 2px 4px 0px hsl(0, 0%, 86%);
-  box-shadow: 2px 2px 4px 0px hsl(0, 0%, 86%);
-  transition: 
-    transform 200ms, 
-    box-shadow 200ms;
+// ==================
+// Page titles
+// ==================
+.page-header {
+  margin-top: 50px;
+  margin-bottom: 50px;
 
-  &:hover {
-    -webkit-transform: scale(1.1);
-    -ms-transform: scale(1.1);
-    transform: scale(1.1);
-    -webkit-box-shadow: 2px 2px 2px 0px hsl(0, 0%, 86%);
-    -moz-box-shadow: 2px 2px 2px 0px hsl(0, 0%, 86%);
-    box-shadow: 2px 2px 2px 0px hsl(0, 0%, 86%);
+  &__title::before {
+    content: '';
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: $secondary;
+    margin-right: 10px;
+    margin-bottom: -2px;
+  }
+
+  &__title::after {
+    content: '';
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: $secondary;
+    margin-left: 10px;
+    margin-bottom: -2px;
   }
 }
+
+// ==================
+// Forms
+// ==================
+.form {
+  &__container {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  &--rounded-left {
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+  }
+
+  &--rounded-right {
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+  }
+}
+

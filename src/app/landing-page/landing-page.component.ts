@@ -14,6 +14,7 @@ export class LandingPageComponent implements OnInit {
   ngOnInit() {
   }
 
+  // easeInOutQuart
   public myEasing = (t: number, b: number, c: number, d: number): number =>  {
     t /= d/2;
     if (t < 1) return c/2*t*t*t*t + b;
