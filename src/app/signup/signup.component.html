@@ -8,6 +8,7 @@
   <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
     <p class="has-text-right is-size-7">* required</p>
     <div class="columns">
+      <!-- First Name -->
       <div class="column">
         <div class="field">
           <label class="label" for="firstName">First Name *</label>
@@ -26,6 +27,7 @@
           </div>
         </div>
       </div>
+      <!-- Last Name -->
       <div class="column">
         <div class="field">
           <label class="label" for="lastName">Last Name *</label>
@@ -47,6 +49,7 @@
     </div>
 
     <div class="columns">
+      <!-- Email -->
       <div class="column">
         <div class="field">
           <label class="label" for="email">Email *</label>
@@ -57,9 +60,8 @@
               id="email" 
               formControlName="email" 
               placeholder="example@email.com"
-              [class.is-danger]="email.invalid && (email.dirty || email.touched || submitted)"
-              [class.is-success]="email.valid && !takenEmail"
-              [class.is-danger]="takenEmail">
+              [class.is-danger]="(email.invalid && (email.dirty || email.touched || submitted)) || takenEmail"
+              [class.is-success]="email.valid && !takenEmail">
             <span class="icon is-left">
               <fa-icon [icon]="faEnvelope"></fa-icon>
             </span>
@@ -77,6 +79,7 @@
     
     
     <div class="columns">
+      <!-- Username -->
       <div class="column">
         <div class="field">
           <label class="label" for="username">
@@ -92,9 +95,9 @@
               id="username" 
               formControlName="username" 
               placeholder="JohnDoe2019"
-              [class.is-danger]="unavailableUsername"
-              [class.is-success]="availableUsername"
-              [class.is-danger]="username.invalid && (username.dirty || username.touched || submitted)">
+              [class.is-danger]="(username.invalid && (username.dirty || username.touched || submitted)) || 
+                (!availableUsername && username.valid)"
+              [class.is-success]="availableUsername && username.valid">
             <span class="icon is-left">
               <fa-icon [icon]="faUser"></fa-icon>
             </span>
@@ -103,10 +106,10 @@
               <p *ngIf="username.errors.minlength">Username must be at least 5 characters</p>
               <p *ngIf="username.errors.maxlength">Username must not be more than 15 characters</p>
             </div>
-            <div *ngIf="availableUsername" class="has-text-success">
+            <div *ngIf="availableUsername && username.valid" class="has-text-success">
               <p>This username is available</p>
             </div>
-            <div *ngIf="unavailableUsername" class="has-text-danger">
+            <div *ngIf="!availableUsername && username.valid" class="has-text-danger">
               <p>This username is already taken</p>
             </div>
           </div>
@@ -115,6 +118,7 @@
     </div>
 
     <div class="columns">
+      <!-- Password -->
       <div class="column">
         <div class="field">
           <label class="label" for="password">
@@ -145,6 +149,7 @@
           </div>
         </div>
       </div>
+      <!-- Password Confirmation -->
       <div class="column">
         <div class="field">
           <label class="label" for="passwordConfirmation">
@@ -175,6 +180,7 @@
     </div>
     
     <div class="columns">
+      <!-- Profile Picture -->
       <div class="column">
         <div class="field">
           <label class="label" for="profilePic">
@@ -207,6 +213,7 @@
           </div>
         </div>
       </div>
+      <!-- Admin Code -->
       <div class="column">
         <a href="javascript:void(0)" (click)='toggleAdminField()' *ngIf='!showAdminField'>I have an admin code.</a>
         <div class="field" *ngIf='showAdminField'>

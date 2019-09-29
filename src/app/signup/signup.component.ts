@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { faLock, faUser, faEnvelope, faFileUpload, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil, filter, debounceTime, mergeMap } from 'rxjs/operators';
+// Font Awesome
+import { faLock, faUser, faEnvelope, faFileUpload, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+// Services
 import { AuthService } from '../services/auth/auth.service';
 
 @Component({
@@ -8,7 +12,8 @@ import { AuthService } from '../services/auth/auth.service';
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe = new Subject();
   // Font Awesome
   // ============
   faFileUpload = faFileUpload;
@@ -23,11 +28,7 @@ export class SignupComponent implements OnInit {
   showAdminField: boolean = false;
   sendingForm: boolean = false;
   submitted: boolean = false;
-  // There are 2 separate variables for the available username
-  // because if only availableUsername is used, a success message
-  // will appear even when the username is too short or too long
   availableUsername: boolean;
-  unavailableUsername: boolean;
   signupForm: FormGroup;
   selectedFile: File;
   formError: string;
@@ -42,39 +43,39 @@ export class SignupComponent implements OnInit {
     this.onTakenEmailChanges();
   }
 
-  // This checks for available usernames
-  onUsernameChanges() {
-    this.signupForm.get('username').valueChanges.subscribe(
-      val => {
-        if (val.length >= 5 && val.length <= 15) {
-          this.auth.checkUsernameAvailability(val).subscribe(res => {
-            if (!res) {
-              this.unavailableUsername = false;
-              this.availableUsername = true;
-            }
-          }, err => {
-            this.availableUsername = false;
-            this.unavailableUsername = true;
-          });
-        } else {
-          this.availableUsername = false;
-          this.unavailableUsername = false;          
-        }
-      }
-    );
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
-  // When there is an error saying that an email is already taken, the user will
+  // This checks for available usernames
+  onUsernameChanges() {
+    this.signupForm.get('username').valueChanges
+      .pipe(
+        filter(val => val.length >= 5 && val.length <= 15),
+        debounceTime(500),
+        mergeMap(val => this.auth.checkUsernameAvailability(val)),
+        takeUntil(this.ngUnsubscribe)
+      ).subscribe(res => {
+        this.availableUsername = true;
+      }, err => {
+        this.availableUsername = false;
+        // The api returns a 400 error when the username is taken.
+        // The resubscribes to the observable because subscriptions 
+        // complete on errors.
+        this.onUsernameChanges();
+      });
+  }
+
+  // When there is an error saying that an email is already in use, the user will
   // change the email. After the user changes the email, this removes the error
   // message on the input.
   onTakenEmailChanges() {
-    this.signupForm.get('email').valueChanges.subscribe(
-      () => {
-        if (this.takenEmail) {
-          this.takenEmail = false;
-        }
-      }
-    );
+    this.signupForm.get('email').valueChanges
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(() => {
+        if (this.takenEmail) this.takenEmail = false;
+      });
   }
 
   createForm() {
@@ -110,7 +111,7 @@ export class SignupComponent implements OnInit {
     this.submitted = true;
 
     // This stops the form submission if the form is invalid
-    if (this.signupForm.invalid || this.unavailableUsername) return;
+    if (this.signupForm.invalid || !this.availableUsername) return;
 
     // This is to show a loading indicator
     this.sendingForm = true;
@@ -133,10 +134,7 @@ export class SignupComponent implements OnInit {
     }, err => {
       // These 2 if statements show errors on the related inputs.
       if (err.error.message === 'This email account is already in use.') this.takenEmail = true;
-      if (err.error.message === 'This username is already taken.') {
-        this.unavailableUsername = true;
-        this.availableUsername = false;
-      }
+      if (err.error.message === 'This username is already taken.') this.availableUsername = false;
 
       // This stops the loading indicator
       this.sendingForm = false;
