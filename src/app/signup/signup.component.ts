@@ -103,6 +103,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   onFileSelected(event) {
     this.selectedFile = event.target.files[0];
     this.profilePicName = this.selectedFile.name;
+    console.log(event.target.files[0])
   }
 
   onSubmit() {

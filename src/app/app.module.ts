@@ -12,6 +12,12 @@ import { NgxPageScrollModule } from 'ngx-page-scroll';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
+// JWT
+import { JwtModule } from "@auth0/angular-jwt";
+
+export function tokenGetter() {
+  return localStorage.getItem("authToken");
+}
 
 @NgModule({
   declarations: [
@@ -24,6 +30,12 @@ import { FooterComponent } from './footer/footer.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    // JWT
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter
+      }
+    }),
     // Font Awesome
     FontAwesomeModule,
     // Smooth Scroll
