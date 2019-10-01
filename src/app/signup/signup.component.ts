@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, debounceTime, mergeMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 // Font Awesome
 import { faLock, faUser, faEnvelope, faFileUpload, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 // Services
@@ -35,7 +36,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   takenEmail: boolean;
   takenUsername: boolean;
 
-  constructor(private fb: FormBuilder, private auth: AuthService) { }
+  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.createForm();
@@ -83,7 +84,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      username: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(15)]],
+      username: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(15), Validators.pattern('[^ ]*')]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirmation: ['', [Validators.required, Validators.minLength(8)]],
       profilePic: [null],
@@ -129,9 +130,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     }
 
     this.auth.signup(user, this.selectedFile).subscribe(res => {
-      this.takenEmail = false;
-      this.sendingForm = false;
-      this.formError = '';
+      this.router.navigate(['/profile']);
     }, err => {
       // These 2 if statements show errors on the related inputs.
       if (err.error.message === 'This email account is already in use.') this.takenEmail = true;

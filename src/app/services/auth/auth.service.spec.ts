@@ -8,6 +8,32 @@ function tokenGetter() {
   return localStorage.getItem('authToken');
 }
 
+function testErrors(key, value, response, authService, http) {
+  let user = { 
+    firstName: 'John',
+    lastName: 'Doe',
+    username: 'myUser',
+    email: 'example@email.com', 
+    password: 'password',
+    passwordConfirmation: 'password'
+  };
+
+  user[key] = value;
+
+  const profilePic = null;
+  const signupResponse = response;
+  let errorResponse;
+
+  authService.signup(user, profilePic).subscribe(res => {}, err => {
+    errorResponse = err;
+  });
+
+  http.expectOne('http://localhost:3000/user/signup')
+    .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
+  expect(errorResponse.error.message).toEqual(signupResponse);
+  http.verify();
+}
+
 describe('AuthService', () => {
   let authService: AuthService;
   let http: HttpTestingController;
@@ -65,188 +91,21 @@ describe('AuthService', () => {
       http.verify();
     });
 
-    it('should return an error for a username that is too short', () => {
-      const user = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'User',
-        email: 'example@email.com', 
-        password: 'password',
-        passwordConfirmation: 'password'
-      };
-      const profilePic = null;
-      const signupResponse = 'Username must be between 5 and 15 characters.';
-      let errorResponse;
-
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
-        errorResponse = err;
-      });
-
-      http.expectOne('http://localhost:3000/user/signup')
-        .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
-      expect(errorResponse.error.message).toEqual(signupResponse);
-      http.verify();
-    });
-
-    it('should return an error for a username that is too long', () => {
-      const user = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'UserNameIsWayTooLong',
-        email: 'example@email.com', 
-        password: 'password',
-        passwordConfirmation: 'password'
-      };
-      const profilePic = null;
-      const signupResponse = 'Username must be between 5 and 15 characters.';
-      let errorResponse;
-
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
-        errorResponse = err;
-      });
-
-      http.expectOne('http://localhost:3000/user/signup')
-        .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
-      expect(errorResponse.error.message).toEqual(signupResponse);
-      http.verify();
-    });
-
-    it('should return an error for a username that is too long', () => {
-      const user = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'UserNameIsWayTooLong',
-        email: 'example@email.com', 
-        password: 'password',
-        passwordConfirmation: 'password'
-      };
-      const profilePic = null;
-      const signupResponse = 'Username must be between 5 and 15 characters.';
-      let errorResponse;
-
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
-        errorResponse = err;
-      });
-
-      http.expectOne('http://localhost:3000/user/signup')
-        .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
-      expect(errorResponse.error.message).toEqual(signupResponse);
-      http.verify();
-    });
-
-    it('should return an error for a username that contains a space', () => {
-      const user = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'my User',
-        email: 'example@email.com', 
-        password: 'password',
-        passwordConfirmation: 'password'
-      };
-      const profilePic = null;
-      const signupResponse = 'Username must not include a space.';
-      let errorResponse;
-
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
-        errorResponse = err;
-      });
-
-      http.expectOne('http://localhost:3000/user/signup')
-        .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
-      expect(errorResponse.error.message).toEqual(signupResponse);
-      http.verify();
-    });
-
-    it('should return an error for a username that is already taken', () => {
-      const user = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'myUser',
-        email: 'example@email.com', 
-        password: 'password',
-        passwordConfirmation: 'password'
-      };
-      const profilePic = null;
-      const signupResponse = 'This username is already taken.';
-      let errorResponse;
-
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
-        errorResponse = err;
-      });
-
-      http.expectOne('http://localhost:3000/user/signup')
-        .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
-      expect(errorResponse.error.message).toEqual(signupResponse);
-      http.verify();
-    });
-
-    it('should return an error for an email that is already being used', () => {
-      const user = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'myUser',
-        email: 'example@email.com', 
-        password: 'password',
-        passwordConfirmation: 'password'
-      };
-      const profilePic = null;
-      const signupResponse = 'This email account is already in use.';
-      let errorResponse;
-
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
-        errorResponse = err;
-      });
-
-      http.expectOne('http://localhost:3000/user/signup')
-        .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
-      expect(errorResponse.error.message).toEqual(signupResponse);
-      http.verify();
-    });
-
-    it('should return an error when the passwords do not match', () => {
-      const user = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'myUser',
-        email: 'example@email.com', 
-        password: 'password',
-        passwordConfirmation: 'notmatch'
-      };
-      const profilePic = null;
-      const signupResponse = 'Passwords do not match.';
-      let errorResponse;
-
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
-        errorResponse = err;
-      });
-
-      http.expectOne('http://localhost:3000/user/signup')
-        .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
-      expect(errorResponse.error.message).toEqual(signupResponse);
-      http.verify();
-    });
-
-    it('should return an error when the password is too short', () => {
-      const user = { 
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'myUser',
-        email: 'example@email.com', 
-        password: 'pass',
-        passwordConfirmation: 'pass'
-      };
-      const profilePic = null;
-      const signupResponse = 'Password must be at least 8 characters long.';
-      let errorResponse;
-
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
-        errorResponse = err;
-      });
-
-      http.expectOne('http://localhost:3000/user/signup')
-        .flush({message: signupResponse}, {status: 400, statusText: 'Bad Request'});
-      expect(errorResponse.error.message).toEqual(signupResponse);
-      http.verify();
+    it('should return an error when invalid credentials are sent', () => {
+      // Username is too short
+      testErrors('username', 'User', 'Username must be between 5 and 15 characters.', authService, http);
+      // Username is too long
+      testErrors('username', 'UserNameIsWayTooLong', 'Username must be between 5 and 15 characters.', authService, http);
+      // Username shouldn't have a space
+      testErrors('username', 'my User', 'Username must not include a space.', authService, http);
+      // Username is taken
+      testErrors('username', 'myUser', 'This username is already taken.', authService, http);
+      // Email is in use
+      testErrors('email', 'example@email.com', 'This email account is already in use.', authService, http);
+      // Passwords don't match
+      testErrors('passwordConfirmation', 'notmatch', 'Passwords do not match.', authService, http);
+      // Password is too short
+      testErrors('password', 'pass', 'Password must be at least 8 characters long.', authService, http);
     });
 
     it('should return an error when the profile picture image is not a jpeg', () => {

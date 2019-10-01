@@ -7,6 +7,7 @@ import { LandingPageComponent } from './landing-page/landing-page.component';
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
   { path: 'signup', loadChildren: () => import('./signup/signup.module').then(m => m.SignupModule) },
+  { path: 'profile', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) },
 ];
 
 @NgModule({

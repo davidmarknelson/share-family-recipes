@@ -14,16 +14,18 @@
           <label class="label" for="firstName">First Name *</label>
           <div class="control">
             <input 
+              data-test='firstName'
               class="input is-rounded" 
               type="text" 
               id="firstName" 
               formControlName="firstName" 
               placeholder="John"
               [class.is-danger]="firstName.invalid && (firstName.dirty || firstName.touched || submitted)"
-              [class.is-success]="firstName.valid">
+              [class.is-success]="firstName.valid"
+              required>
           </div>
           <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched || submitted)" class="has-text-danger">
-            <p *ngIf="firstName.errors.required">First name is required</p>
+            <p *ngIf="firstName.errors.required" data-test='firstNameRequired'>First name is required</p>
           </div>
         </div>
       </div>
@@ -33,16 +35,18 @@
           <label class="label" for="lastName">Last Name *</label>
           <div class="control">
             <input 
+              data-test='lastName' 
               class="input is-rounded" 
               type="text" 
               id="lastName" 
               formControlName="lastName" 
               placeholder="Doe"
               [class.is-danger]="lastName.invalid && (lastName.dirty || lastName.touched || submitted)"
-              [class.is-success]="lastName.valid">
+              [class.is-success]="lastName.valid"
+              required>
           </div>
           <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched || submitted)" class="has-text-danger">
-            <p *ngIf="lastName.errors.required">Last name is required</p>
+            <p *ngIf="lastName.errors.required" data-test='lastNameRequired'>Last name is required</p>
           </div>
         </div>
       </div>
@@ -55,22 +59,24 @@
           <label class="label" for="email">Email *</label>
           <div class="control has-icons-left">
             <input 
+              data-test='email'
               class="input is-rounded" 
               type="email" 
               id="email" 
               formControlName="email" 
               placeholder="example@email.com"
               [class.is-danger]="(email.invalid && (email.dirty || email.touched || submitted)) || takenEmail"
-              [class.is-success]="email.valid && !takenEmail">
+              [class.is-success]="email.valid && !takenEmail"
+              required>
             <span class="icon is-left">
               <fa-icon [icon]="faEnvelope"></fa-icon>
             </span>
             <div *ngIf="email.invalid && (email.dirty || email.touched || submitted)" class="has-text-danger">
-              <p *ngIf="email.errors.required">Email is required</p>
-              <p *ngIf="email.errors.email">This must be an email</p>
+              <p *ngIf="email.errors.required" data-test='emailRequired'>Email is required</p>
+              <p *ngIf="email.errors.email" data-test='notEmail'>This must be an email</p>
             </div>
             <div *ngIf="takenEmail" class="has-text-danger">
-              <p>This email account is already in use.</p>
+              <p data-test='emailTaken'>This email account is already in use.</p>
             </div>
           </div>
         </div>
@@ -90,6 +96,7 @@
           </label>
           <div class="control has-icons-left">
             <input 
+              data-test='username'
               class="input is-rounded" 
               type="text" 
               id="username" 
@@ -97,20 +104,22 @@
               placeholder="JohnDoe2019"
               [class.is-danger]="(username.invalid && (username.dirty || username.touched || submitted)) || 
                 (!availableUsername && username.valid)"
-              [class.is-success]="availableUsername && username.valid">
+              [class.is-success]="availableUsername && username.valid"
+              required>
             <span class="icon is-left">
               <fa-icon [icon]="faUser"></fa-icon>
             </span>
             <div *ngIf="username.invalid && (username.dirty || username.touched || submitted)" class="has-text-danger">
-              <p *ngIf="username.errors.required">Username is required</p>
-              <p *ngIf="username.errors.minlength">Username must be at least 5 characters</p>
-              <p *ngIf="username.errors.maxlength">Username must not be more than 15 characters</p>
+              <p *ngIf="username.errors.required" data-test='usernameRequired'>Username is required</p>
+              <p *ngIf="username.errors.minlength" data-test='usernameMinLength'>Username must be at least 5 characters</p>
+              <p *ngIf="username.errors.maxlength" data-test='usernameMaxLength'>Username must not be more than 15 characters</p>
+              <p *ngIf="username.errors.pattern" data-test='usernamePattern'>Username must not contain a space</p>
             </div>
             <div *ngIf="availableUsername && username.valid" class="has-text-success">
-              <p>This username is available</p>
+              <p data-test="usernameAvailable">This username is available</p>
             </div>
             <div *ngIf="!availableUsername && username.valid" class="has-text-danger">
-              <p>This username is already taken</p>
+              <p data-test="usernameUnavailable">This username is already taken</p>
             </div>
           </div>
         </div>
@@ -129,22 +138,24 @@
           </label>
           <div class="control has-icons-left">
             <input 
+              data-test='password' 
               class="input is-rounded" 
               type="password" 
               id="password" 
               formControlName="password" 
               placeholder="Password"
               [class.is-danger]="password.invalid && (password.dirty || password.touched || submitted)"
-              [class.is-success]="password.valid && (password.value === passwordConfirmation.value)">
+              [class.is-success]="password.valid && (password.value === passwordConfirmation.value)"
+              required>
             <span class="icon is-left">
               <fa-icon [icon]="faLock"></fa-icon>
             </span>
             <div *ngIf="password.invalid && (password.dirty || password.touched || submitted)" class="has-text-danger">
-              <p *ngIf="password.errors.required">Password is required</p>
-              <p *ngIf="password.errors.minlength">Password must be at least 8 characters</p>
+              <p *ngIf="password.errors.required" data-test='passwordRequired'>Password is required</p>
+              <p *ngIf="password.errors.minlength" data-test='passwordLength'>Password must be at least 8 characters</p>
             </div>
             <div class="has-text-success" *ngIf="password.valid && (password.value === passwordConfirmation.value)">
-              <p>Passwords match</p>
+              <p data-test='passwordMatch'>Passwords match</p>
             </div>
           </div>
         </div>
@@ -160,19 +171,21 @@
           </label>
           <div class="control has-icons-left">
             <input 
+              data-test='passwordConfirmation' 
               class="input is-rounded" 
               type="password" 
               id="passwordConfirmation" 
               formControlName="passwordConfirmation" 
               placeholder="Password"
               [class.is-danger]="passwordConfirmation.invalid && (passwordConfirmation.dirty || passwordConfirmation.touched || submitted)"
-              [class.is-success]="password.valid && (password.value === passwordConfirmation.value)">
+              [class.is-success]="password.valid && (password.value === passwordConfirmation.value)"
+              required>
             <span class="icon is-left">
               <fa-icon [icon]="faLock"></fa-icon>
             </span>
             <div *ngIf="passwordConfirmation.invalid && (passwordConfirmation.dirty || passwordConfirmation.touched || submitted)" class="has-text-danger">
-              <p *ngIf="passwordConfirmation.errors.required">Password is required</p>
-              <p *ngIf="passwordConfirmation.errors.minlength">Password must be at least 8 characters</p>
+              <p *ngIf="passwordConfirmation.errors.required" data-test='passwordConfirmationRequired'>Password is required</p>
+              <p *ngIf="passwordConfirmation.errors.minlength" data-test='passwordConfirmationLength'>Password must be at least 8 characters</p>
             </div>
           </div>
         </div>
@@ -215,11 +228,18 @@
       </div>
       <!-- Admin Code -->
       <div class="column">
-        <a href="javascript:void(0)" (click)='toggleAdminField()' *ngIf='!showAdminField'>I have an admin code.</a>
+        <a 
+          data-test="adminLink"
+          href="javascript:void(0)" 
+          (click)='toggleAdminField()' 
+          *ngIf='!showAdminField'>
+          I have an admin code.
+        </a>
         <div class="field" *ngIf='showAdminField'>
           <label class="label" for="adminCode">Admin Code</label>
           <div class="control">
             <input 
+              data-test="adminCode"
               class="input is-rounded" 
               type="text" 
               id="adminCode" 
@@ -243,6 +263,7 @@
       </p>
       <p class="control">
         <button 
+          data-test="submit-button"
           class="button is-accent is-rounded" 
           type="submit" 
           [class.is-loading]="sendingForm">
