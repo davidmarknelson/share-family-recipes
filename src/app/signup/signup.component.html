@@ -65,8 +65,8 @@
               id="email" 
               formControlName="email" 
               placeholder="example@email.com"
-              [class.is-danger]="(email.invalid && (email.dirty || email.touched || submitted)) || takenEmail"
-              [class.is-success]="email.valid && !takenEmail"
+              [class.is-danger]="(email.invalid && (email.dirty || email.touched || submitted)) || emailTaken"
+              [class.is-success]="email.valid && !emailTaken"
               required>
             <span class="icon is-left">
               <fa-icon [icon]="faEnvelope"></fa-icon>
@@ -75,7 +75,7 @@
               <p *ngIf="email.errors.required" data-test='emailRequired'>Email is required</p>
               <p *ngIf="email.errors.email" data-test='notEmail'>This must be an email</p>
             </div>
-            <div *ngIf="takenEmail" class="has-text-danger">
+            <div *ngIf="emailTaken" class="has-text-danger">
               <p data-test='emailTaken'>This email account is already in use.</p>
             </div>
           </div>

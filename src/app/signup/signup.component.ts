@@ -33,7 +33,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   signupForm: FormGroup;
   selectedFile: File;
   formError: string;
-  takenEmail: boolean;
+  emailTaken: boolean;
   takenUsername: boolean;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) { }
@@ -75,7 +75,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.signupForm.get('email').valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(() => {
-        if (this.takenEmail) this.takenEmail = false;
+        if (this.emailTaken) this.emailTaken = false;
       });
   }
 
@@ -133,7 +133,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       this.router.navigate(['/profile']);
     }, err => {
       // These 2 if statements show errors on the related inputs.
-      if (err.error.message === 'This email account is already in use.') this.takenEmail = true;
+      if (err.error.message === 'This email account is already in use.') this.emailTaken = true;
       if (err.error.message === 'This username is already taken.') this.availableUsername = false;
 
       // This stops the loading indicator

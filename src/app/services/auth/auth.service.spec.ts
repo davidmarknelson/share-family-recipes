@@ -34,7 +34,7 @@ function testErrors(key, value, response, authService, http) {
   http.verify();
 }
 
-describe('AuthService', () => {
+fdescribe('AuthService', () => {
   let authService: AuthService;
   let http: HttpTestingController;
   let jwtHelper: JwtHelperService;
@@ -205,6 +205,20 @@ describe('AuthService', () => {
       expect(errorResponse.error.message).toEqual(loginResponse);
       expect(localStorage.getItem('authToken')).toBeFalsy();
       http.verify();
+    });
+  });
+
+  describe('isLoggedIn', () => {
+    it('should return true if the user is logged in', () => {
+      localStorage.setItem('authToken', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + 
+        'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.' + 
+        'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c');
+      expect(authService.isLoggedIn()).toEqual(true);
+    });
+
+    it('should return false if the user is not logged in', () => {
+      localStorage.removeItem('authToken');
+      expect(authService.isLoggedIn()).toEqual(false);
     });
   });
 });

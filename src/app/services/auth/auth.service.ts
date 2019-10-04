@@ -50,4 +50,8 @@ export class AuthService {
       })
     );
   }
+
+  isLoggedIn() {
+    return !this.jwtHelper.isTokenExpired();
+  }
 }
