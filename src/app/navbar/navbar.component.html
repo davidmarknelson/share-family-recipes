@@ -30,22 +30,22 @@
               class="button is-primary is-rounded is-outlined is-inverted transition" 
               routerLink='/login' 
               data-test='navbar-login'
-              *ngIf="!loggedIn">
+              *ngIf="!isLoggedIn">
               Log in
             </a>
             <a 
               class="button is-primary is-rounded is-outlined is-inverted transition" 
               routerLink='/signup' 
               data-test='navbar-signup'
-              *ngIf="!loggedIn">
+              *ngIf="!isLoggedIn">
               <strong>Sign up</strong>
             </a>
             <a 
               class="button is-primary is-rounded is-outlined is-inverted transition" 
-              routerLink='/logout' 
+              (click)='logout()' 
               data-test='navbar-login'
-              *ngIf="loggedIn">
-              Log in
+              *ngIf="isLoggedIn">
+              Log Out
             </a>
           </div>
         </div>

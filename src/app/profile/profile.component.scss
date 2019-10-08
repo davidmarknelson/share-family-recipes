@@ -1,0 +1,51 @@
+// Profile Images
+.img {
+  &--width {
+    max-width: 200px;
+  }
+
+  &--centered {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background-color: #bee0c0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background-color: #bee0c0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: -1;
+  }
+}
+
+.info {
+  display: inline-block;
+
+  &__parent {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.btn-field {
+  margin-top: 200px;
+  justify-content: center;
+}

@@ -34,7 +34,7 @@ function testErrors(key, value, response, authService, http) {
   http.verify();
 }
 
-fdescribe('AuthService', () => {
+describe('AuthService', () => {
   let authService: AuthService;
   let http: HttpTestingController;
   let jwtHelper: JwtHelperService;

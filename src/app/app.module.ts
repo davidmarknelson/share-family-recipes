@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 // Font Awesome
@@ -14,6 +14,8 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 // JWT
 import { JwtModule } from "@auth0/angular-jwt";
+// Services
+import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
 
 export function tokenGetter() {
   return localStorage.getItem("authToken");
@@ -42,7 +44,13 @@ export function tokenGetter() {
     NgxPageScrollCoreModule,
     NgxPageScrollModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

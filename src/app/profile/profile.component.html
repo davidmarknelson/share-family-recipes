@@ -1,4 +1,42 @@
 <section class="section page-header">
   <h1 class="title page-header__title has-text-centered">Profile</h1>
-  <p class="subtitle has-text-centered">This is your profile.</p>
+  <p class="subtitle has-text-centered">View and edit your profile.<br />View recipes you created or saved.</p>
 </section>
+
+<div class="columns" *ngIf="user">
+  <div class="column is-3"></div>
+  <div class="column">
+    <figure class="image img img--width img--centered">
+      <img class="is-rounded" src="{{ user.profilePic }}" alt="profile picture">
+    </figure>
+  </div>
+  <div class="column">
+    <div class="info__parent">
+      <div class="content info">
+        <h2 class="is-size-3 has-text-weight-semibold">{{ user.username }}</h2>
+        <p class="is-size-4 has-text-weight-medium">{{ user.firstName }} {{ user.lastName }}</p>
+        <p class="is-size-4 has-text-weight-medium">{{ user.email }}</p>
+        <p>Signed up on {{ user.createdAt }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="column is-3"></div>
+</div>
+
+<div class="field is-grouped btn-field" *ngIf="user">
+  <p class="control">
+    <a class="button is-primary is-rounded" routerLink='/edit'>
+      Edit Profile
+    </a>
+  </p>
+  <p class="control">
+    <a class="button is-secondary is-rounded" routerLink='/saved'>
+      Saved List
+    </a>
+  </p>
+  <p class="control">
+    <a class="button is-secondary is-rounded" routerLink='/yourrecipes'>
+      Your Recipes
+    </a>
+  </p>
+</div>
