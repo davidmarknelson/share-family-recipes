@@ -1,5 +1,17 @@
+// isVerified message
+.msg {
+  max-width: 500px;
+  margin: 0 auto 150px auto;
+
+  &__container {
+    padding: 15px;
+  }
+}
+
 // Profile Images
 .img {
+  margin-bottom: 50px;
+
   &--width {
     max-width: 200px;
   }

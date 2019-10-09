@@ -44,4 +44,8 @@ export class ProfileComponent implements OnInit {
       return '../../assets/images/default-img/default-profile-pic.jpg';
     }
   }
+
+  sendVerificationEmail() {
+    alert('hi')
+  }
 }

@@ -21,6 +21,10 @@
         <a class="navbar-item transition" routerLink='/create' data-test='navbar-create'>
           Create Recipe
         </a>
+
+        <a class="navbar-item transition" routerLink='/profile' data-test='navbar-profile' *ngIf="isLoggedIn">
+          Profile
+        </a>
       </div>
   
       <div class="navbar-end">
