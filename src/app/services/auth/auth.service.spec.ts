@@ -84,10 +84,12 @@ describe('AuthService', () => {
       authService.signup(user, profilePic).subscribe(res => {
         response = res;
       });
+      spyOn(authService.loggedIn, 'emit');
 
       http.expectOne('http://localhost:3000/user/signup').flush(signupResponse);
       expect(response).toEqual(signupResponse);
       expect(localStorage.getItem('authToken')).toEqual('s3cr3tt0ken');
+      expect(authService.loggedIn.emit).toHaveBeenCalled();
       http.verify();
     });
 
@@ -181,10 +183,12 @@ describe('AuthService', () => {
       authService.login(user).subscribe(res => {
         response = res;
       });
+      spyOn(authService.loggedIn, 'emit');
 
       http.expectOne('http://localhost:3000/user/login').flush(loginResponse);
       expect(response).toEqual(loginResponse);
       expect(localStorage.getItem('authToken')).toEqual('s3cr3tt0ken');
+      expect(authService.loggedIn.emit).toHaveBeenCalled();
       http.verify();
     });
 
@@ -219,6 +223,80 @@ describe('AuthService', () => {
     it('should return false if the user is not logged in', () => {
       localStorage.removeItem('authToken');
       expect(authService.isLoggedIn()).toEqual(false);
+    });
+  });
+
+  describe('renewToken', () => {
+    it('should return a jwt when given a valid token', () => {
+      let signupResponse = { 'jwt': 's3cr3tt0ken' };
+
+      let response;
+      authService.renewToken().subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/user/renew').flush(signupResponse);
+      expect(response).toEqual(signupResponse);
+      expect(localStorage.getItem('authToken')).toEqual('s3cr3tt0ken');
+      http.verify();
+    });
+  });
+
+  describe('getProfile', () => {
+    it('should return a jwt when given a valid token', () => {
+      let signupResponse = {
+        'id': 1,
+        'username': 'johndoe',
+        'originalUsername': 'johndoe',
+        'firstName': 'John',
+        'lastName': 'Doe',
+        'email': 'example@email.com',
+        'profilePic': null,
+        'isAdmin': false,
+        'isVerified': true,
+        'createdAt': 'today',
+        'updatedAt': 'today'
+      };
+
+      let response;
+      authService.getProfile().subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/user/profile').flush(signupResponse);
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+  });
+
+  describe('currentUser', () => {
+    it('should return a user object with a valid token', () => {
+      spyOn(localStorage, 'getItem').and.callFake(() => 's3cr3tt0ken' );
+      spyOn(jwtHelper, 'decodeToken').and.callFake(() => {
+        return {
+          exp: 1517847480,
+          iat: 1517840280,
+          username: 'username',
+          originalUsername: 'username',
+          isAdmin: true,
+          id: 1
+        };
+      });
+      const res = authService.currentUser();
+      expect(localStorage.getItem).toHaveBeenCalled();
+      expect(res.username).toBeDefined();
+      expect(res.id).toBeDefined();
+    });
+  });
+
+  describe('logout', () => {
+    it('should clear the token from local storage', () => {
+      spyOn(authService.loggedIn, 'emit');
+      localStorage.setItem('authToken', 's3cr3tt0ken');
+      expect(localStorage.getItem('authToken')).toEqual('s3cr3tt0ken');
+      authService.logout();
+      expect(localStorage.getItem('authToken')).toBeFalsy();
+      expect(authService.loggedIn.emit).toHaveBeenCalledWith(false);
     });
   });
 });

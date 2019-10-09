@@ -40,22 +40,12 @@ describe('FooterComponent', () => {
       expect(link.attributes.routerLink).toEqual('/create');
     });
 
-    it('should have a link to the signup page when clicking the signup link', () => {
-      const link = fixture.debugElement.query(By.css('[data-test=footer-signup]'));
-      expect(link.attributes.routerLink).toEqual('/signup');
-    });
-
-    it('should have a link to the login page when clicking the login link', () => {
-      const link = fixture.debugElement.query(By.css('[data-test=footer-login]'));
-      expect(link.attributes.routerLink).toEqual('/login');
-    });
-
-    it('should have a link to the signup page when clicking the signup link', () => {
+    it('should have a link to the about page when clicking the about link', () => {
       const link = fixture.debugElement.query(By.css('[data-test=footer-about]'));
       expect(link.attributes.routerLink).toEqual('/about');
     });
 
-    it('should have a link to the login page when clicking the login link', () => {
+    it('should have a link to the contact page when clicking the contact link', () => {
       const link = fixture.debugElement.query(By.css('[data-test=footer-contact]'));
       expect(link.attributes.routerLink).toEqual('/contact');
     });
