@@ -2,6 +2,7 @@ import { Injectable, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { format } from 'date-fns';
 // Environment 
 import { environment } from '../../../environments/environment';
 // Interfaces
@@ -65,7 +66,26 @@ export class AuthService {
   }
 
   getProfile(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}user/profile`);
+    return this.http.get<User>(`${this.apiUrl}user/profile`).pipe(
+      map(res => {
+        res.createdAt = this.formatDate(res.createdAt);
+        res.updatedAt = this.formatDate(res.updatedAt);
+        res.profilePic = this.checkProfilePic(res.profilePic);
+        return res;
+      })
+    );
+  }
+
+  formatDate(date) {
+    return format(new Date(date), 'MMM dd, yyyy');
+  }
+
+  checkProfilePic(picture) {
+    if (picture) {
+      return `${environment.apiUrl}${picture}`;
+    } else {
+      return '../../assets/images/default-img/default-profile-pic.jpg';
+    }
   }
 
   isLoggedIn() {

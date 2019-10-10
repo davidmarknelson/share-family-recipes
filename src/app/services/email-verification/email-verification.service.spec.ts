@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { EmailVerificationService } from './email-verification.service';
 
-fdescribe('EmailVerificationService', () => {
+describe('EmailVerificationService', () => {
   let emailService: EmailVerificationService;
   let http: HttpTestingController;
 

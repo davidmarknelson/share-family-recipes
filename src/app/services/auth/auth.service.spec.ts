@@ -254,8 +254,8 @@ describe('AuthService', () => {
         'profilePic': null,
         'isAdmin': false,
         'isVerified': true,
-        'createdAt': 'today',
-        'updatedAt': 'today'
+        'createdAt': '2019-10-08T07:45:48.214Z',
+        'updatedAt': '2019-10-08T07:45:48.214Z'
       };
 
       let response;
@@ -266,6 +266,25 @@ describe('AuthService', () => {
       http.expectOne('http://localhost:3000/user/profile').flush(signupResponse);
       expect(response).toEqual(signupResponse);
       http.verify();
+    });
+
+    describe('formatDate', () => {
+      it('should return a date in Mon Day, Year format', () => {
+        let date = authService.formatDate('2019-10-08T07:45:48.214Z');
+        expect(date).toEqual('Oct 08, 2019');
+      });
+    });
+  
+    describe('checkProfilePic', () => {
+      it('should return a default image path if the user does not have profilePic', () => {
+        let picUrl = authService.checkProfilePic(null);
+        expect(picUrl).toEqual('../../assets/images/default-img/default-profile-pic.jpg');
+      });
+  
+      it('should return an image path for a user that has a profilePic', () => {
+        let picUrl = authService.checkProfilePic('public/images/profilePics/jacksmith.jpeg');
+        expect(picUrl).toEqual('http://localhost:3000/public/images/profilePics/jacksmith.jpeg');
+      });
     });
   });
 

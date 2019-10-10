@@ -1,51 +1,58 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 // Services
 import { AuthService } from '../services/auth/auth.service';
-import { format } from 'date-fns';
+import { EmailVerificationService } from '../services/email-verification/email-verification.service';
+// Interfaces
 import { User } from '../services/auth/user';
-import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe = new Subject();
+  gettingProfile: boolean;
   user: User;
-  
-  constructor(private auth: AuthService) { }
+  emailSent: boolean = false;
+  sendingEmail: boolean = false;
+  emailSuccess: boolean = false;
+  emailError: string;
+
+  constructor(private auth: AuthService, private email: EmailVerificationService) { }
 
   ngOnInit() {
     this.getUserProfile();
   }
 
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
   getUserProfile() {
-    this.auth.getProfile().subscribe(res => {
-      this.user = this.createUserObject(res);
+    this.gettingProfile = true;
+    this.auth.getProfile().pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(res => {
+      this.gettingProfile = false;
+      this.user = res;
     });
   }
 
-  createUserObject(response) {
-    let user = response;
-    user.createdAt = this.formatDate(user.createdAt);
-    user.updatedAt = this.formatDate(user.updatedAt);
-    user.profilePic = this.checkProfilePic(user.profilePic);
-    return user;
-  }
-
-  formatDate(date) {
-    return format(new Date(date), 'MMM dd, yyyy');
-  }
-
-  checkProfilePic(picture) {
-    if (picture) {
-      return `${environment.apiUrl}${picture}`;
-    } else {
-      return '../../assets/images/default-img/default-profile-pic.jpg';
-    }
-  }
-
   sendVerificationEmail() {
-    alert('hi')
+    this.sendingEmail = true;
+    this.email.sendVerificationEmail(this.user.email).pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(res => {
+      this.sendingEmail = false;
+      this.emailError = '';
+      this.emailSuccess = true;
+    }, err => {
+      this.sendingEmail = false;
+      this.emailError = err.error.message;
+    });
   }
 }

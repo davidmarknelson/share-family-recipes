@@ -12,11 +12,11 @@ export class EmailVerificationService {
 
   constructor(private http: HttpClient) { }
 
-  sendVerificationEmail(email): Observable<any> {
+  sendVerificationEmail(email: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}verify/send`, { email: email });
   }
 
-  verifyEmail(tokenString): Observable<any> {
+  verifyEmail(tokenString: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}verify`, { token: tokenString });
   }
 }

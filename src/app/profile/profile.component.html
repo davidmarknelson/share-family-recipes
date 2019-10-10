@@ -1,32 +1,51 @@
 <section class="section page-header">
   <h1 class="title page-header__title has-text-centered">Profile</h1>
-  <p class="subtitle has-text-centered">View and edit your profile.<br />View recipes you created or saved.</p>
+  <p class="subtitle has-text-centered">View and edit your profile.<br />View your created and saved recipes.</p>
 </section>
 
 <div class="container msg__container" *ngIf="user && !user.isVerified">
-  <article class="message is-warning msg">
+  <article class="message is-info msg" *ngIf="sendingEmail" data-test='emailSending'>
     <p class="message-body">
-      <a (click)="sendVerificationEmail()">Verify your email</a> to ensure you are able to reset your password if you ever forget.
+      Sending email...
+      <progress class="progress is-small is-info" max="100"></progress>
+    </p>
+  </article>
+  <article class="message is-danger msg" *ngIf="emailError && !sendingEmail" data-test='emailVerifyError'>
+    <p class="message-body">
+      {{ emailError }} <a (click)="sendVerificationEmail()">Resend the verification email</a>.
+    </p>
+  </article>
+  <article class="message is-warning msg" *ngIf="!emailError && !emailSuccess && !sendingEmail" data-test='emailVerifyMsg'>
+    <p class="message-body">
+      <a (click)="sendVerificationEmail()">Verify your email</a> to ensure you are able to reset your password in the future.
+    </p>
+  </article>
+  <article class="message is-success msg" *ngIf="!emailError && emailSuccess && !sendingEmail" data-test='emailVerifySuccess'>
+    <p class="message-body">
+      The email has been sent with further instructions. 
+      If you have not received an email in your inbox or spam folder, 
+      you can <a (click)="sendVerificationEmail()">resend the verification email</a>.
     </p>
   </article>
 </div>
 
 
 <div class="container">
+  <p *ngIf="gettingProfile" class="has-text-centered">Getting profile...</p>
   <div class="columns" *ngIf="user">
     <div class="column is-3"></div>
     <div class="column">
       <figure class="image img img--width img--centered">
-        <img class="is-rounded" src="{{ user.profilePic }}" alt="profile picture">
+        <img class="is-rounded" src="{{ user.profilePic }}" alt="profile picture" data-test='profilePic'>
       </figure>
     </div>
     <div class="column">
       <div class="info__parent">
         <div class="content info">
-          <h2 class="is-size-3 has-text-weight-semibold">{{ user.username }}</h2>
-          <p class="is-size-4 has-text-weight-medium">{{ user.firstName }} {{ user.lastName }}</p>
-          <p class="is-size-4 has-text-weight-medium">{{ user.email }}</p>
-          <p>Signed up on {{ user.createdAt }}</p>
+          <h2 class="is-size-3 has-text-weight-semibold" data-test='username'>{{ user.username }}</h2>
+          <p class="is-size-4 has-text-weight-medium" data-test='name'>{{ user.firstName }} {{ user.lastName }}</p>
+          <p class="is-size-4 has-text-weight-medium" data-test='email'>{{ user.email }}</p>
+          <p data-test='date'>Signed up on {{ user.createdAt }}</p>
         </div>
       </div>
     </div>
