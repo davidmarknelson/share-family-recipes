@@ -12,7 +12,6 @@ import { toast } from 'bulma-toast';
 })
 export class VerifyEmailComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
-  error: string;
 
   constructor(
     private route: ActivatedRoute, 
