@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core
 import { AuthService } from '../services/auth/auth.service';
 import { EmailVerificationService } from '../services/email-verification/email-verification.service';
 import { ProfileComponent } from './profile.component';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
 const user1 = {
@@ -75,12 +75,14 @@ describe('ProfileComponent', () => {
 
   describe('profile with out profilePic, not an admin, and not verified', () => {
     beforeEach(() => {
-      spyOn(component, 'getUserProfile').and.callFake(() => component.user = user1);
+      spyOn(component, 'getUserProfile').and.callThrough();
+      spyOn(authService, 'getProfile').and.callFake(() => of(user1));
       fixture.detectChanges();
     });
 
     it('should call getUserProfile when the component initializes', () => {
       expect(component.getUserProfile).toHaveBeenCalled();
+      expect(authService.getProfile).toHaveBeenCalled();
     });
 
     it('should populate the page with the user info', () => {
@@ -105,27 +107,60 @@ describe('ProfileComponent', () => {
 
   describe('verify email message', () => {
     beforeEach(() => {
-      spyOn(component, 'getUserProfile').and.callFake(() => component.user = user1);
+      spyOn(component, 'getUserProfile').and.callThrough();
+      spyOn(authService, 'getProfile').and.callFake(() => of(user1));
       fixture.detectChanges();
     });
 
     it('should show the sending progressbar when the email is sending', () => {
       const emailVerifyBtn = fixture.debugElement.query(By.css('[data-test=emailVerifyMsg] > p > a'));
+      spyOn(emailService, 'sendVerificationEmail')
       emailVerifyBtn.nativeElement.click();
       fixture.detectChanges();
+      expect(emailService.sendVerificationEmail).toHaveBeenCalled();
       const progressbar = fixture.debugElement.query(By.css('[data-test=emailSending]'));
       expect(progressbar).toBeTruthy();
+    });
+
+    it('should show the success message when the email has been sent', () => {
+      const emailVerifyBtn = fixture.debugElement.query(By.css('[data-test=emailVerifyMsg] > p > a'));
+      spyOn(emailService, 'sendVerificationEmail').and.callFake(() => {
+        return of({
+          message: "Email has successfully been sent."
+        });
+      });
+      emailVerifyBtn.nativeElement.click();
+      fixture.detectChanges();
+      expect(emailService.sendVerificationEmail).toHaveBeenCalled();
+      const emailSuccess = fixture.debugElement.query(By.css('[data-test=emailVerifySuccess]'));
+      expect(emailSuccess).toBeTruthy();
+    });
+
+    it('should show the error message when there is an error sending the email', () => {
+      const emailVerifyBtn = fixture.debugElement.query(By.css('[data-test=emailVerifyMsg] > p > a'));
+      spyOn(emailService, 'sendVerificationEmail').and.callFake(() => {
+        return throwError({ error: {
+          message: "There was an error sending the email."
+        }});
+      });
+      emailVerifyBtn.nativeElement.click();
+      fixture.detectChanges();
+      expect(emailService.sendVerificationEmail).toHaveBeenCalled();
+      const emailError = fixture.debugElement.query(By.css('[data-test=emailVerifyError]'));
+      expect(emailError).toBeTruthy();
     });
   });
 
   describe('profile with a profilePic, an admin, and verified', () => {
     beforeEach(() => {
-      spyOn(component, 'getUserProfile').and.callFake(() => component.user = user2);
+      spyOn(component, 'getUserProfile').and.callThrough();
+      spyOn(authService, 'getProfile').and.callFake(() => of(user2));
       fixture.detectChanges();
     });
 
     it('should call getUserProfile when the component initializes', () => {
       expect(component.getUserProfile).toHaveBeenCalled();
+      expect(authService.getProfile).toHaveBeenCalled();
     });
 
     it('should populate the page with the user info', () => {

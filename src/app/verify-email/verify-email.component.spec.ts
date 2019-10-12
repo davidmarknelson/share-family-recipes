@@ -67,17 +67,17 @@ describe('VerifyEmailComponent', () => {
 
   it('should navigate to the profile page with an error response', () => {
     spyOn(router, 'navigate');
-    let toast = jasmine.createSpy('toast');
+    let toastSpy = jasmine.createSpy('toast');
     spyOn(emailService, 'verifyEmail').and.callFake(() => {
-      toast();
+      toastSpy();
       return throwError({
         error: {
-          message: 'Your password must be at least 5 characters long.'
+          message: 'There was an error verifying your email.'
         }
       });
     });
     fixture.detectChanges();
-    expect(toast).toHaveBeenCalled();
+    expect(toastSpy).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/profile']);
     expect(emailService.verifyEmail).toHaveBeenCalled();
   });

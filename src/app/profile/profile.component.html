@@ -17,13 +17,14 @@
   </article>
   <article class="message is-warning msg" *ngIf="!emailError && !emailSuccess && !sendingEmail" data-test='emailVerifyMsg'>
     <p class="message-body">
-      <a (click)="sendVerificationEmail()">Verify your email</a> to ensure you are able to reset your password in the future.
+      <a (click)="sendVerificationEmail()">Send verification email</a> to verify your email. 
+      This will allow you to reset your password in the future.
     </p>
   </article>
   <article class="message is-success msg" *ngIf="!emailError && emailSuccess && !sendingEmail" data-test='emailVerifySuccess'>
     <p class="message-body">
-      The email has been sent with further instructions. 
-      If you have not received an email in your inbox or spam folder, 
+      An email has been sent with further instructions. 
+      If you have not received an email, check your spam folder or
       you can <a (click)="sendVerificationEmail()">resend the verification email</a>.
     </p>
   </article>
