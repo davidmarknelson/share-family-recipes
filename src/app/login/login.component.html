@@ -1,0 +1,67 @@
+<section class="section page-header">
+  <h1 class="title page-header__title has-text-centered">Log In</h1>
+</section>
+
+<div class="form__container form--login">
+  <form #form="ngForm" (ngSubmit)="login(form.value)">
+    <p class="has-text-right is-size-7">* required</p>
+    <!-- Email -->
+    <div class="field">
+      <label class="label" for="email">Email *</label>
+      <div class="control has-icons-left">
+        <input 
+          placeholder="example@email.com"
+          class="input is-rounded"
+          id="email"
+          name="email"
+          type="text"
+          [(ngModel)]="user.email"
+          required>
+        <span class="icon is-left">
+          <fa-icon [icon]="faEnvelope"></fa-icon>
+        </span>
+      </div>
+    </div>
+    <!-- Password -->
+    <div class="field">
+      <label class="label" for="password">Password *</label>
+      <div class="control has-icons-left">
+        <input 
+          placeholder="********"
+          class="input is-rounded"
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="user.password"
+          required>
+        <span class="icon is-left">
+          <fa-icon [icon]="faLock"></fa-icon>
+        </span>
+      </div>
+    </div>
+
+    <!-- Form error message -->
+    <div class="notification is-danger form__error-msg" *ngIf="formError">
+      <button class="delete" (click)='clearErrorMessage()'></button>
+      {{ formError }}
+    </div>
+
+    <!-- Buttons -->
+    <div class="field is-grouped is-grouped-right form__buttons">
+      <p class="control">
+        <a class="button is-light is-rounded" (click)="navigateBack()">
+          Back
+        </a>
+      </p>
+      <p class="control">
+        <button 
+          data-test="submit-button"
+          class="button is-accent is-rounded" 
+          type="submit" 
+          [class.is-loading]="sendingForm">
+          Login
+        </button>
+      </p>
+    </div>
+  </form>
+</div>

@@ -7,7 +7,8 @@ import { format } from 'date-fns';
 import { environment } from '../../../environments/environment';
 // Interfaces
 import { JWT } from './jwt';
-import { User } from './user';
+import { UserProfile } from './user-profile';
+import { UserLogin } from './user-login';
 // JWT
 import { JwtHelperService } from '@auth0/angular-jwt';
 
@@ -37,7 +38,10 @@ export class AuthService {
     fd.append('adminCode', credentials.adminCode);
     if (file) fd.append('profilePic', file, credentials.profilePic);
 
-    return this.http.post<JWT>(`${this.apiUrl}user/signup`, fd).pipe(
+    return this.http.post<JWT>(`${this.apiUrl}user/signup`, fd, { 
+      headers: { 
+        header: 'multipart/form-data'
+      }}).pipe(
       map((res: JWT) => {
         localStorage.setItem('authToken', res.jwt);
         this.loggedIn.emit(true);
@@ -46,7 +50,7 @@ export class AuthService {
     );
   }
 
-  login(credentials): Observable<JWT> {
+  login(credentials: UserLogin): Observable<JWT> {
     return this.http.post<JWT>(`${this.apiUrl}user/login`, credentials).pipe(
       map((res: JWT) => {
         localStorage.setItem('authToken', res.jwt);
@@ -65,8 +69,8 @@ export class AuthService {
     );
   }
 
-  getProfile(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}user/profile`).pipe(
+  getProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.apiUrl}user/profile`).pipe(
       map(res => {
         res.createdAt = this.formatDate(res.createdAt);
         res.updatedAt = this.formatDate(res.updatedAt);

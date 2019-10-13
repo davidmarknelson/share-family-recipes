@@ -143,6 +143,14 @@ $navbar-item-hover-color: #FFF;
     padding-right: 20px;
   }
 
+  &--login {
+    max-width: 500px;
+  }
+
+  &__error-msg {
+    margin-top: 50px;
+  }
+
   &--rounded-left {
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
@@ -151,5 +159,9 @@ $navbar-item-hover-color: #FFF;
   &--rounded-right {
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
+  }
+
+  &__buttons {
+    margin-top: 100px;
   }
 }

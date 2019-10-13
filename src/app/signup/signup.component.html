@@ -184,7 +184,7 @@
               <fa-icon [icon]="faLock"></fa-icon>
             </span>
             <div *ngIf="passwordConfirmation.invalid && (passwordConfirmation.dirty || passwordConfirmation.touched || submitted)" class="has-text-danger">
-              <p *ngIf="passwordConfirmation.errors.required" data-test='passwordConfirmationRequired'>Password is required</p>
+              <p *ngIf="passwordConfirmation.errors.required" data-test='passwordConfirmationRequired'>Password confirmation is required</p>
               <p *ngIf="passwordConfirmation.errors.minlength" data-test='passwordConfirmationLength'>Password must be at least 8 characters</p>
             </div>
           </div>
@@ -250,14 +250,16 @@
       </div>
     </div>
 
+    <!-- Form error message -->
     <div class="notification is-danger" *ngIf="formError">
       <button class="delete" (click)='clearErrorMessage()'></button>
       {{ formError }}
     </div>
     
-    <div class="field is-grouped is-grouped-right form-btns">
+    <!-- Form buttons -->
+    <div class="field is-grouped is-grouped-right form__buttons">
       <p class="control">
-        <a class="button is-light is-rounded">
+        <a class="button is-light is-rounded" (click)="navigateBack()">
           Back
         </a>
       </p>
@@ -267,7 +269,7 @@
           class="button is-accent is-rounded" 
           type="submit" 
           [class.is-loading]="sendingForm">
-          Submit
+          Sign Up
         </button>
       </p>
     </div>

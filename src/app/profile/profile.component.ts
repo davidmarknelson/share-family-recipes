@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../services/auth/auth.service';
 import { EmailVerificationService } from '../services/email-verification/email-verification.service';
 // Interfaces
-import { User } from '../services/auth/user';
+import { UserProfile } from '../services/auth/user-profile';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +15,7 @@ import { User } from '../services/auth/user';
 export class ProfileComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   gettingProfile: boolean;
-  user: User;
+  user: UserProfile;
   emailSent: boolean = false;
   sendingEmail: boolean = false;
   emailSuccess: boolean = false;
@@ -36,7 +36,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.gettingProfile = true;
     this.auth.getProfile().pipe(
       takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
+    ).subscribe((res: UserProfile) => {
       this.gettingProfile = false;
       this.user = res;
     });

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil, filter, debounceTime, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 // Font Awesome
 import { faLock, faUser, faEnvelope, faFileUpload, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 // Services
@@ -36,7 +37,12 @@ export class SignupComponent implements OnInit, OnDestroy {
   emailTaken: boolean;
   takenUsername: boolean;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) { }
+  constructor(
+    private fb: FormBuilder, 
+    private auth: AuthService, 
+    private router: Router, 
+    private location: Location
+  ) { }
 
   ngOnInit() {
     this.createForm();
@@ -104,7 +110,6 @@ export class SignupComponent implements OnInit, OnDestroy {
   onFileSelected(event) {
     this.selectedFile = event.target.files[0];
     this.profilePicName = this.selectedFile.name;
-    console.log(event.target.files[0])
   }
 
   onSubmit() {
@@ -151,4 +156,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.formError = '';
   }
 
+  navigateBack() {
+    this.location.back();
+  }
 }

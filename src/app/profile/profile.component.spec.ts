@@ -28,7 +28,7 @@ const user2 = {
   email: "smith@email.com",
   isAdmin: true,
   isVerified: true,
-  profilePic: 'http://localhost:3000/public/images/profilePics/jacksmith.jpeg',
+  profilePic: '../../assets/images/default-img/default-profile-pic.jpg',
   createdAt: "Oct 08, 2019",
   updatedAt: "Oct 08, 2019"
 };
@@ -114,7 +114,7 @@ describe('ProfileComponent', () => {
 
     it('should show the sending progressbar when the email is sending', () => {
       const emailVerifyBtn = fixture.debugElement.query(By.css('[data-test=emailVerifyMsg] > p > a'));
-      spyOn(emailService, 'sendVerificationEmail')
+      spyOn(emailService, 'sendVerificationEmail').and.callFake(() => of());
       emailVerifyBtn.nativeElement.click();
       fixture.detectChanges();
       expect(emailService.sendVerificationEmail).toHaveBeenCalled();
@@ -169,7 +169,7 @@ describe('ProfileComponent', () => {
       const email = fixture.debugElement.query(By.css('[data-test=email]'));
       const date = fixture.debugElement.query(By.css('[data-test=email]'));
       const profilePic = fixture.debugElement.query(By.css('[data-test=profilePic]'));
-      expect(profilePic.properties.src).toEqual('http://localhost:3000/public/images/profilePics/jacksmith.jpeg');
+      expect(profilePic.properties.src).toEqual('../../assets/images/default-img/default-profile-pic.jpg');
       expect(username).toBeTruthy();
       expect(name).toBeTruthy();
       expect(email).toBeTruthy();

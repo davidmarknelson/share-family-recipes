@@ -6,6 +6,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
+import { Location } from '@angular/common';
 
 let fixture: ComponentFixture<SignupComponent>;
 let firstName: DebugElement;
@@ -39,10 +40,15 @@ class MockRouter {
   navigate(path) {}
 }
 
+class MockLocation {
+  back() {}
+}
+
 describe('SignupComponent', () => {
   let component: SignupComponent;
   let authService: AuthService;
   let router: Router;
+  let location: Location;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -53,7 +59,8 @@ describe('SignupComponent', () => {
       set: {
         providers: [
           { provide: AuthService, useClass: MockAuthService },
-          { provide: Router, useClass: MockRouter }
+          { provide: Router, useClass: MockRouter },
+          { provide: Location, useClass: MockLocation }
         ]
       }
     }).compileComponents();
