@@ -21,7 +21,7 @@ describe('Log In', () => {
     cy
       .visit('/login')
       .url().should('include', '/login')
-      .get('#email').type('test@email.com"')
+      .get('#email').type('verified@email.com"')
       .get('#password').type('passwords')
       .get('form').submit()
       .wait(1000)
@@ -32,7 +32,7 @@ describe('Log In', () => {
     cy
       .visit('/login')
       .url().should('include', '/login')
-      .get('#email').type('test@email.com')
+      .get('#email').type('verified@email.com')
       .get('#password').type('password')
       .get('form').submit()
       .wait(1000)
