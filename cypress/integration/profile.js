@@ -19,8 +19,8 @@ describe('Profile', () => {
 
     it('should show a message for verifying the email', () => {
       cy
-      .get('[data-test=emailVerifyMsg]')
-      .should('have.class', 'is-warning');
+        .get('[data-test=emailVerifyMsg]')
+        .should('have.class', 'is-warning');
     });
   });
 
@@ -32,8 +32,8 @@ describe('Profile', () => {
 
     it('should not show a message for verifying the email', () => {
       cy
-      .get('[data-test=emailVerifyMsg]')
-      .should('not.exist');
+        .get('[data-test=emailVerifyMsg]')
+        .should('not.exist');
     });
   });
 });
