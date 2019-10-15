@@ -5,7 +5,7 @@ import { takeUntil, filter, debounceTime, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 // Font Awesome
-import { faLock, faUser, faEnvelope, faFileUpload, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faUser, faEnvelope, faFileUpload } from '@fortawesome/free-solid-svg-icons';
 // Services
 import { AuthService } from '../services/auth/auth.service';
 
@@ -17,15 +17,11 @@ import { AuthService } from '../services/auth/auth.service';
 export class SignupComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   // Font Awesome
-  // ============
   faFileUpload = faFileUpload;
   faEnvelope = faEnvelope;
   faLock = faLock;
   faUser = faUser;
-  faCheck = faCheck;
-  faTimes = faTimes;
   // Component
-  // ============
   profilePicName: string = "example.jpeg";
   showAdminField: boolean = false;
   sendingForm: boolean = false;
@@ -134,7 +130,9 @@ export class SignupComponent implements OnInit, OnDestroy {
       adminCode: this.signupForm.value.adminCode
     }
 
-    this.auth.signup(user, this.selectedFile).subscribe(res => {
+    this.auth.signup(user, this.selectedFile).pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(res => {
       this.router.navigate(['/profile']);
     }, err => {
       // These 2 if statements show errors on the related inputs.

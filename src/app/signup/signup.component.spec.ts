@@ -93,11 +93,9 @@ describe('SignupComponent', () => {
 
       it('should be vaild with a name and have the class is-success', () => {
         let input = component.signupForm.controls['firstName'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
         
         input.setValue("John");
-        firstName.nativeElement.dispatchEvent(e);
+        firstName.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expect(input.errors).toBeFalsy();
         expect(input.valid).toBeTruthy();
@@ -106,11 +104,9 @@ describe('SignupComponent', () => {
 
       it('should show an error if it has been touched, but empty', () => {
         let input = component.signupForm.controls['firstName'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
 
         input.setValue("");
-        firstName.nativeElement.dispatchEvent(e);
+        firstName.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let firstNameRequired = fixture.debugElement.query(By.css('[data-test=firstNameRequired]'));
         expect(input.errors['required']).toBeTruthy();
@@ -127,11 +123,9 @@ describe('SignupComponent', () => {
 
       it('should be vaild with a name and have the class is-success', () => {
         let input = component.signupForm.controls['lastName'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
         
         input.setValue("Doe");
-        lastName.nativeElement.dispatchEvent(e);
+        lastName.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expect(input.errors).toBeFalsy();
         expect(input.valid).toBeTruthy();
@@ -140,11 +134,9 @@ describe('SignupComponent', () => {
 
       it('should show an error if it has been touched, but empty', () => {
         let input = component.signupForm.controls['lastName'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
         
         input.setValue("");
-        lastName.nativeElement.dispatchEvent(e);
+        lastName.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let lastNameRequired = fixture.debugElement.query(By.css('[data-test=lastNameRequired]'));
         expect(input.errors['required']).toBeTruthy();
@@ -161,11 +153,9 @@ describe('SignupComponent', () => {
 
       it('should show an error when the input is touched but empty', () => {
         let input = component.signupForm.controls['username'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
   
         input.setValue("");
-        username.nativeElement.dispatchEvent(e);
+        username.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let usernameRequired = fixture.debugElement.query(By.css('[data-test=usernameRequired]'));
         expect(input.errors['required']).toBeTruthy();
@@ -175,11 +165,9 @@ describe('SignupComponent', () => {
 
       it('should show an error if the username is too short', () => {
         let input = component.signupForm.controls['username'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
   
         input.setValue('user');
-        username.nativeElement.dispatchEvent(e);
+        username.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let usernameMinLength = fixture.debugElement.query(By.css('[data-test=usernameMinLength]'));
         expect(input.errors['minlength']).toBeTruthy();
@@ -189,11 +177,9 @@ describe('SignupComponent', () => {
 
       it('should show an error if the username is too long', () => {
         let input = component.signupForm.controls['username'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
   
         input.setValue('UsernameThatIsWayTooLong');
-        username.nativeElement.dispatchEvent(e);
+        username.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let usernameMaxLength = fixture.debugElement.query(By.css('[data-test=usernameMaxLength]'));
         expect(input.errors['maxlength']).toBeTruthy();
@@ -203,11 +189,9 @@ describe('SignupComponent', () => {
 
       it('should show an error if the username contains a space', () => {
         let input = component.signupForm.controls['username'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
   
         input.setValue('my User');
-        username.nativeElement.dispatchEvent(e);
+        username.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let usernamePattern = fixture.debugElement.query(By.css('[data-test=usernamePattern]'));
         expect(input.errors['pattern']).toBeTruthy();
@@ -217,8 +201,6 @@ describe('SignupComponent', () => {
 
       it('should show a success message if the username is available', fakeAsync(() => {
         let input = component.signupForm.controls['username'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
 
         spyOn(authService, 'checkUsernameAvailability').and.callFake(() => {
           component.availableUsername = true;
@@ -227,8 +209,9 @@ describe('SignupComponent', () => {
 
 
         input.setValue('myUser');
-        username.nativeElement.dispatchEvent(e);
+        username.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
+        // This is used because the function has a 500ms wait time
         tick(1000);
         fixture.detectChanges();
         expect(authService.checkUsernameAvailability).toHaveBeenCalledWith('myUser');
@@ -240,8 +223,6 @@ describe('SignupComponent', () => {
 
       it('should show an error if the username is taken', fakeAsync(() => {
         let input = component.signupForm.controls['username'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
 
         spyOn(authService, 'checkUsernameAvailability').and.callFake(() => {
           component.availableUsername = false;
@@ -249,8 +230,9 @@ describe('SignupComponent', () => {
         });
 
         input.setValue('myUser');
-        username.nativeElement.dispatchEvent(e);
+        username.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
+        // This is used because the function has a 500ms wait time
         tick(1000);
         fixture.detectChanges();
         expect(authService.checkUsernameAvailability).toHaveBeenCalledWith('myUser');
@@ -270,12 +252,10 @@ describe('SignupComponent', () => {
 
       it('should highlight the input with green when the text is an email', () => {
         let input = component.signupForm.controls['email'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
   
         // valid 1
         input.setValue("example@email.com");
-        email.nativeElement.dispatchEvent(e);
+        email.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expect(input.errors).toBeFalsy();
         expect(input.valid).toBeTruthy();
@@ -283,7 +263,7 @@ describe('SignupComponent', () => {
 
         // valid 2
         input.setValue("example@email");
-        email.nativeElement.dispatchEvent(e);
+        email.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expect(input.errors).toBeFalsy();
         expect(input.valid).toBeTruthy();
@@ -292,11 +272,9 @@ describe('SignupComponent', () => {
 
       it('should show an error when the input is touched and empty', () => {
         let input = component.signupForm.controls['email'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
   
         input.setValue('');
-        email.nativeElement.dispatchEvent(e);
+        email.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let emailRequired = fixture.debugElement.query(By.css('[data-test=emailRequired]'));
         expect(input.errors['required']).toBeTruthy();
@@ -306,12 +284,10 @@ describe('SignupComponent', () => {
 
       it('should show an error when the text is not an email', () => {
         let input = component.signupForm.controls['email'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
   
         // Not an email 1
         input.setValue("example");
-        email.nativeElement.dispatchEvent(e);
+        email.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let notEmail = fixture.debugElement.query(By.css('[data-test=notEmail]'));
         expect(input.errors['email']).toBeTruthy();
@@ -320,7 +296,7 @@ describe('SignupComponent', () => {
   
         // Not an email 2
         input.setValue("example@");
-        email.nativeElement.dispatchEvent(e);
+        email.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expect(input.errors['email']).toBeTruthy();
         expect(email.classes['is-danger']).toBeTruthy();
@@ -328,7 +304,7 @@ describe('SignupComponent', () => {
   
         // Not an email 3
         input.setValue("example@email.");
-        email.nativeElement.dispatchEvent(e);
+        email.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expect(input.errors['email']).toBeTruthy();
         expect(email.classes['is-danger']).toBeTruthy();
@@ -348,11 +324,9 @@ describe('SignupComponent', () => {
       it('should show an error when the field is empty and touched', () => {
         let input = component.signupForm.controls['password'];
         let input2 = component.signupForm.controls['passwordConfirmation'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
 
         input.setValue('');
-        password.nativeElement.dispatchEvent(e);
+        password.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let passwordRequired = fixture.debugElement.query(By.css('[data-test=passwordRequired]'));
         expect(input.errors['required']).toBeTruthy();
@@ -361,7 +335,7 @@ describe('SignupComponent', () => {
 
         // PW confirmation
         input2.setValue('');
-        passwordConfirmation.nativeElement.dispatchEvent(e);
+        passwordConfirmation.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let passwordConfirmationRequired = fixture.debugElement.query(By.css('[data-test=passwordConfirmationRequired]'));
         expect(input2.errors['required']).toBeTruthy();
@@ -372,11 +346,9 @@ describe('SignupComponent', () => {
       it('should show an error when the password is too short', () => {
         let input = component.signupForm.controls['password'];
         let input2 = component.signupForm.controls['passwordConfirmation'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
 
         input.setValue('pass');
-        password.nativeElement.dispatchEvent(e);
+        password.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let passwordLength = fixture.debugElement.query(By.css('[data-test=passwordLength]'));
         expect(input.errors['minlength']).toBeTruthy();
@@ -385,7 +357,7 @@ describe('SignupComponent', () => {
 
         // PW confirmation
         input2.setValue('pass');
-        passwordConfirmation.nativeElement.dispatchEvent(e);
+        passwordConfirmation.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let passwordConfirmationLength = fixture.debugElement.query(By.css('[data-test=passwordConfirmationLength]'));
         expect(input2.errors['minlength']).toBeTruthy();
@@ -396,17 +368,15 @@ describe('SignupComponent', () => {
       it('should show an error when the passwords do not match', () => {
         let input = component.signupForm.controls['password'];
         let input2 = component.signupForm.controls['passwordConfirmation'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
 
         input.setValue('password');
-        password.nativeElement.dispatchEvent(e);
+        password.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         expect(password.classes['is-danger']).toBeFalsy();
         expect(password.classes['is-success']).toBeFalsy();
         // PW confirmation
         input2.setValue('PASSWORD');
-        passwordConfirmation.nativeElement.dispatchEvent(e);
+        passwordConfirmation.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let passwordMatch = fixture.debugElement.query(By.css('[data-test=passwordMatch]'));
         expect(passwordConfirmation.classes['is-danger']).toBeFalsy();
@@ -417,14 +387,12 @@ describe('SignupComponent', () => {
       it('should show a success message when the passwords match', () => {
         let input = component.signupForm.controls['password'];
         let input2 = component.signupForm.controls['passwordConfirmation'];
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
   
         input.setValue('password');
-        password.nativeElement.dispatchEvent(e);
+        password.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         input2.setValue('password');
-        passwordConfirmation.nativeElement.dispatchEvent(e);
+        passwordConfirmation.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         let passwordMatch = fixture.debugElement.query(By.css('[data-test=passwordMatch]'));
         expect(password.classes['is-danger']).toBeFalsy();
@@ -456,8 +424,6 @@ describe('SignupComponent', () => {
     describe('submit', () => {
       it('should show requirements when user tries to submit without entering information', () => {
         let form = component.signupForm.controls;
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
 
         submitButton.nativeElement.click();
         fixture.detectChanges();
@@ -473,12 +439,12 @@ describe('SignupComponent', () => {
         expect(form.passwordConfirmation.errors['required']).toBeTruthy();
 
         // fire events
-        firstName.nativeElement.dispatchEvent(e);
-        lastName.nativeElement.dispatchEvent(e);
-        username.nativeElement.dispatchEvent(e);
-        email.nativeElement.dispatchEvent(e);
-        password.nativeElement.dispatchEvent(e);
-        passwordConfirmation.nativeElement.dispatchEvent(e);
+        firstName.nativeElement.dispatchEvent(new Event('input'));
+        lastName.nativeElement.dispatchEvent(new Event('input'));
+        username.nativeElement.dispatchEvent(new Event('input'));
+        email.nativeElement.dispatchEvent(new Event('input'));
+        password.nativeElement.dispatchEvent(new Event('input'));
+        passwordConfirmation.nativeElement.dispatchEvent(new Event('input'));
 
         fixture.detectChanges();
 
@@ -539,8 +505,6 @@ describe('SignupComponent', () => {
 
       it('should return an error if the email is taken and change the email input class', () => {
         let form = component.signupForm.controls;
-        let e:Event = document.createEvent('Event');
-        e.initEvent('input', false, false);
 
         spyOn(authService, 'signup').and.callFake(() => {
           return throwError({
@@ -581,7 +545,7 @@ describe('SignupComponent', () => {
 
         // user changes email
         form.email.setValue('aexample@email.com');
-        email.nativeElement.dispatchEvent(e);
+        email.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
 
         // email input should be highlighted green and input error message should be gone

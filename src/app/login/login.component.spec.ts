@@ -132,7 +132,7 @@ describe('LoginComponent', () => {
     expect(errorMsg.nativeElement.innerText).toContain('Email and password are required.');
 
     let deleteBtn = fixture.debugElement.query(By.css('.delete'));
-    spyOn(component, 'clearErrorMessage').and.callFake(() => component.formError = '');
+    spyOn(component, 'clearErrorMessage').and.callThrough();
     deleteBtn.nativeElement.click();
     deleteBtn.nativeElement.dispatchEvent(new Event('click'));
     fixture.detectChanges();

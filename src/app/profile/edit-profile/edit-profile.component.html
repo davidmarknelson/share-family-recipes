@@ -1,0 +1,188 @@
+<section class="section page-header">
+  <h1 class="title page-header__title has-text-centered">Edit Profile</h1>
+  <p class="subtitle has-text-centered">Edit the fields you would like to change.</p>
+</section>
+
+<div class="form__container">
+  <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="columns">
+      <!-- First Name -->
+      <div class="column">
+        <div class="field">
+          <label class="label" for="firstName">First Name</label>
+          <div class="control">
+            <input 
+              data-test='firstName'
+              class="input is-rounded" 
+              type="text" 
+              id="firstName" 
+              formControlName="firstName" 
+              placeholder="John"
+              [class.is-success]="firstName.dirty && firstName.valid && firstName.value">
+          </div>
+        </div>
+      </div>
+      <!-- Last Name -->
+      <div class="column">
+        <div class="field">
+          <label class="label" for="lastName">Last Name</label>
+          <div class="control">
+            <input 
+              data-test='lastName' 
+              class="input is-rounded" 
+              type="text" 
+              id="lastName" 
+              formControlName="lastName" 
+              placeholder="Doe"
+              [class.is-success]="lastName.dirty && lastName.valid && lastName.value">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns">
+      <!-- Email -->
+      <div class="column">
+        <div class="field">
+          <label class="label" for="email">
+            Email
+            <br />
+            <span class="has-text-weight-light is-size-7">
+              Changing this will require you to verify your new email from the profile page.
+            </span>
+          </label>
+          <div class="control has-icons-left">
+            <input 
+              data-test='email'
+              class="input is-rounded" 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              placeholder="example@email.com"
+              [class.is-danger]="(email.invalid && (email.dirty || email.touched)) || emailTaken"
+              [class.is-success]="email.dirty && email.valid && !emailTaken && email.value">
+            <span class="icon is-left">
+              <fa-icon [icon]="faEnvelope"></fa-icon>
+            </span>
+            <div *ngIf="email.invalid && (email.dirty || email.touched)" class="has-text-danger">
+              <p *ngIf="email.errors.email" data-test='notEmail'>This must be an email</p>
+            </div>
+            <div *ngIf="emailTaken" class="has-text-danger">
+              <p data-test='emailTaken'>This email account is already in use.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="columns">
+      <!-- Username -->
+      <div class="column">
+        <div class="field">
+          <label class="label" for="username">
+            Username
+            <span class="has-text-weight-light is-size-7">
+              between 5 and 15 characters
+            </span>
+          </label>
+          <div class="control has-icons-left">
+            <input 
+              data-test='username'
+              class="input is-rounded" 
+              type="text" 
+              id="username" 
+              formControlName="username" 
+              placeholder="JohnDoe2019"
+              [class.is-danger]="username.invalid || 
+                (username.value && !availableUsername && username.valid)"
+              [class.is-success]="username.value && availableUsername && username.valid">
+            <span class="icon is-left">
+              <fa-icon [icon]="faUser"></fa-icon>
+            </span>
+            <div *ngIf="username.errors" class="has-text-danger">
+              <p *ngIf="username.errors.minlength" data-test='usernameMinLength'>Username must be at least 5 characters</p>
+              <p *ngIf="username.errors.maxlength" data-test='usernameMaxLength'>Username must not be more than 15 characters</p>
+              <p *ngIf="username.errors.pattern" data-test='usernamePattern'>Username must not contain a space</p>
+            </div>
+            <div *ngIf="username.value && availableUsername && username.valid" class="has-text-success">
+              <p data-test="usernameAvailable">This username is available</p>
+            </div>
+            <div *ngIf="username.value && !availableUsername && username.valid" class="has-text-danger">
+              <p data-test="usernameUnavailable">This username is already taken</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="columns">
+      <!-- Profile Picture -->
+      <div class="column">
+        <div class="field">
+          <label class="label" for="profilePic">
+            Profile Picture
+            <span class="has-text-weight-light is-size-7">
+              must be JPEG
+            </span>
+          </label>
+          <div class="file has-name">
+            <label class="file-label">
+              <input 
+                class="file-input" 
+                type="file" 
+                name="profilePic" 
+                id="profilePic" 
+                formControlName="profilePic" 
+                (change)="onFileSelected($event)">
+              <span class="file-cta form--rounded-left">
+                <span class="file-icon">
+                  <fa-icon [icon]="faFileUpload"></fa-icon>
+                </span>
+                <span class="file-label">
+                  Choose a file…
+                </span>
+              </span>
+              <span class="file-name form--rounded-right" [class.has-text-secondary]="selectedFile">
+                {{ profilePicName }}
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <!-- Edit password link -->
+      <div class="column">
+        <a 
+          data-test="passwordLink"
+          routerLink='/profile/edit/password'>
+          Edit password
+          <fa-icon [icon]="faChevronRight" size='xs'></fa-icon>
+        </a>
+      </div>
+    </div>
+
+    <!-- Form error message -->
+    <div class="notification is-danger" *ngIf="formError">
+      <button class="delete" (click)='clearErrorMessage()'></button>
+      {{ formError }}
+    </div>
+
+    <!-- Form buttons -->
+    <div class="field is-grouped is-grouped-right form__buttons">
+      <p class="control">
+        <a class="button is-light is-rounded" routerLink="/profile">
+          Cancel
+        </a>
+      </p>
+      <p class="control">
+        <button 
+          data-test="submit-button"
+          class="button is-accent is-rounded" 
+          type="submit" 
+          [class.is-loading]="sendingForm">
+          Submit
+        </button>
+      </p>
+    </div>
+  </form>
+</div>

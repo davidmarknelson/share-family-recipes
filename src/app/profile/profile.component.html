@@ -1,6 +1,6 @@
 <section class="section page-header">
   <h1 class="title page-header__title has-text-centered">Profile</h1>
-  <p class="subtitle has-text-centered">View and edit your profile.<br />View your created and saved recipes.</p>
+  <p class="subtitle has-text-centered">View your profile information.</p>
 </section>
 
 <div class="container msg__container" *ngIf="user && !user.isVerified">
@@ -55,13 +55,13 @@
 </div>
 
 <div class="buttons btn-field" *ngIf="user">
-    <a class="button is-primary is-rounded" routerLink='/edit'>
-      Edit Profile
-    </a>
-    <a class="button is-secondary is-rounded" routerLink='/saved'>
-      Saved List
-    </a>
-    <a class="button is-secondary is-rounded" routerLink='/yourrecipes'>
-      Your Recipes
-    </a>
+  <a class="button is-primary is-rounded" routerLink='/profile/edit'>
+    Edit Profile
+  </a>
+  <a class="button is-secondary is-rounded" routerLink='/saved'>
+    Saved List
+  </a>
+  <a class="button is-secondary is-rounded" routerLink='/yourrecipes'>
+    Your Recipes
+  </a>
 </div>

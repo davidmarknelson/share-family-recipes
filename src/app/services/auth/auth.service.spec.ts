@@ -318,4 +318,41 @@ describe('AuthService', () => {
       expect(authService.loggedIn.emit).toHaveBeenCalledWith(false);
     });
   });
+
+  describe('updateUser', () => {
+    it('should return a message when the user is updated', () => {
+      let user = {
+        firstName: 'Joe'
+      }
+      let signupResponse = {
+        'message': 'User successfully updated.'
+      };
+
+      let response;
+      authService.updateUser(user, null).subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/user/update').flush(signupResponse);
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return an error when email is already being used', () => {
+      const user = {
+        email: 'example@email.com'
+      };
+
+      const updateResponse = 'This email account is already in use.';
+      let errorResponse;
+
+      authService.updateUser(user, null).subscribe(res => {}, err => {
+        errorResponse = err;
+      });
+
+      http.expectOne('http://localhost:3000/user/update').flush({message: updateResponse}, {status: 400, statusText: 'Bad Request'});
+      expect(errorResponse.error.message).toEqual(updateResponse);
+      http.verify();
+    });
+  });
 });
