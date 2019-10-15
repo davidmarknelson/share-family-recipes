@@ -142,7 +142,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       // This stops the loading indicator
       this.sendingForm = false;
       // This shows the error message
-      this.formError = err.error.message
+      this.formError = err.error.message;
     });
   }
 

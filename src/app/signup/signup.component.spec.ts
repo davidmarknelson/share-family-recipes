@@ -365,7 +365,7 @@ describe('SignupComponent', () => {
         expect(passwordConfirmationLength).toBeTruthy();
       });
 
-      it('should show an error when the passwords do not match', () => {
+      it('should not highlight the input green when the passwords do not match', () => {
         let input = component.signupForm.controls['password'];
         let input2 = component.signupForm.controls['passwordConfirmation'];
 

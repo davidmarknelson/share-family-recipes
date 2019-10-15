@@ -14,6 +14,6 @@ export class PasswordService {
   constructor(private http: HttpClient) { }
 
   updatePassword(credentials: Password): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}password/update`, credentials);
+    return this.http.put<any>(`${this.apiUrl}password/update`, credentials);
   }
 }
