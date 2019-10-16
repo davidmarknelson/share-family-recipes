@@ -8,6 +8,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 // Services
 import { PasswordService } from '../../services/password/password.service';
+// Toast
+import { toast } from 'bulma-toast';
 
 @Component({
   selector: 'app-password-reset',
@@ -88,6 +90,15 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
 
       // This reroutes the user to the forgotpassword page to resent a reset email.
       if (err.error.message === 'Password reset token is invalid or has expired. Resend reset email.') {
+        toast({
+          message: err.error.message,
+          type: "is-danger",
+          dismissible: true,
+          duration: 5000,
+          position: "top-center",
+          closeOnClick: true,
+          pauseOnHover: true
+        });
         return this.router.navigate(['/login/forgotpassword']);
       }
       // This shows the error message
