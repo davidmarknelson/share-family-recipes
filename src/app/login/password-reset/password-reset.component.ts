@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute} from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // Forms
@@ -10,22 +10,24 @@ import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { PasswordService } from '../../services/password/password.service';
 
 @Component({
-  selector: 'app-update-password',
-  templateUrl: './update-password.component.html',
-  styleUrls: ['./update-password.component.scss']
+  selector: 'app-password-reset',
+  templateUrl: './password-reset.component.html',
+  styleUrls: ['./password-reset.component.scss']
 })
-export class UpdatePasswordComponent implements OnInit, OnDestroy {
+export class PasswordResetComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   // Font Awesome
   faLock = faLock;
   // Form
-  updatePasswordForm: FormGroup;
+  resetPasswordForm: FormGroup;
   sendingForm: boolean = false;
   submitted: boolean = false;
   formError: string;
-
+  // Reset token
+  resetToken: string;
 
   constructor(
+    private route: ActivatedRoute, 
     private fb: FormBuilder, 
     private router: Router,
     private passwordService: PasswordService
@@ -33,6 +35,7 @@ export class UpdatePasswordComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.createForm();
+    this.resetToken = this.route.snapshot.queryParams['token'];
   }
 
   ngOnDestroy() {
@@ -41,15 +44,15 @@ export class UpdatePasswordComponent implements OnInit, OnDestroy {
   }
 
   createForm() {
-    this.updatePasswordForm = this.fb.group({
+    this.resetPasswordForm = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirmation: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
 
   // This gives the template easier access to the form
-  get password() { return this.updatePasswordForm.get('password'); }
-  get passwordConfirmation() { return this.updatePasswordForm.get('passwordConfirmation'); }
+  get password() { return this.resetPasswordForm.get('password'); }
+  get passwordConfirmation() { return this.resetPasswordForm.get('passwordConfirmation'); }
 
   onSubmit() {
     // This helps show errors on the form if a user tries to submit
@@ -57,30 +60,36 @@ export class UpdatePasswordComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     // This stops the form submission if the form is invalid
-    if (this.updatePasswordForm.invalid) {
+    if (this.resetPasswordForm.invalid) {
       return;
     }
 
     // This stops the form submission if the passwords do not match
-    if (this.updatePasswordForm.value.password !== this.updatePasswordForm.value.passwordConfirmation) {
+    if (this.resetPasswordForm.value.password !== this.resetPasswordForm.value.passwordConfirmation) {
       return this.formError = 'Passwords must match.';
     }
 
     // This is to show a loading indicator
     this.sendingForm = true;
 
-    const passwords = {
-      password: this.updatePasswordForm.value.password,
-      passwordConfirmation: this.updatePasswordForm.value.passwordConfirmation,
+    const credentials = {
+      password: this.resetPasswordForm.value.password,
+      passwordConfirmation: this.resetPasswordForm.value.passwordConfirmation,
+      token: this.resetToken
     }
 
-    this.passwordService.updatePassword(passwords).pipe(
+    this.passwordService.resetPassword(credentials).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
-      this.router.navigate(['/profile']);
+      this.router.navigate(['/login']);
     }, err => {
       // This stops the loading indicator
       this.sendingForm = false;
+
+      // This reroutes the user to the forgotpassword page to resent a reset email.
+      if (err.error.message === 'Password reset token is invalid or has expired. Resend reset email.') {
+        return this.router.navigate(['/login/forgotpassword']);
+      }
       // This shows the error message
       this.formError = err.error.message;
     });

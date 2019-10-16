@@ -14,7 +14,7 @@ describe('Password reset', () => {
         .visit('/login')
         .url().should('include', '/login')
         .get('.reset-link-container > a').click()
-        .url().should('include', '/forgotpassword')
+        .url().should('include', '/login/forgotpassword')
         .get('form').submit()        
         .get('.notification')
         .should('contain', 'Email is required.');
@@ -22,8 +22,8 @@ describe('Password reset', () => {
 
     it('should show an error message when the user submits an empty form', () => {
       cy
-        .visit('/forgotpassword')
-        .url().should('include', '/forgotpassword')
+        .visit('/login/forgotpassword')
+        .url().should('include', '/login/forgotpassword')
         .get('#email').type('notexist@email.com')
         .get('form').submit()        
         .get('.notification')
@@ -32,8 +32,8 @@ describe('Password reset', () => {
 
     it('should show an error message when the user submits an empty form', () => {
       cy
-        .visit('/forgotpassword')
-        .url().should('include', '/forgotpassword')
+        .visit('/login/forgotpassword')
+        .url().should('include', '/login/forgotpassword')
         .get('#email').type('verified@email.com')
         .get('form').submit()        
         .get('[data-test=emailSending]')

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ForgotPasswordComponent } from './forgot-password.component';
-import { PasswordModule } from '../password.module';
+import { LoginModule } from '../login.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PasswordService } from '../../services/password/password.service';
 import { of, throwError } from 'rxjs';
@@ -32,7 +32,7 @@ describe('ForgotPasswordComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        PasswordModule,
+        LoginModule,
         RouterTestingModule
       ]
     })
