@@ -84,7 +84,7 @@ describe('PasswordService', () => {
 
   describe('sendResetEmail', () => {
     it('should return a message when the email has successfully been sent', () => {
-      const email = 'test@email.com';
+      const email = { 'email': 'test@email.com' };
       const emailResponse = {
         'message': 'An email has been sent to test@email.com with further instructions.'
       };
@@ -100,7 +100,7 @@ describe('PasswordService', () => {
     });
 
     it('should return an error message when the email does not exist', () => {
-      const email = 'test@email.com';
+      const email = { 'email': 'test@email.com' };
 
       const emailResponse = 'No account with that email address exists.';
       let errorResponse;

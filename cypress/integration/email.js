@@ -7,7 +7,7 @@ describe('Email verification', () => {
   describe('Verification email', () => {
     before(() => {
       cy.request('POST', 'http://localhost:3000/tests/seedunverified')
-        .login('unverified@email.com', 'password')
+        .login('unverified@email.com', 'password');
     });
 
     it('should show an loading bar and a success message when the email is sent', () => {

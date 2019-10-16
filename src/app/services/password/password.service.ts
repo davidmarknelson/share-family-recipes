@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Password } from './password';
 import { PasswordReset } from './password-reset';
+import { ResetEmail } from './reset-email';
 // Environment 
 import { environment } from '../../../environments/environment';
 
@@ -18,8 +19,8 @@ export class PasswordService {
     return this.http.put<any>(`${this.apiUrl}password/update`, credentials);
   }
 
-  sendResetEmail(email: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}password/send`, { email: email });
+  sendResetEmail(email: ResetEmail): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}password/send`, email);
   }
 
   resetPassword(credentials: PasswordReset): Observable<any> {

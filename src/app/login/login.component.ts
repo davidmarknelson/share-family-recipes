@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Form
   user: UserLogin = { email: '', password: '' };
   formError: string;
+  sendingForm: boolean = false;
 
   constructor(private auth: AuthService, private router: Router, private location: Location) { }
 
@@ -38,11 +39,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       return this.formError = 'Email and password are required.';
     }
     
+    // Shows loading spinner on the button
+    this.sendingForm = true;
+
     this.auth.login(credentials).pipe(
       takeUntil(this.ngUnsubscribe)      
     ).subscribe(res => {
       this.router.navigate(['/profile']);
-    }, err => this.formError = err.error.message);
+    }, err => {
+      this.sendingForm = false;
+      this.formError = err.error.message;
+    });
   }
 
   clearErrorMessage() {

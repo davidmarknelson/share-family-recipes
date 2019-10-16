@@ -10,10 +10,10 @@ describe('Log In', () => {
     cy
       .visit('/login')
       .url().should('include', '/login')
+      .url().should('include', '/login')
       .get('#email').type('wrong@email.com')
       .get('#password').type('password')
       .get('form').submit()
-      .wait(1000)
       .get('.notification').invoke('text').should('contain', 'The login information was incorrect.');
   });
 
@@ -24,7 +24,6 @@ describe('Log In', () => {
       .get('#email').type('verified@email.com')
       .get('#password').type('passwords')
       .get('form').submit()
-      .wait(1000)
       .get('.notification').invoke('text').should('contain', 'The login information was incorrect.');
   });
 
@@ -35,7 +34,6 @@ describe('Log In', () => {
       .get('#email').type('verified@email.com')
       .get('#password').type('password')
       .get('form').submit()
-      .wait(1000)
       .url().should('include', '/profile');;
   });
 });
