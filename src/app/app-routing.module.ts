@@ -9,7 +9,8 @@ const routes: Routes = [
   { path: 'signup', loadChildren: () => import('./signup/signup.module').then(m => m.SignupModule) },
   { path: 'profile', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) },
   { path: 'verify', loadChildren: () => import('./verify-email/verify-email.module').then(m => m.VerifyEmailModule) },
-  { path: 'login', loadChildren: () => import('./login/login.module').then(m => m.LoginModule) }
+  { path: 'login', loadChildren: () => import('./login/login.module').then(m => m.LoginModule) },
+  { path: 'forgotpassword', loadChildren: () => import('./password/password.module').then(m => m.PasswordModule) }
 ];
 
 @NgModule({

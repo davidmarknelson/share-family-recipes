@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 let fixture: ComponentFixture<LoginComponent>;
 
@@ -44,14 +45,15 @@ describe('LoginComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ LoginModule ]
+      imports: [
+        LoginModule,
+        RouterTestingModule
+      ]
     })
     .overrideComponent(LoginComponent, {
       set: {
         providers: [
-          { provide: AuthService, useClass: MockAuthService },
-          { provide: Router, useClass: MockRouter },
-          { provide: Location, useClass: MockLocation }
+          { provide: AuthService, useClass: MockAuthService }
         ]
       } 
     })
