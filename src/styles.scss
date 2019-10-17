@@ -46,6 +46,7 @@ $pagination-current-background-color: $primary;
 @import "../node_modules/bulma/sass/elements/icon.sass";
 @import "../node_modules/bulma/sass/elements/notification.sass";
 @import "../node_modules/bulma/sass/elements/progress.sass";
+@import "../node_modules/bulma/sass/elements/table.sass";
 @import "../node_modules/bulma/sass/grid/columns.sass";
 @import "../node_modules/bulma/sass/form/shared.sass";
 @import "../node_modules/bulma/sass/form/input-textarea.sass";
@@ -62,6 +63,29 @@ $pagination-current-background-color: $primary;
 // ==================
 // ==================
 
+// ==================
+// Sticky Footer
+// ==================
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.content-wrapper {
+  min-height: 100%;
+  // Equal to height of footer
+  // the footer is 544px with the margin
+  margin-bottom: -494px;
+}
+
+// This pushes the footer below the body content
+.push {
+  height: 494px;
+}
+
+// ==================
+// Button Styles
+// ==================
 .is-accent {
   background-color: $accent;
   border: none;

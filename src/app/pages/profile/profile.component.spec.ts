@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthService } from '../../utilities/services/auth/auth.service';
 import { EmailVerificationService } from '../../utilities/services/email-verification/email-verification.service';
 import { ProfileComponent } from './profile.component';

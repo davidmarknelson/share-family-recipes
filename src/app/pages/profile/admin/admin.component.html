@@ -1,1 +1,97 @@
-<p>admin works!</p>
+<section class="section page-header">
+  <h1 class="title page-header__title has-text-centered">Admin</h1>
+  <p class="subtitle has-text-centered">View signed up user info.</p>
+</section>
+
+<!-- error message -->
+<div class="notification is-danger error-msg" *ngIf="errorMessage">
+  <button class="delete" (click)='clearErrorMessage()'></button>
+  {{ errorMessage }}
+</div>
+
+<div class="container table__wrapper">
+  <div class="table-container">
+    <table class="table is-hoverable is-fullwidth">
+      <!-- Table Head -->
+      <thead>
+        <tr>
+          <th [class.table__sorted-column]='isUsernameSelected' data-test='headerUsername'>
+            <a class='table__link' (click)='toggleSortByUsername()'>
+              <abbr title="Username">
+                User 
+                <fa-icon [icon]="faSort"></fa-icon>
+              </abbr>
+            </a>
+          </th>
+
+          <th [class.table__sorted-column]='isFirstNameSelected' data-test='headerFirstName'>
+            <a class='table__link' (click)='toggleSortByFirstName()'>
+              <abbr title="First name">
+                First
+                <fa-icon [icon]="faSort"></fa-icon>
+              </abbr>
+            </a>
+          </th>
+          <th [class.table__sorted-column]='isLastNameSelected' data-test='headerLastName'>
+            <a class='table__link' (click)='toggleSortByLastName()'>
+              <abbr title="Last name">
+                Last <fa-icon [icon]="faSort"></fa-icon>
+              </abbr>
+            </a>
+          </th>
+          <th>Email</th>
+          <th>Verified</th>
+          <th>Admin</th>
+          <th [class.table__sorted-column]='isSignedUpSelected' data-test='headerSignedUp'>
+            <a class='table__link' (click)='toggleSortByDate()'>
+              Signed up 
+              <fa-icon [icon]="faSort"></fa-icon>
+            </a>      
+          </th>
+          <th>Meals</th>
+        </tr>
+      </thead>
+  
+      <!-- Table loading message -->
+      <tbody *ngIf='isInitialLoading'>
+        <tr>
+          <td class='has-text-centered' colspan="8">
+            Getting data...
+          </td>
+        </tr>
+      </tbody>
+
+      <!-- Table Body -->
+      <tbody *ngIf='users'>
+        <tr *ngFor='let user of users.rows'>
+          <td>
+            {{ user.username }}
+          </td>
+          <td>
+            {{ user.firstName }}
+          </td>
+          <td>
+            {{ user.lastName }}
+          </td>
+          <td>
+            {{ user.email }}
+          </td>
+          <td>
+            {{ user.isVerified }}
+          </td>
+          <td>
+            {{ user.isAdmin }}
+          </td>
+          <td>
+            {{ user.createdAt }}
+          </td>
+          <td>
+            {{ user.meals.length }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-pagination></app-pagination>

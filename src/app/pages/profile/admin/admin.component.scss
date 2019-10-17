@@ -1,0 +1,24 @@
+.table {
+  &__wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  &__link {
+    color: #114910;
+  }
+
+  &__link:hover {
+    color: #232323;
+  }
+
+  &__sorted-column {
+    background: #bee0c0;
+  }
+}
+
+.error-msg {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}

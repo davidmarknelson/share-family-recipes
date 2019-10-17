@@ -11,6 +11,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UpdatePasswordComponent } from './update-password/update-password.component';
 import { AdminComponent } from './admin/admin.component';
+// Pagination
+import { PaginationModule } from '../../partials/pagination/pagination.module';
 
 @NgModule({
   declarations: [ProfileComponent, EditProfileComponent, UpdatePasswordComponent, AdminComponent],
@@ -21,7 +23,9 @@ import { AdminComponent } from './admin/admin.component';
     ReactiveFormsModule,
     FormsModule,
     // Font Awesome
-    FontAwesomeModule
+    FontAwesomeModule,
+    // Pagination
+    PaginationModule
   ]
 })
 export class ProfileModule { }
