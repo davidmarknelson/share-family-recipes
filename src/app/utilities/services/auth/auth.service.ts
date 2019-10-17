@@ -9,6 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { JWT } from './jwt';
 import { UserProfile } from './user-profile';
 import { UserLogin } from './user-login';
+import { UserDecodedToken } from './user-decoded-token';
 // JWT
 import { JwtHelperService } from '@auth0/angular-jwt';
 
@@ -112,7 +113,7 @@ export class AuthService {
     return !this.jwtHelper.isTokenExpired();
   }
 
-  currentUser() {
+  currentUser(): UserDecodedToken {
     return this.jwtHelper.decodeToken(localStorage.getItem('authToken'));
   }
 
