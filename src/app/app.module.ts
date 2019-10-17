@@ -9,13 +9,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxPageScrollCoreModule } from 'ngx-page-scroll-core';
 import { NgxPageScrollModule } from 'ngx-page-scroll';
 // Components
-import { LandingPageComponent } from './landing-page/landing-page.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { FooterComponent } from './footer/footer.component';
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
+import { NavbarComponent } from './partials/navbar/navbar.component';
+import { FooterComponent } from './partials/footer/footer.component';
 // JWT
 import { JwtModule } from "@auth0/angular-jwt";
 // Services
-import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
+import { AuthInterceptorService } from './utilities/interceptors/auth-interceptor.service';
 
 export function tokenGetter() {
   return localStorage.getItem("authToken");
