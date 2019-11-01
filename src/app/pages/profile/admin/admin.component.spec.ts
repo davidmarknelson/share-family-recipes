@@ -83,7 +83,7 @@ class MockAdminService {
   }
 }
 
-describe('AdminComponent', () => {
+fdescribe('AdminComponent', () => {
   let component: AdminComponent;
   let adminService: AdminService;
 
@@ -107,6 +107,7 @@ describe('AdminComponent', () => {
     spyOn(adminService, 'getUsersByNewest').and.callFake(() => {
       return of(userArrayResponse);
     });
+    spyOn(component, 'pageUserNumbers');
     fixture.detectChanges();
     selectHeaders();
   });
@@ -121,6 +122,7 @@ describe('AdminComponent', () => {
       expect(component.toggleSortByDate).toHaveBeenCalled();
       expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
+      expect(component.pageUserNumbers).toHaveBeenCalledTimes(1);
 
       // Select table data to check if it has been populated
       const tableData = fixture.debugElement.query(By.css('tbody > tr > td'));
@@ -138,7 +140,7 @@ describe('AdminComponent', () => {
   // Users by newest and oldest
   // =================================
   describe('sorting Signed Up', () => {
-    it('should call getUsersByOldest when selected', () => {
+    fit('should call getUsersByOldest when selected', () => {
       // Test initialization
       expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
@@ -166,6 +168,7 @@ describe('AdminComponent', () => {
       expect(component.toggleSortByDate).toHaveBeenCalled();
       expect(component.getUsersByOldest).toHaveBeenCalled();
       expect(adminService.getUsersByOldest).toHaveBeenCalled();
+      expect(component.pageUserNumbers).toHaveBeenCalledTimes(2);
     });
   });
 

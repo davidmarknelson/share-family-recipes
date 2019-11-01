@@ -15,7 +15,6 @@ export class AdminComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   users: UsersAdmin;
   errorMessage: string;
-  isInitialLoading: boolean;
   // Font Awesome
   faSort = faSort;
   // Toggle sort
@@ -23,20 +22,56 @@ export class AdminComponent implements OnInit, OnDestroy {
   isSortedByUsernameAtoZ: boolean = false;
   isSortedByFirstNameAtoZ: boolean = false;
   isSortedByLastNameAtoZ: boolean = false;
-  // Selected column highlight
-  isSignedUpSelected: boolean;
-  isUsernameSelected: boolean;
-  isFirstNameSelected: boolean;
-  isLastNameSelected: boolean;
-  // pagination
+  // pagination loads to show 10 users
   offset: number = 0;
   limit: number = 10;
+  initialPageUserNumber: number;
+  finalPageUserNumber: number;
+  // This is for which property the pagination function should use
+  lastUsedProperty: string;
+  // Select variable for the form
+  usersShown: Array<number> = [2, 5, 10, 20];
+
+  adminData = {
+    newest: {
+      getData: () => this.adminService.getUsersByNewest(this.offset, this.limit),
+      selected: false
+    },
+    oldest: {
+      getData: () => this.adminService.getUsersByOldest(this.offset, this.limit),
+      selected: false
+    },
+    usernameAtoZ: {
+      getData: () => this.adminService.getUsersByUsernameAtoZ(this.offset, this.limit),
+      selected: false
+    },
+    usernameZtoA: {
+      getData: () => this.adminService.getUsersByUsernameZtoA(this.offset, this.limit),
+      selected: false
+    },
+    firstNameAtoZ: {
+      getData: () => this.adminService.getUsersByFirstNameAtoZ(this.offset, this.limit),
+      selected: false
+    },
+    firstNameZtoA: {
+      getData: () => this.adminService.getUsersByFirstNameZtoA(this.offset, this.limit),
+      selected: false
+    },
+    lastNameAtoZ: {
+      getData: () => this.adminService.getUsersByLastNameAtoZ(this.offset, this.limit),
+      selected: false
+    },
+    lastNameZtoA: {
+      getData: () => this.adminService.getUsersByLastNameZtoA(this.offset, this.limit),
+      selected: false
+    }
+  }
 
   constructor(private adminService: AdminService) { }
 
   ngOnInit() {
-    this.isInitialLoading = true;
-    this.toggleSortByDate();
+    this.populateTable('newest');
+    this.isSortedByNewest = true;
   }
 
   ngOnDestroy() {
@@ -44,47 +79,83 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  // Update how many users are shown
+  updateUserAmountShown(limit) {
+    this.limit = limit;
+    this.populateTable(this.lastUsedProperty);
+    this.pageUserNumbers(this.offset, this.limit);
+  }
+
+  onChange(value) {
+    // Stops the function if the user reselects the 
+    // option that shows the instructions
+    if (value.slice(0, 4) !== 'Show') return;
+
+    let amount = Number(value.slice(5));
+    this.updateUserAmountShown(amount);
+  }
+
+  // =================================
+  // Pagination Functions
+  // =================================
+
+  // Pagination inputs
+  onPageChange(offset: number) { 
+    this.offset = offset;
+    this.populateTable(this.lastUsedProperty);
+    this.pageUserNumbers(this.offset, this.limit);
+  }
+
+  pageUserNumbers(offset, limit) {
+    this.initialPageUserNumber = offset + 1;
+    let finalNumber = offset + limit;
+    if (finalNumber > this.users.count) {
+      finalNumber = this.users.count;
+    }
+    this.finalPageUserNumber = finalNumber;
+  }
+
+  // =================================
+  // Data functions
+  // =================================
+  getAdminData(property) {
+    this.adminData[property].getData().pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(res => {
+      this.users = res;
+    }, err => {
+      this.errorMessage = err.error.message;
+    });
+  }
+
+  populateTable(property) {
+    this.updateSelected(property);
+    this.getAdminData(property);
+    this.lastUsedProperty = property;
+  }
+
+  updateSelected(property) {
+    for (let prop in this.adminData) {
+      if (prop === property) {
+        this.adminData[prop].selected = true;
+      } else {
+        this.adminData[prop].selected = false;
+      }
+    }
+  }
+
   // =================================
   // Users by newest and oldest
   // =================================
   toggleSortByDate() {
     if (this.isSortedByNewest) {
-      this.getUsersByOldest(this.offset, this.limit);
+      this.populateTable('oldest');
     } else {
-      this.getUsersByNewest(this.offset, this.limit);
+      this.populateTable('newest');
     }
-    // Selected column highlight
-    this.isSignedUpSelected = true;
-    this.isUsernameSelected = false;
-    this.isFirstNameSelected = false;
-    this.isLastNameSelected = false;
 
     // toggle sort
     this.isSortedByNewest = !this.isSortedByNewest;
-  }
-
-  getUsersByNewest(offset, limit) {
-    this.adminService.getUsersByNewest(offset, limit).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      // This is to stop the first inital loading message
-      this.isInitialLoading = false;
-      this.users = res;
-    }, err => {
-      // This is to stop the first inital loading message
-      this.isInitialLoading = false;
-      this.errorMessage = err.error.message;
-    });
-  }
-
-  getUsersByOldest(offset, limit) {
-    this.adminService.getUsersByOldest(offset, limit).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      this.users = res;
-    }, err => {
-      this.errorMessage = err.error.message;
-    });
   }
 
   // =================================
@@ -92,38 +163,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   // =================================
   toggleSortByUsername() {
     if (this.isSortedByUsernameAtoZ) {
-      this.getUsersByUsernameZtoA(this.offset, this.limit);
+      this.populateTable('usernameZtoA');
     } else {
-      this.getUsersByUsernameAtoZ(this.offset, this.limit);
+      this.populateTable('usernameAtoZ');
     }
-    // Selected column highlight
-    this.isUsernameSelected = true;
-    this.isSignedUpSelected = false;
-    this.isFirstNameSelected = false;
-    this.isLastNameSelected = false;
 
     // toggle sort
     this.isSortedByUsernameAtoZ = !this.isSortedByUsernameAtoZ;
-  }
-
-  getUsersByUsernameAtoZ(offset, limit) {
-    this.adminService.getUsersByUsernameAtoZ(offset, limit).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      this.users = res;
-    }, err => {
-      this.errorMessage = err.error.message;
-    });
-  }
-
-  getUsersByUsernameZtoA(offset, limit) {
-    this.adminService.getUsersByUsernameZtoA(offset, limit).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      this.users = res;
-    }, err => {
-      this.errorMessage = err.error.message;
-    });
   }
 
   // =================================
@@ -131,38 +177,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   // =================================
   toggleSortByFirstName() {
     if (this.isSortedByFirstNameAtoZ) {
-      this.getUsersByFirstNameZtoA(this.offset, this.limit);
+      this.populateTable('firstNameAtoZ');
     } else {
-      this.getUsersByFirstNameAtoZ(this.offset, this.limit);
+      this.populateTable('firstNameZtoA');
     }
-    // Selected column highlight
-    this.isFirstNameSelected = true;
-    this.isUsernameSelected = false;
-    this.isSignedUpSelected = false;
-    this.isLastNameSelected = false;
 
     // toggle sort
     this.isSortedByFirstNameAtoZ = !this.isSortedByFirstNameAtoZ;
-  }
-
-  getUsersByFirstNameAtoZ(offset, limit) {
-    this.adminService.getUsersByFirstNameAtoZ(offset, limit).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      this.users = res;
-    }, err => {
-      this.errorMessage = err.error.message;
-    });
-  }
-
-  getUsersByFirstNameZtoA(offset, limit) {
-    this.adminService.getUsersByFirstNameZtoA(offset, limit).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      this.users = res;
-    }, err => {
-      this.errorMessage = err.error.message;
-    });
   }
 
   // =================================
@@ -170,38 +191,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   // =================================
   toggleSortByLastName() {
     if (this.isSortedByLastNameAtoZ) {
-      this.getUsersByLastNameZtoA(this.offset, this.limit);
+      this.populateTable('lastNameZtoA');
     } else {
-      this.getUsersByLastNameAtoZ(this.offset, this.limit);
+      this.populateTable('lastNameAtoZ');
     }
-    // Selected column highlight
-    this.isLastNameSelected = true;
-    this.isFirstNameSelected = false;
-    this.isUsernameSelected = false;
-    this.isSignedUpSelected = false;
 
     // toggle sort
     this.isSortedByLastNameAtoZ = !this.isSortedByLastNameAtoZ;
-  }
-
-  getUsersByLastNameAtoZ(offset, limit) {
-    this.adminService.getUsersByLastNameAtoZ(offset, limit).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      this.users = res;
-    }, err => {
-      this.errorMessage = err.error.message;
-    });
-  }
-
-  getUsersByLastNameZtoA(offset, limit) {
-    this.adminService.getUsersByLastNameZtoA(offset, limit).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      this.users = res;
-    }, err => {
-      this.errorMessage = err.error.message;
-    });
   }
 
   clearErrorMessage() {

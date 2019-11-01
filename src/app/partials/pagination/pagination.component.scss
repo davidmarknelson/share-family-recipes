@@ -1,3 +1,10 @@
-.pagination-margin {
-  margin-top: 200px;
+.pag {
+  &--margin {
+    margin-top: 100px;
+  }
+
+  &--container-padding {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }

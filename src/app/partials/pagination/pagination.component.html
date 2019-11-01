@@ -1,1 +1,26 @@
-<p class='pagination-margin'>pagination works!</p>
+<div class="container pag--container-padding">
+  <nav class="pagination is-rounded pag--margin" role="navigation" aria-label="pagination">
+    <a class="pagination-previous" (click)='emitPageNumber(currentPage - 1)' *ngIf='currentPage !== 1'>Previous</a>
+    <a class="pagination-next" (click)='emitPageNumber(currentPage + 1)' *ngIf='currentPage !== totalPages'>Next page</a>
+    <ul class="pagination-list">
+
+      <li>
+        <a class="pagination-link" aria-label="Goto page 1" (click)='emitPageNumber(1)' [class.is-current]='currentPage === 1'>
+          1
+        </a>
+      </li>
+      <li *ngIf='totalPages > 5 && currentPage !== 1 && currentPage !== 2 && currentPage !== 3'><span class="pagination-ellipsis">&hellip;</span></li>
+      <li *ngFor="let page of pages">
+        <a *ngIf='page !== 1 && page !== totalPages' class="pagination-link" aria-label="Goto page" (click)='emitPageNumber(page)' [class.is-current]='currentPage === page'>
+          {{ page }}
+        </a>
+      </li>
+      <li *ngIf='totalPages > 5 && currentPage !== (totalPages - 2) && currentPage !== (totalPages - 1) && currentPage !== totalPages'><span class="pagination-ellipsis">&hellip;</span></li>
+      <li>
+        <a *ngIf='totalPages !== 1' class="pagination-link" aria-label="Goto page" (click)='emitPageNumber(totalPages)' [class.is-current]='currentPage === totalPages'>
+          {{ totalPages }}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
