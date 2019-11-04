@@ -83,7 +83,7 @@ class MockAdminService {
   }
 }
 
-fdescribe('AdminComponent', () => {
+describe('AdminComponent', () => {
   let component: AdminComponent;
   let adminService: AdminService;
 
@@ -102,12 +102,10 @@ fdescribe('AdminComponent', () => {
     fixture = TestBed.createComponent(AdminComponent);
     component = fixture.componentInstance;
     adminService = fixture.debugElement.injector.get(AdminService);
-    spyOn(component, 'toggleSortByDate').and.callThrough();
-    spyOn(component, 'getUsersByNewest').and.callThrough();
+    spyOn(component, 'getAdminData').and.callThrough();
     spyOn(adminService, 'getUsersByNewest').and.callFake(() => {
       return of(userArrayResponse);
     });
-    spyOn(component, 'pageUserNumbers');
     fixture.detectChanges();
     selectHeaders();
   });
@@ -119,10 +117,8 @@ fdescribe('AdminComponent', () => {
   describe('initialization', () => {
     it('should call getUsersByNewest and poplulate the table and highlight the selected column', () => {
       // Test initialization
-      expect(component.toggleSortByDate).toHaveBeenCalled();
-      expect(component.getUsersByNewest).toHaveBeenCalled();
+      expect(component.getAdminData).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
-      expect(component.pageUserNumbers).toHaveBeenCalledTimes(1);
 
       // Select table data to check if it has been populated
       const tableData = fixture.debugElement.query(By.css('tbody > tr > td'));
@@ -140,15 +136,14 @@ fdescribe('AdminComponent', () => {
   // Users by newest and oldest
   // =================================
   describe('sorting Signed Up', () => {
-    fit('should call getUsersByOldest when selected', () => {
+    it('should call getUsersByOldest when selected', () => {
       // Test initialization
-      expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
       // This is changed to true during the initialization
       component.isSortedByNewest = true;
 
       // Spys
-      spyOn(component, 'getUsersByOldest').and.callThrough();
+      spyOn(component, 'toggleSortByDate').and.callThrough();
       spyOn(adminService, 'getUsersByOldest').and.callFake(() => {
         return of(userArrayResponse);
       });
@@ -166,9 +161,7 @@ fdescribe('AdminComponent', () => {
 
       // Test spy calls
       expect(component.toggleSortByDate).toHaveBeenCalled();
-      expect(component.getUsersByOldest).toHaveBeenCalled();
       expect(adminService.getUsersByOldest).toHaveBeenCalled();
-      expect(component.pageUserNumbers).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -178,14 +171,12 @@ fdescribe('AdminComponent', () => {
   describe('sorting by username', () => {
     it('should call getUsersByUsernameAtoZ when selected', () => {
       // Test initialization
-      expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
       // This is changed to true during the initialization
       component.isSortedByNewest = true;
 
       // Spys
       spyOn(component, 'toggleSortByUsername').and.callThrough();
-      spyOn(component, 'getUsersByUsernameAtoZ').and.callThrough();
       spyOn(adminService, 'getUsersByUsernameAtoZ').and.callFake(() => {
         return of(userArrayResponse);
       });
@@ -204,13 +195,11 @@ fdescribe('AdminComponent', () => {
 
       // Test spy calls
       expect(component.toggleSortByUsername).toHaveBeenCalled();
-      expect(component.getUsersByUsernameAtoZ).toHaveBeenCalled();
       expect(adminService.getUsersByUsernameAtoZ).toHaveBeenCalled();
     });
 
     it('should call getUsersByUsernameZtoA when the username header is clicked a second time', () => {
       // Test initialization
-      expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
       // This is changed to true during the initialization
       component.isSortedByNewest = true;
@@ -219,7 +208,6 @@ fdescribe('AdminComponent', () => {
       component.isSortedByUsernameAtoZ = true;
       // Spys
       spyOn(component, 'toggleSortByUsername').and.callThrough();
-      spyOn(component, 'getUsersByUsernameZtoA').and.callThrough();
       spyOn(adminService, 'getUsersByUsernameZtoA').and.callFake(() => {
         return of(userArrayResponse);
       });
@@ -238,7 +226,6 @@ fdescribe('AdminComponent', () => {
 
       // Test spy calls
       expect(component.toggleSortByUsername).toHaveBeenCalled();
-      expect(component.getUsersByUsernameZtoA).toHaveBeenCalled();
       expect(adminService.getUsersByUsernameZtoA).toHaveBeenCalled();
     });
   });
@@ -249,14 +236,12 @@ fdescribe('AdminComponent', () => {
   describe('sorting by first name', () => {
     it('should call getUsersByFirstNameAtoZ when selected', () => {
       // Test initialization
-      expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
       // This is changed to true during the initialization
       component.isSortedByFirstNameAtoZ = true;
 
       // Spys
       spyOn(component, 'toggleSortByFirstName').and.callThrough();
-      spyOn(component, 'getUsersByFirstNameAtoZ').and.callThrough();
       spyOn(adminService, 'getUsersByFirstNameAtoZ').and.callFake(() => {
         return of(userArrayResponse);
       });
@@ -275,13 +260,11 @@ fdescribe('AdminComponent', () => {
 
       // Test spy calls
       expect(component.toggleSortByFirstName).toHaveBeenCalled();
-      expect(component.getUsersByFirstNameAtoZ).toHaveBeenCalled();
       expect(adminService.getUsersByFirstNameAtoZ).toHaveBeenCalled();
     });
 
     it('should call getUsersByFirstNameAtoZ when the username header is clicked a second time', () => {
       // Test initialization
-      expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
       // This is changed to true during the initialization
       component.isSortedByNewest = true;
@@ -290,7 +273,6 @@ fdescribe('AdminComponent', () => {
       component.isSortedByUsernameAtoZ = true;
       // Spys
       spyOn(component, 'toggleSortByFirstName').and.callThrough();
-      spyOn(component, 'getUsersByFirstNameAtoZ').and.callThrough();
       spyOn(adminService, 'getUsersByFirstNameAtoZ').and.callFake(() => {
         return of(userArrayResponse);
       });
@@ -309,7 +291,6 @@ fdescribe('AdminComponent', () => {
 
       // Test spy calls
       expect(component.toggleSortByFirstName).toHaveBeenCalled();
-      expect(component.getUsersByFirstNameAtoZ).toHaveBeenCalled();
       expect(adminService.getUsersByFirstNameAtoZ).toHaveBeenCalled();
     });
   });
@@ -320,14 +301,12 @@ fdescribe('AdminComponent', () => {
   describe('sorting by last name', () => {
     it('should call getUsersByLastNameAtoZ when selected', () => {
       // Test initialization
-      expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
       // This is changed to true during the initialization
       component.isSortedByLastNameAtoZ = true;
 
       // Spys
       spyOn(component, 'toggleSortByLastName').and.callThrough();
-      spyOn(component, 'getUsersByLastNameAtoZ').and.callThrough();
       spyOn(adminService, 'getUsersByLastNameAtoZ').and.callFake(() => {
         return of(userArrayResponse);
       });
@@ -346,13 +325,11 @@ fdescribe('AdminComponent', () => {
 
       // Test spy calls
       expect(component.toggleSortByLastName).toHaveBeenCalled();
-      expect(component.getUsersByLastNameAtoZ).toHaveBeenCalled();
       expect(adminService.getUsersByLastNameAtoZ).toHaveBeenCalled();
     });
 
     it('should call getUsersByLastNameAtoZ when the username header is clicked a second time', () => {
       // Test initialization
-      expect(component.getUsersByNewest).toHaveBeenCalled();
       expect(adminService.getUsersByNewest).toHaveBeenCalled();
       // This is changed to true during the initialization
       component.isSortedByNewest = true;
@@ -361,7 +338,6 @@ fdescribe('AdminComponent', () => {
       component.isSortedByLastNameAtoZ = true;
       // Spys
       spyOn(component, 'toggleSortByLastName').and.callThrough();
-      spyOn(component, 'getUsersByLastNameAtoZ').and.callThrough();
       spyOn(adminService, 'getUsersByLastNameAtoZ').and.callFake(() => {
         return of(userArrayResponse);
       });
@@ -380,8 +356,59 @@ fdescribe('AdminComponent', () => {
 
       // Test spy calls
       expect(component.toggleSortByLastName).toHaveBeenCalled();
-      expect(component.getUsersByLastNameAtoZ).toHaveBeenCalled();
       expect(adminService.getUsersByLastNameAtoZ).toHaveBeenCalled();
+    });
+  });
+
+  describe('select amount of users', () => {
+    it('should call getAdminData when the user changes the number of users shown', () => {
+       // Test initialization
+       expect(adminService.getUsersByNewest).toHaveBeenCalled();
+       expect(component.getAdminData).toHaveBeenCalledTimes(1);
+
+       const select = fixture.debugElement.query(By.css('select'));
+
+       select.nativeElement.value = 'Show 5';
+       select.nativeElement.dispatchEvent(new Event('change'));
+       fixture.detectChanges();
+
+       expect(component.getAdminData).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('error', () => {
+    it('should be shown above the table', () => {
+      // Test initialization
+      expect(adminService.getUsersByNewest).toHaveBeenCalled();
+      expect(component.getAdminData).toHaveBeenCalledTimes(1);
+
+      // Spys
+      spyOn(component, 'toggleSortByDate').and.callThrough();
+      spyOn(adminService, 'getUsersByOldest').and.callFake(() => {
+        return throwError({ error: {
+          message: 'There was an error getting the list of users.'
+        }});
+      });
+
+      // Click header link
+      headerSignedUpLink.nativeElement.click();
+      headerSignedUpLink.nativeElement.dispatchEvent(new Event('click'));
+      fixture.detectChanges();
+
+      // Check that header is highlighted
+      expect(headerSignedUp.classes['table__sorted-column']).toEqual(true);
+      expect(headerUsername.classes['table__sorted-column']).toEqual(false);
+      expect(headerFirstName.classes['table__sorted-column']).toEqual(false);
+      expect(headerLastName.classes['table__sorted-column']).toEqual(false);
+
+      // Test spy calls
+      expect(component.toggleSortByDate).toHaveBeenCalled();
+      expect(adminService.getUsersByOldest).toHaveBeenCalled();
+
+      const errorMsg = fixture.debugElement.query(By.css('.error-msg'));
+
+      expect(errorMsg).toBeTruthy();
+      expect(errorMsg.nativeElement.innerText).toEqual('There was an error getting the list of users.');
     });
   });
 });

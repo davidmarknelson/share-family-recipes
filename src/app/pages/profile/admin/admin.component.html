@@ -13,9 +13,10 @@
 
   <!-- User count -->
   <p class='has-text-right user-count'  *ngIf='users'>
-    Users {{ initialPageUserNumber || 1 }}-{{ finalPageUserNumber || 10 }} out of {{ users.count }}
+    Users {{ initialPageUserNumber }}-{{ finalPageUserNumber }} out of {{ users.count }}
   </p>
 
+  <!-- Select amount of users shown -->
   <div class="push-right">
     <div class="select is-primary is-rounded is-small user-count__select user-count">
       <select (change)="onChange($event.target.value)">

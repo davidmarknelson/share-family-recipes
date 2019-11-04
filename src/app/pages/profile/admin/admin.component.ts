@@ -17,7 +17,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   errorMessage: string;
   // Font Awesome
   faSort = faSort;
-  // Toggle sort
+  // Toggle sort variables
   isSortedByNewest: boolean = false;
   isSortedByUsernameAtoZ: boolean = false;
   isSortedByFirstNameAtoZ: boolean = false;
@@ -29,9 +29,11 @@ export class AdminComponent implements OnInit, OnDestroy {
   finalPageUserNumber: number;
   // This is for which property the pagination function should use
   lastUsedProperty: string;
-  // Select variable for the form
-  usersShown: Array<number> = [2, 5, 10, 20];
+  // Select amount of users to show in the table
+  usersShown: Array<number> = [5, 10, 20];
 
+  // This holds the observables. The selected property is used to 
+  // show which table header should be highlighted
   adminData = {
     newest: {
       getData: () => this.adminService.getUsersByNewest(this.offset, this.limit),
@@ -70,7 +72,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   constructor(private adminService: AdminService) { }
 
   ngOnInit() {
-    this.populateTable('newest');
+    this.getAdminData('newest');
     this.isSortedByNewest = true;
   }
 
@@ -82,10 +84,13 @@ export class AdminComponent implements OnInit, OnDestroy {
   // Update how many users are shown
   updateUserAmountShown(limit) {
     this.limit = limit;
-    this.populateTable(this.lastUsedProperty);
+    this.offset = 0;
+    this.getAdminData(this.lastUsedProperty);
     this.pageUserNumbers(this.offset, this.limit);
   }
 
+  // This is called when the user changes the number
+  // of users shown from the select input
   onChange(value) {
     // Stops the function if the user reselects the 
     // option that shows the instructions
@@ -102,36 +107,24 @@ export class AdminComponent implements OnInit, OnDestroy {
   // Pagination inputs
   onPageChange(offset: number) { 
     this.offset = offset;
-    this.populateTable(this.lastUsedProperty);
-    this.pageUserNumbers(this.offset, this.limit);
-  }
-
-  pageUserNumbers(offset, limit) {
-    this.initialPageUserNumber = offset + 1;
-    let finalNumber = offset + limit;
-    if (finalNumber > this.users.count) {
-      finalNumber = this.users.count;
-    }
-    this.finalPageUserNumber = finalNumber;
+    this.getAdminData(this.lastUsedProperty);
   }
 
   // =================================
   // Data functions
   // =================================
+
   getAdminData(property) {
     this.adminData[property].getData().pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       this.users = res;
+      this.updateSelected(property);
+      this.lastUsedProperty = property;
+      this.pageUserNumbers(this.offset, this.limit);
     }, err => {
       this.errorMessage = err.error.message;
     });
-  }
-
-  populateTable(property) {
-    this.updateSelected(property);
-    this.getAdminData(property);
-    this.lastUsedProperty = property;
   }
 
   updateSelected(property) {
@@ -144,56 +137,62 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Shows the numbers of the users shown in the table
+  pageUserNumbers(offset, limit) {
+    this.initialPageUserNumber = offset + 1;
+    let finalNumber = offset + limit;
+    if (finalNumber > this.users.count) {
+      finalNumber = this.users.count;
+    }
+    this.finalPageUserNumber = finalNumber;
+  }
+
   // =================================
+  // Toggle functions for sorting the table
+  // =================================
+
   // Users by newest and oldest
-  // =================================
   toggleSortByDate() {
     if (this.isSortedByNewest) {
-      this.populateTable('oldest');
+      this.getAdminData('oldest');
     } else {
-      this.populateTable('newest');
+      this.getAdminData('newest');
     }
 
     // toggle sort
     this.isSortedByNewest = !this.isSortedByNewest;
   }
 
-  // =================================
   // Get users alphabetically by username
-  // =================================
   toggleSortByUsername() {
     if (this.isSortedByUsernameAtoZ) {
-      this.populateTable('usernameZtoA');
+      this.getAdminData('usernameZtoA');
     } else {
-      this.populateTable('usernameAtoZ');
+      this.getAdminData('usernameAtoZ');
     }
 
     // toggle sort
     this.isSortedByUsernameAtoZ = !this.isSortedByUsernameAtoZ;
   }
 
-  // =================================
   // Get users alphabetically by first name
-  // =================================
   toggleSortByFirstName() {
     if (this.isSortedByFirstNameAtoZ) {
-      this.populateTable('firstNameAtoZ');
+      this.getAdminData('firstNameAtoZ');
     } else {
-      this.populateTable('firstNameZtoA');
+      this.getAdminData('firstNameZtoA');
     }
 
     // toggle sort
     this.isSortedByFirstNameAtoZ = !this.isSortedByFirstNameAtoZ;
   }
 
-  // =================================
   // Get users alphabetically by last name
-  // =================================
   toggleSortByLastName() {
     if (this.isSortedByLastNameAtoZ) {
-      this.populateTable('lastNameZtoA');
+      this.getAdminData('lastNameZtoA');
     } else {
-      this.populateTable('lastNameAtoZ');
+      this.getAdminData('lastNameAtoZ');
     }
 
     // toggle sort

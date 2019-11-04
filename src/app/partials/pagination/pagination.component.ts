@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output, Input, OnChanges } from '@angular/core';
-import { range, Observable } from 'rxjs';
-import { map, filter, toArray, tap } from 'rxjs/operators';
+import { range } from 'rxjs';
+import { filter, toArray } from 'rxjs/operators';
 
 @Component({
   selector: 'app-pagination',
@@ -35,8 +35,6 @@ export class PaginationComponent implements OnInit, OnChanges {
       toArray()
     ).subscribe(range => {
       this.pages = range;
-      console.log(this.pages)
-      console.log('finish')
     });
   }
   
@@ -45,8 +43,8 @@ export class PaginationComponent implements OnInit, OnChanges {
     return Math.floor(offset / limit) + 1;
   }
   
-  getTotalPages(limit: number, size: number): number {
-    return Math.ceil(Math.max(size, 1) / Math.max(limit, 1));
+  getTotalPages(limit: number, count: number): number {
+    return Math.ceil(Math.max(count, 1) / Math.max(limit, 1));
   }
 
   isValidPageNumber(page: number, totalPages: number): boolean {
@@ -54,7 +52,6 @@ export class PaginationComponent implements OnInit, OnChanges {
   }
   
   emitPageNumber(page) {
-    this.currentPage = page;
     this.pageChange.emit(this.limit * (page - 1));
   }
 }
