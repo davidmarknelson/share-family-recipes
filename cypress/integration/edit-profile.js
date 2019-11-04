@@ -139,4 +139,32 @@ describe('Edit profile', () => {
         .get('[data-test=username]').should('contain', 'newUser');
     });
   });
+
+  describe('Delete profile', () => {
+    beforeEach(() => {
+      cy.request('DELETE', 'http://localhost:3000/tests/delete')
+        .request('POST', 'http://localhost:3000/tests/seed')
+        .login('verified@email.com', 'password');
+    });
+
+    it('should delete the user when clicking the delete button in the modal and the close buttons should work', () => {
+      cy
+        .visit('/profile/edit')
+        .url().should('include', '/profile/edit')
+        .get('[data-test=delete-button]').click()
+        .get('.modal').should('be.visible')
+        .get('[data-test=modal-cancel]').click()
+        .get('.modal').should('not.be.visible')
+        .get('[data-test=delete-button]').click()
+        .get('.modal').should('be.visible')
+        .get('[data-test=modal-close]').click()
+        .get('.modal').should('not.be.visible')
+        .get('[data-test=delete-button]').click()
+        .get('.modal').should('be.visible')
+        .get('[data-test=modal-delete]').click()
+        .get('.notification').invoke('text')
+        .should('contain', 'Profile successfully deleted.')
+        .url().should('include', '/');
+    });
+  });
 });
