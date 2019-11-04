@@ -64,7 +64,11 @@
   <a class="button is-secondary is-rounded" routerLink='/yourrecipes'>
     Your Recipes
   </a>
-  <a class="button is-secondary is-rounded" routerLink='/profile/admin' *ngIf='user && user.isAdmin'>
+  <a 
+    class="button is-secondary is-rounded" 
+    routerLink='/profile/admin' 
+    *ngIf='user && user.isAdmin'
+    data-test="admin-link">
     Admin
   </a>
 </div>

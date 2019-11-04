@@ -10,12 +10,9 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 // Font Awesome
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { UpdatePasswordComponent } from './update-password/update-password.component';
-import { AdminComponent } from './admin/admin.component';
-// Pagination
-import { PaginationModule } from '../../partials/pagination/pagination.module';
 
 @NgModule({
-  declarations: [ProfileComponent, EditProfileComponent, UpdatePasswordComponent, AdminComponent],
+  declarations: [ProfileComponent, EditProfileComponent, UpdatePasswordComponent],
   imports: [
     CommonModule,
     ProfileRoutingModule,
@@ -23,9 +20,7 @@ import { PaginationModule } from '../../partials/pagination/pagination.module';
     ReactiveFormsModule,
     FormsModule,
     // Font Awesome
-    FontAwesomeModule,
-    // Pagination
-    PaginationModule
+    FontAwesomeModule
   ]
 })
 export class ProfileModule { }

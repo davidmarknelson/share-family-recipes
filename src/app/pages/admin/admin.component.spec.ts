@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AdminComponent } from './admin.component';
-import { UsersAdmin } from '../../../utilities/services/admin/users-admin';
-import { AdminService } from '../../../utilities/services/admin/admin.service';
+import { UsersAdmin } from '../../utilities/services/admin/users-admin';
+import { AdminService } from '../../utilities/services/admin/admin.service';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';

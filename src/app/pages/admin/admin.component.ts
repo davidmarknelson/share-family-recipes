@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AdminService } from '../../../utilities/services/admin/admin.service';
-import { UsersAdmin } from '../../../utilities/services/admin/users-admin';
+import { AdminService } from '../../utilities/services/admin/admin.service';
+import { UsersAdmin } from '../../utilities/services/admin/users-admin';
 // Font Awesome
 import { faSort } from '@fortawesome/free-solid-svg-icons';
 
@@ -178,9 +178,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   // Get users alphabetically by first name
   toggleSortByFirstName() {
     if (this.isSortedByFirstNameAtoZ) {
-      this.getAdminData('firstNameAtoZ');
-    } else {
       this.getAdminData('firstNameZtoA');
+    } else {
+      this.getAdminData('firstNameAtoZ');
     }
 
     // toggle sort
