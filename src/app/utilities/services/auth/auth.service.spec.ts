@@ -355,4 +355,34 @@ describe('AuthService', () => {
       http.verify();
     });
   });
+
+  describe('deleteUser', () => {
+    it('should return a message when the user is deleted', () => {
+      let signupResponse = {
+        'message': 'User successfully deleted.'
+      };
+
+      let response;
+      authService.deleteUser().subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/user/delete').flush(signupResponse);
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return an error on error', () => {
+      const updateResponse = 'There was an error deleting your profile.';
+      let errorResponse;
+
+      authService.deleteUser().subscribe(res => {}, err => {
+        errorResponse = err;
+      });
+
+      http.expectOne('http://localhost:3000/user/delete').flush({message: updateResponse}, {status: 500, statusText: 'Server Error'});
+      expect(errorResponse.error.message).toEqual(updateResponse);
+      http.verify();
+    });
+  });
 });

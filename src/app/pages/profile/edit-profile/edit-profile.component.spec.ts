@@ -31,6 +31,11 @@ class MockAuthService {
   checkUsernameAvailability(username) {
     return of()
   }
+  deleteUser() {
+    return of()
+  }
+  logout() {
+  }
 }
 
 class MockRouter {
@@ -391,7 +396,7 @@ describe('EditProfileComponent', () => {
       spyOn(component, 'onSubmit').and.callThrough();
       spyOn(authService, 'updateUser').and.callFake(() => {
         return of({
-          message: 'User successfully updated.'
+          message: 'Profile successfully updated.'
         });
       });
       spyOn(router, 'navigate');
@@ -401,5 +406,81 @@ describe('EditProfileComponent', () => {
       expect(authService.updateUser).toHaveBeenCalled();
       expect(router.navigate).toHaveBeenCalledWith(['/profile']);
     }));
+  });
+
+  describe('deleteUser', () => {
+    it('should open the modal when clicking on the delete button and close when clicking the x', () => {
+      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
+      let modal = fixture.debugElement.query(By.css('.modal'));
+      let modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
+
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+      
+      expect(component.isModalOpen).toEqual(true);
+      expect(modal.classes['is-active']).toEqual(true);
+
+      modalClose.nativeElement.click();
+      fixture.detectChanges();
+
+      expect(component.isModalOpen).toEqual(false);
+      expect(modal.classes['is-active']).toEqual(false);
+    });
+
+    it('should navigate to the landing page when successfully deleting the profile', () => {
+      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
+      let modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
+      let modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
+
+      spyOn(component, 'deleteUser').and.callThrough();
+      spyOn(authService, 'deleteUser').and.callFake(() => {
+        return of({ message: 'Profile successfully deleted.'});
+      });
+      spyOn(router, 'navigate');
+      spyOn(authService, 'logout');
+
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+
+      modalDelete.nativeElement.click();
+      fixture.detectChanges();
+
+      expect(component.deleteUser).toHaveBeenCalled();
+      expect(authService.deleteUser).toHaveBeenCalled();
+      expect(authService.logout).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith(['/']);
+
+      // close the modal in the testing window
+      modalClose.nativeElement.click();
+      fixture.detectChanges();
+    });
+
+    it('should show an error message on error', () => {
+      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
+      let modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
+
+      spyOn(component, 'deleteUser').and.callThrough();
+      spyOn(authService, 'deleteUser').and.callFake(() => {
+        return throwError({ error: { 
+          message: 'There was an error deleting your profile.'
+        }});
+      });
+      spyOn(router, 'navigate');
+      spyOn(authService, 'logout');
+
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+
+      modalDelete.nativeElement.click();
+      fixture.detectChanges();
+
+      let errorMsg = fixture.debugElement.query(By.css('.notification'));
+
+      expect(component.deleteUser).toHaveBeenCalled();
+      expect(authService.deleteUser).toHaveBeenCalled();
+      expect(authService.logout).not.toHaveBeenCalled();
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(errorMsg.nativeElement.innerText).toEqual('There was an error deleting your profile.');
+    });
   });
 });

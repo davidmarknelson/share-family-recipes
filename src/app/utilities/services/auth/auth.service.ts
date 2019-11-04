@@ -109,6 +109,10 @@ export class AuthService {
     });
   }
 
+  deleteUser(): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}user/delete`);
+  }
+
   isLoggedIn() {
     return !this.jwtHelper.isTokenExpired();
   }

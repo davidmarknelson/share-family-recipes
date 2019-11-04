@@ -21,7 +21,7 @@ describe('Edit profile', () => {
         .get('form').submit()
         .url().should('include', '/profile')
         .get('.notification').invoke('text')
-        .should('contain', 'User successfully updated.')
+        .should('contain', 'Profile successfully updated.')
         .get('[data-test=name]').should('contain', 'Joe Doe');
     });
   });
@@ -44,7 +44,7 @@ describe('Edit profile', () => {
         .get('form').submit()
         .url().should('include', '/profile')
         .get('.notification').invoke('text')
-        .should('contain', 'User successfully updated.')
+        .should('contain', 'Profile successfully updated.')
         .get('[data-test=name]').should('contain', 'John Smith');
     });
   });
@@ -68,7 +68,7 @@ describe('Edit profile', () => {
         .get('form').submit()
         .url().should('include', '/profile')
         .get('.notification').invoke('text')
-        .should('contain', 'User successfully updated.')
+        .should('contain', 'Profile successfully updated.')
         .get('[data-test=email]').should('contain', 'new@email.com')
         .get('[data-test=emailVerifyMsg]').should('exist');
     });
@@ -135,7 +135,7 @@ describe('Edit profile', () => {
         .get('form').submit()
         .url().should('include', '/profile')
         .get('.notification').invoke('text')
-        .should('contain', 'User successfully updated.')
+        .should('contain', 'Profile successfully updated.')
         .get('[data-test=username]').should('contain', 'newUser');
     });
   });

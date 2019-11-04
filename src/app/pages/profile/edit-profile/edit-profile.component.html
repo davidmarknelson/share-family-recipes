@@ -175,6 +175,14 @@
         </a>
       </p>
       <p class="control">
+        <a 
+          class="button is-light is-danger is-rounded" 
+          (click)='toggleModal()'
+          data-test="delete-button">
+          Delete
+        </a>
+      </p>
+      <p class="control">
         <button 
           data-test="submit-button"
           class="button is-accent is-rounded" 
@@ -185,4 +193,28 @@
       </p>
     </div>
   </form>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal" [class.is-active]='isModalOpen'>
+  <div class="modal-background" (click)='toggleModal()'></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Delete your profile?</p>
+      <button class="delete" data-test="modal-close" aria-label="close" (click)='toggleModal()'></button>
+    </header>
+    <section class="modal-card-body">
+      <p>This will delete all of your data and your meals.</p>
+    </section>
+    <footer class="modal-card-foot">
+      <button 
+        class="button is-danger is-rounded" 
+        [class.is-loading]="isDeleting" 
+        data-test="modal-delete" 
+        (click)='deleteUser()'>
+        Delete profile
+      </button>
+      <button class="button is-light is-rounded" (click)='toggleModal()'>Cancel</button>
+    </footer>
+  </div>
 </div>

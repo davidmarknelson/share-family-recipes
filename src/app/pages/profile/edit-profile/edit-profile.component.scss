@@ -1,0 +1,25 @@
+.modal {
+  &__cancel {
+    background-color: whitesmoke;
+    border-color: transparent;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  &__cancel:hover {
+    background-color: #eeeeee;
+    border-color: transparent;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  &__delete {
+    background-color: #feecf0;
+    border-color: transparent;
+    color: #cc0f35;
+  }
+
+  &__delete:hover {
+    background-color: #fde0e6;
+    border-color: transparent;
+    color: #cc0f35;
+  }
+}

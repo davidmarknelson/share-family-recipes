@@ -29,6 +29,9 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   faEnvelope = faEnvelope;
   faUser = faUser;
   faChevronRight = faChevronRight;
+  // Modal
+  isModalOpen: boolean = false;
+  isDeleting: boolean = false;
 
   constructor(
     private auth: AuthService, 
@@ -137,6 +140,23 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       this.sendingForm = false;
       // This shows the error message
       this.formError = err.error.message
+    });
+  }
+
+  toggleModal() {
+    this.isModalOpen = !this.isModalOpen;
+  }
+
+  deleteUser() {
+    this.isDeleting = true;
+    this.auth.deleteUser().subscribe(res => {
+      this.auth.logout();
+      this.isDeleting = false;
+      this.router.navigate(['/']);
+    }, err => {
+      this.isDeleting = false;
+      this.isModalOpen = false;
+      this.formError = err.error.message;
     });
   }
 

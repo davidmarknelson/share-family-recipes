@@ -31,6 +31,11 @@ $pagination-current-background-color: $primary;
 $pagination-current-border-color: $primary;
 $pagination-current-color: $dark-black;
 
+// Modal card
+$modal-card-head-background-color: #FFF;
+$modal-card-head-border-bottom: none;
+$modal-card-foot-border-top: none;
+
 // ==================
 // Bulma Imports
 // ==================
@@ -40,6 +45,8 @@ $pagination-current-color: $dark-black;
 @import "../node_modules/bulma/sass/components/navbar.sass";
 @import "../node_modules/bulma/sass/components/message.sass";
 @import "../node_modules/bulma/sass/components/pagination.sass";
+@import "../node_modules/bulma/sass/components/modal.sass";
+@import "../node_modules/bulma/sass/components/card.sass";
 @import "../node_modules/bulma/sass/elements/other.sass";
 @import "../node_modules/bulma/sass/elements/button.sass";
 @import "../node_modules/bulma/sass/elements/container.sass";
