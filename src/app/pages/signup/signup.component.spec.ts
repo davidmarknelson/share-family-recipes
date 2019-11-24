@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core
 import { Router } from '@angular/router';
 import { SignupModule } from './signup.module';
 import { SignupComponent } from './signup.component';
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { DebugElement } from '@angular/core';
 import { AuthService } from '../../utilities/services/auth/auth.service';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
@@ -52,8 +52,7 @@ describe('SignupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SignupModule],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+      imports: [SignupModule]
     })
     .overrideComponent(SignupComponent, {
       set: {

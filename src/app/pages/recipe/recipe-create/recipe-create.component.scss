@@ -1,0 +1,28 @@
+.description {
+  &--rounded {
+    border-radius: 10px;
+  }
+
+  &__character-count {
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+  }
+}
+
+.center-vertically {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.center-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.margin-right {
+  margin-right: 4px;
+}

@@ -1,0 +1,374 @@
+<section class="section page-header">
+  <h1 class="title page-header__title has-text-centered">Create Recipe</h1>
+  <p class="subtitle has-text-centered">Create a new recipe.</p>
+</section>
+
+<div class="form__container">
+  <form [formGroup]="createRecipeForm" (ngSubmit)="onSubmit()" novalidate>
+    <p class="has-text-right is-size-7">* required</p>
+
+    <div class="columns">
+      <!-- Recipe Name -->
+      <div class="column">
+        <div class="field">
+          <label class="label" for="name">Recipe Name *</label>
+          <div class="control">
+            <input 
+              data-test='name'
+              class="input is-rounded" 
+              type="text" 
+              id="name" 
+              formControlName="name" 
+              placeholder="Sandwich"
+              [class.is-danger]="(name.invalid && (name.dirty || name.touched || submitted)) || 
+              (!availableName && name.valid)"
+              [class.is-success]="availableName && name.valid"
+              required>
+              <div *ngIf="name.invalid && (name.dirty || name.touched || submitted)" class="has-text-danger">
+                <p *ngIf="name.errors.required" data-test='nameRequired'>Name is required</p>
+              </div>
+              <div *ngIf="availableName && name.valid" class="has-text-success">
+                <p data-test="nameAvailable">This name is available</p>
+              </div>
+              <div *ngIf="!availableName && name.valid" class="has-text-danger">
+                <p data-test="nameUnavailable">This name is already taken</p>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns">
+      <!-- Description -->
+      <div class="column">
+        <div class="field">
+          <label class="label" for="description">
+            Description *
+            <span class="has-text-weight-light is-size-7">
+              max 150 characters
+            </span>
+          </label>
+          <div class="control">
+            <textarea 
+              data-test='description'
+              class="textarea has-fixed-size description--rounded" 
+              type="text" 
+              id="description" 
+              formControlName="description" 
+              placeholder="A simple bread, meat, and cheese sandwich."
+              [class.is-danger]="description.invalid && (description.dirty || description.touched || submitted)"
+              [class.is-success]="description.valid"
+              required>
+            </textarea>
+            <span 
+              class='description__character-count has-text-weight-light is-size-7'
+              data-test="descriptionCount">
+              {{ descriptionCount || 0 }}/150
+            </span>
+          </div>
+          <div *ngIf="description.invalid && (description.dirty || description.touched || submitted)" class="has-text-danger">
+            <p *ngIf="description.errors.required" data-test='descriptionRequired'>Description is required</p>
+            <p *ngIf="description.errors.maxlength" data-test='descriptionMaxLength'>Description has a max of 150 characters.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingredients -->
+    <div class="field">
+      <label class="label">
+        Ingredients *
+        <br/>
+        <span class="has-text-weight-light is-size-7">
+          the <span class='has-text-weight-bold'>arrow</span> adds a row after the input and the <span class='has-text-weight-bold'>x</span> deletes the current input
+        </span>
+      </label>
+      <div class="columns is-mobile is-1 is-variable"  formArrayName="ingredients" 
+        *ngFor="let ingredient of ingredients.controls; let i = index;">
+        <div class="column">
+          <div [formGroupName]="i">
+            <div class="control">
+              <label [for]="i"></label>
+              <input 
+                data-test='ingredient'
+                class="input is-rounded" 
+                type="text" 
+                [id]="i"
+                formControlName="ingredient" 
+                placeholder="1 slice of ham"
+                [class.is-danger]="ingredients.controls[i].controls.ingredient.invalid && 
+                (ingredients.controls[i].controls.ingredient.dirty || ingredients.controls[i].controls.ingredient.touched || submitted)"
+                [class.is-success]="ingredients.controls[i].controls.ingredient.valid">
+              <div 
+                *ngIf="ingredients.controls[i].controls.ingredient.invalid && 
+                (ingredients.controls[i].controls.ingredient.dirty || ingredients.controls[i].controls.ingredient.touched || submitted)" 
+                class="has-text-danger">
+                <p *ngIf="ingredients.controls[i].controls.ingredient.errors.required" data-test='ingredientsRequired'>
+                  An ingredient is required
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ingredient buttons -->
+        <div class="column is-narrow">
+          <div class="center-vertically">
+            <button 
+              type="button"
+              class='button is-rounded is-link is-light is-small margin-right'
+              (click)='addIngredientInput(i)'>
+              <fa-icon [icon]="faArrowDown"></fa-icon>
+            </button>
+            <button 
+              type="button"
+              class='button is-rounded is-danger is-light is-small'
+              (click)='removeIngredient(i, ingredients.length)'>
+              <fa-icon [icon]="faTimes"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- Ingredient error message -->
+      <div class="notification is-danger" *ngIf="ingredientError">
+        <button type="button" class="delete" (click)='clearIngredientErrorMessage()'></button>
+        {{ ingredientError }}
+      </div>
+
+    </div>
+
+    <!-- Instructions -->
+    <div class="field">
+      <label class="label">
+        Instructions *
+        <br/>
+        <span class="has-text-weight-light is-size-7">
+          the <span class='has-text-weight-bold'>arrow</span> adds a row after the input and the <span class='has-text-weight-bold'>x</span> deletes the current input
+        </span>
+      </label>
+      <div class="columns is-mobile is-1 is-variable"  formArrayName="instructions" 
+        *ngFor="let instruction of instructions.controls; let i = index;">
+        <div class="column">
+          <div [formGroupName]="i">
+            <div class="control">
+              <label [for]="i"></label>
+              <input 
+                data-test='instruction'
+                class="input is-rounded" 
+                type="text" 
+                [id]="i"
+                formControlName="instruction" 
+                placeholder="Put ham between 2 slices of bread."
+                [class.is-danger]="instructions.controls[i].controls.instruction.invalid && 
+                (instructions.controls[i].controls.instruction.dirty || instructions.controls[i].controls.instruction.touched || submitted)"
+                [class.is-success]="instructions.controls[i].controls.instruction.valid">
+              <div 
+                *ngIf="instructions.controls[i].controls.instruction.invalid && 
+                (instructions.controls[i].controls.instruction.dirty || instructions.controls[i].controls.instruction.touched || submitted)" 
+                class="has-text-danger">
+                <p *ngIf="instructions.controls[i].controls.instruction.errors.required" data-test='instructionsRequired'>
+                  An instruction is required
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Instruction buttons -->
+        <div class="column is-narrow">
+          <div class="center-vertically">
+            <button 
+              type="button"
+              class='button is-rounded is-link is-light is-small margin-right'
+              (click)='addInstructionInput(i)'>
+              <fa-icon [icon]="faArrowDown"></fa-icon>
+            </button>
+            <button 
+              type="button"
+              class='button is-rounded is-danger is-light is-small'
+              (click)='removeInstruction(i, instructions.length)'>
+              <fa-icon [icon]="faTimes"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Instructions error message -->
+      <div class="notification is-danger" *ngIf="instructionError">
+        <button type="button" class="delete" (click)='clearInstructionErrorMessage()'></button>
+        {{ instructionError }}
+      </div>
+
+    </div>
+
+    <div class="columns">
+      <!-- Cook time -->
+      <div class="column is-half">
+        <div class="field">
+          <label class="label" for="cookTime">
+            Cook time *
+            <span class="has-text-weight-light is-size-7">
+              number of minutes
+            </span>
+          </label>
+          <div class="control">
+            <input 
+              data-test='cookTime'
+              class="input is-rounded" 
+              type="text" 
+              id="cookTime" 
+              formControlName="cookTime" 
+              placeholder="20"
+              [class.is-danger]="cookTime.invalid && (cookTime.dirty || cookTime.touched || submitted)"
+              [class.is-success]="cookTime.valid"
+              required>
+            <div *ngIf="cookTime.invalid && (cookTime.dirty || cookTime.touched || submitted)" class="has-text-danger">
+              <p *ngIf="cookTime.errors.pattern" data-test='cookTimePattern'>Cook time must be a number</p>
+              <p *ngIf="cookTime.errors.required" data-test='cookTimeRequired'>Cook time is required</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Difficulty -->
+      <div class="column is-half">
+        <div class="field">
+          <label class="label" for="difficulty">
+            Difficulty *
+            <span class="has-text-weight-light is-size-7">
+              must be between 1(easy) and 5(difficult)
+            </span>
+          </label>
+          <div class="control">
+            <input 
+              data-test='difficulty'
+              class="input is-rounded" 
+              type="text" 
+              id="difficulty" 
+              formControlName="difficulty" 
+              placeholder="1"
+              [class.is-danger]="difficulty.invalid && (difficulty.dirty || difficulty.touched || submitted)"
+              [class.is-success]="difficulty.valid"
+              required>
+            <div *ngIf="difficulty.invalid && (difficulty.dirty || difficulty.touched || submitted)" class="has-text-danger">
+              <p *ngIf="difficulty.errors.required" data-test='difficultyRequired'>Difficulty is required</p>
+              <p *ngIf="difficulty.errors.pattern" data-test='difficultyRequired'>Difficulty must be between 1 and 5</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns">
+      <!-- Original Recipe URL -->
+      <div class="column is-half">
+        <div class="field">
+          <label class="label" for="originalRecipeUrl">
+            Recipe URL
+            <br/>
+            <span class="has-text-weight-light is-size-7">
+              copy the url of the recipe below
+            </span>
+          </label>
+          <div class="control">
+            <input 
+              data-test='originalRecipeUrl'
+              class="input is-rounded" 
+              type="text" 
+              id="originalRecipeUrl" 
+              formControlName="originalRecipeUrl" 
+              placeholder="www.originalrecipe.com"
+              [class.is-success]="originalRecipeUrl.valid && originalRecipeUrl.value">
+          </div>
+        </div>
+      </div>
+
+      <!-- Youtube URL -->
+      <div class="column is-half">
+        <div class="field">
+          <label class="label" for="youtubeUrl">
+            YouTube URL
+            <br/>
+            <span class="has-text-weight-light is-size-7">
+              copy the url of the YouTube video below
+            </span>
+          </label>
+          <div class="control">
+            <input 
+              data-test='youtubeUrl'
+              class="input is-rounded" 
+              type="text" 
+              id="youtubeUrl" 
+              formControlName="youtubeUrl" 
+              placeholder="www.youtube.com/recipe"
+              [class.is-success]="youtubeUrl.valid && youtubeUrl.value">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns">
+      <!-- Meal Picture -->
+      <div class="column">
+        <div class="field">
+          <label class="label" for="mealPic">
+            Meal Picture
+            <span class="has-text-weight-light is-size-7">
+              must be JPEG
+            </span>
+          </label>
+          <div class="file has-name">
+            <label class="file-label">
+              <input 
+                class="file-input" 
+                type="file" 
+                name="mealPic" 
+                id="mealPic" 
+                formControlName="mealPic" 
+                (change)="onFileSelected($event)">
+              <span class="file-cta form--rounded-left">
+                <span class="file-icon">
+                  <fa-icon [icon]="faFileUpload"></fa-icon>
+                </span>
+                <span class="file-label">
+                  Choose a file…
+                </span>
+              </span>
+              <span class="file-name form--rounded-right" [class.has-text-secondary]="selectedFile">
+                {{ mealPicName }}
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- Form error message -->
+    <div class="notification is-danger" *ngIf="formError">
+      <button type="button" class="delete" (click)='clearErrorMessage()'></button>
+      {{ formError }}
+    </div>
+    
+    <!-- Form buttons -->
+    <div class="field is-grouped is-grouped-right form__buttons">
+      <p class="control">
+        <a class="button is-light is-rounded" (click)="navigateBack()">
+          Back
+        </a>
+      </p>
+      <p class="control">
+        <button 
+          data-test="submit-button"
+          class="button is-accent is-rounded" 
+          type="submit" 
+          [class.is-loading]="sendingForm">
+          Create Recipe
+        </button>
+      </p>
+    </div>
+
+  </form>
+</div>
