@@ -3,11 +3,12 @@ export interface UserProfile {
   firstName: string,
   lastName: string,
   username: string,
-  originalUsername: string,
   email: string,
   isAdmin: boolean,
   isVerified: boolean,
-  profilePic: string,
+  profilePic: {
+    profilePicName: string
+  },
   createdAt: string,
   updatedAt: string
 }

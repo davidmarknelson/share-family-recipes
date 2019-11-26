@@ -103,7 +103,7 @@
                 *ngIf="ingredients.controls[i].controls.ingredient.invalid && 
                 (ingredients.controls[i].controls.ingredient.dirty || ingredients.controls[i].controls.ingredient.touched || submitted)" 
                 class="has-text-danger">
-                <p *ngIf="ingredients.controls[i].controls.ingredient.errors.required" data-test='ingredientsRequired'>
+                <p *ngIf="ingredients.controls[i].controls.ingredient.errors.required" data-test='ingredientRequired'>
                   An ingredient is required
                 </p>
               </div>
@@ -115,12 +115,14 @@
           <div class="center-vertically">
             <button 
               type="button"
+              data-test='addIngredientInput'
               class='button is-rounded is-link is-light is-small margin-right'
               (click)='addIngredientInput(i)'>
               <fa-icon [icon]="faArrowDown"></fa-icon>
             </button>
             <button 
               type="button"
+              data-test='removeIngredient'
               class='button is-rounded is-danger is-light is-small'
               (click)='removeIngredient(i, ingredients.length)'>
               <fa-icon [icon]="faTimes"></fa-icon>
@@ -132,7 +134,7 @@
 
 
       <!-- Ingredient error message -->
-      <div class="notification is-danger" *ngIf="ingredientError">
+      <div class="notification is-danger" *ngIf="ingredientError" data-test="ingredientErrorMsg">
         <button type="button" class="delete" (click)='clearIngredientErrorMessage()'></button>
         {{ ingredientError }}
       </div>
@@ -168,7 +170,7 @@
                 *ngIf="instructions.controls[i].controls.instruction.invalid && 
                 (instructions.controls[i].controls.instruction.dirty || instructions.controls[i].controls.instruction.touched || submitted)" 
                 class="has-text-danger">
-                <p *ngIf="instructions.controls[i].controls.instruction.errors.required" data-test='instructionsRequired'>
+                <p *ngIf="instructions.controls[i].controls.instruction.errors.required" data-test='instructionRequired'>
                   An instruction is required
                 </p>
               </div>
@@ -180,12 +182,14 @@
           <div class="center-vertically">
             <button 
               type="button"
+              data-test='addInstructionInput'
               class='button is-rounded is-link is-light is-small margin-right'
               (click)='addInstructionInput(i)'>
               <fa-icon [icon]="faArrowDown"></fa-icon>
             </button>
             <button 
               type="button"
+              data-test='removeInstruction'
               class='button is-rounded is-danger is-light is-small'
               (click)='removeInstruction(i, instructions.length)'>
               <fa-icon [icon]="faTimes"></fa-icon>
@@ -196,7 +200,7 @@
       </div>
 
       <!-- Instructions error message -->
-      <div class="notification is-danger" *ngIf="instructionError">
+      <div class="notification is-danger" *ngIf="instructionError" data-test="instructionErrorMsg">
         <button type="button" class="delete" (click)='clearInstructionErrorMessage()'></button>
         {{ instructionError }}
       </div>
@@ -254,7 +258,7 @@
               required>
             <div *ngIf="difficulty.invalid && (difficulty.dirty || difficulty.touched || submitted)" class="has-text-danger">
               <p *ngIf="difficulty.errors.required" data-test='difficultyRequired'>Difficulty is required</p>
-              <p *ngIf="difficulty.errors.pattern" data-test='difficultyRequired'>Difficulty must be between 1 and 5</p>
+              <p *ngIf="difficulty.errors.pattern" data-test='difficultyPattern'>Difficulty must be between 1 and 5</p>
             </div>
           </div>
         </div>
@@ -347,7 +351,7 @@
 
     
     <!-- Form error message -->
-    <div class="notification is-danger" *ngIf="formError">
+    <div class="notification is-danger" *ngIf="formError" data-test="formErrorMsg">
       <button type="button" class="delete" (click)='clearErrorMessage()'></button>
       {{ formError }}
     </div>

@@ -10,11 +10,12 @@ const user1 = {
   firstName: "John",
   lastName: "Doe",
   username: "johndoe",
-  originalUsername: "johndoe",
   email: "example@email.com",
   isAdmin: false,
   isVerified: false,
-  profilePic: '../../assets/images/default-img/default-profile-pic.jpg',
+  profilePic: {
+    profilePicName: '../../assets/images/default-img/default-profile-pic.jpg'
+  },
   createdAt: "Oct 08, 2019",
   updatedAt: "Oct 08, 2019"
 };
@@ -24,11 +25,12 @@ const user2 = {
   firstName: "Jack",
   lastName: "Smith",
   username: "jacksmith",
-  originalUsername: "jacksmith",
   email: "smith@email.com",
   isAdmin: true,
   isVerified: true,
-  profilePic: '../../assets/images/default-img/default-profile-pic.jpg',
+  profilePic: {
+    profilePicName: '../../assets/images/default-img/default-profile-pic.jpg'
+  },
   createdAt: "Oct 08, 2019",
   updatedAt: "Oct 08, 2019"
 };

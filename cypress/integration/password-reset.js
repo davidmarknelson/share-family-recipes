@@ -38,7 +38,7 @@ describe('Password reset', () => {
         .get('form').submit()
         .get('[data-test=emailSending]')
         .should('exist')
-        .wait(7000)
+        .wait(5000)
         .get('.notification').invoke('text')
         .should('contain', 'An email has been sent to verified@email.com with further instructions.')
         .get('[data-test=emailSuccess]').should('exist')

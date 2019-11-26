@@ -75,7 +75,13 @@ export class AuthService {
       map(res => {
         res.createdAt = this.formatDate(res.createdAt);
         res.updatedAt = this.formatDate(res.updatedAt);
-        res.profilePic = this.checkProfilePic(res.profilePic);
+        if (res.profilePic) {
+          res.profilePic.profilePicName = `${environment.apiUrl}public/images/profilePics/${res.profilePic.profilePicName}`;
+        } else {
+          res.profilePic = {
+            profilePicName: '../../../assets/images/default-img/default-profile-pic.jpg'
+          };
+        }
         return res;
       })
     );
@@ -83,14 +89,6 @@ export class AuthService {
 
   formatDate(date) {
     return format(new Date(date), 'MMM dd, yyyy');
-  }
-
-  checkProfilePic(picture) {
-    if (picture) {
-      return `${environment.apiUrl}${picture}`;
-    } else {
-      return '../../../assets/images/default-img/default-profile-pic.jpg';
-    }
   }
 
   updateUser(credentials, file): Observable<any> {

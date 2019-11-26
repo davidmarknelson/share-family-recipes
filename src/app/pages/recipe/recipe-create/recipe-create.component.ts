@@ -198,6 +198,8 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       console.log(res)
+      // CHANGE LATER
+      this.router.navigate(['/profile'])
     }, err => {
 
       // This stops the loading indicator

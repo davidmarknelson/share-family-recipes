@@ -274,18 +274,6 @@ describe('AuthService', () => {
         expect(date).toEqual('Oct 08, 2019');
       });
     });
-  
-    describe('checkProfilePic', () => {
-      it('should return a default image path if the user does not have profilePic', () => {
-        let picUrl = authService.checkProfilePic(null);
-        expect(picUrl).toEqual('../../../assets/images/default-img/default-profile-pic.jpg');
-      });
-  
-      it('should return an image path for a user that has a profilePic', () => {
-        let picUrl = authService.checkProfilePic('public/images/profilePics/jacksmith.jpeg');
-        expect(picUrl).toEqual('http://localhost:3000/public/images/profilePics/jacksmith.jpeg');
-      });
-    });
   });
 
   describe('currentUser', () => {
