@@ -11,7 +11,8 @@ const routes: Routes = [
   { path: 'verify', loadChildren: () => import('./pages/verify-email/verify-email.module').then(m => m.VerifyEmailModule) },
   { path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule) },
   { path: 'profile/admin', loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule) },
-  { path: 'create', loadChildren: () => import('./pages/recipe/recipe.module').then(m => m.RecipeModule) }
+  { path: 'create', loadChildren: () => import('./pages/recipe/recipe.module').then(m => m.RecipeModule) },
+  { path: 'recipes', loadChildren: () => import('./pages/recipes/recipes.module').then(m => m.RecipesModule) }
 ];
 
 @NgModule({

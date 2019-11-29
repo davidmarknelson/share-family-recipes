@@ -197,9 +197,7 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
     this.recipeService.createRecipe(recipe, this.selectedFile).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
-      console.log(res)
-      // CHANGE LATER
-      this.router.navigate(['/profile'])
+      this.router.navigate(['/recipes', res.id])
     }, err => {
 
       // This stops the loading indicator

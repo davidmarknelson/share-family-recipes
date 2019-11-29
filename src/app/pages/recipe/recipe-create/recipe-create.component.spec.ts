@@ -569,6 +569,7 @@ describe('RecipeCreateComponent', () => {
         spyOn(recipeService, 'createRecipe').and.callFake(() => {
           return of({ 
             id: 1,
+            name: 'eggs',
             message: 'Meal successfully created.' 
           });
         });
@@ -593,7 +594,7 @@ describe('RecipeCreateComponent', () => {
         submitButton.nativeElement.click();
         fixture.detectChanges();
         expect(recipeService.createRecipe).toHaveBeenCalled();
-        expect(router.navigate).toHaveBeenCalledWith(['/profile']);
+        expect(router.navigate).toHaveBeenCalledWith(['/recipes', 1]);
       });
 
       it('should return an error when there is a server error', () => {
