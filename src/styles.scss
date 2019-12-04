@@ -146,6 +146,12 @@ html, body {
   margin-top: 100px;
   margin-bottom: 100px;
 
+  &--max-width {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   &__title::before {
     content: '';
     display: inline-block;
@@ -202,4 +208,11 @@ html, body {
   &__buttons {
     margin-top: 100px;
   }
+}
+
+// ==================
+// Border radius
+// ==================
+.rounded-corners {
+  border-radius: 30px;
 }

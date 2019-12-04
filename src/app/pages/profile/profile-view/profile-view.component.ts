@@ -2,17 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // Services
-import { AuthService } from '../../utilities/services/auth/auth.service';
-import { EmailVerificationService } from '../../utilities/services/email-verification/email-verification.service';
+import { AuthService } from '../../../utilities/services/auth/auth.service';
+import { EmailVerificationService } from '../../../utilities/services/email-verification/email-verification.service';
 // Interfaces
-import { UserProfile } from '../../utilities/services/auth/user-profile';
+import { UserProfile } from '../../../utilities/services/auth/user-profile';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  selector: 'app-profile-view',
+  templateUrl: './profile-view.component.html',
+  styleUrls: ['./profile-view.component.scss']
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileViewComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   gettingProfile: boolean;
   user: UserProfile;

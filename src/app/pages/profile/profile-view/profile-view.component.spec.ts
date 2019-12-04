@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AuthService } from '../../utilities/services/auth/auth.service';
-import { EmailVerificationService } from '../../utilities/services/email-verification/email-verification.service';
-import { ProfileComponent } from './profile.component';
+import { AuthService } from '../../../utilities/services/auth/auth.service';
+import { EmailVerificationService } from '../../../utilities/services/email-verification/email-verification.service';
+import { ProfileViewComponent } from './profile-view.component';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
@@ -48,14 +48,14 @@ class MockEmailService {
 }
 
 describe('ProfileComponent', () => {
-  let component: ProfileComponent;
-  let fixture: ComponentFixture<ProfileComponent>;
+  let component: ProfileViewComponent;
+  let fixture: ComponentFixture<ProfileViewComponent>;
   let emailService: EmailVerificationService;
   let authService: AuthService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProfileComponent ],
+      declarations: [ ProfileViewComponent ],
       providers: [
         { provide: AuthService, useClass:  MockAuthService },
         { provide: EmailVerificationService, useClass:  MockEmailService }
@@ -65,7 +65,7 @@ describe('ProfileComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProfileComponent);
+    fixture = TestBed.createComponent(ProfileViewComponent);
     component = fixture.componentInstance;
     authService = fixture.debugElement.injector.get(AuthService);
     emailService = fixture.debugElement.injector.get(EmailVerificationService);

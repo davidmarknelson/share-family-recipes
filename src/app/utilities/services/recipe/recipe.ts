@@ -1,15 +1,24 @@
 export interface Recipe {
   id?: number,
-  mealPic?: string,
+  mealPic?: {
+    mealPicName: string
+  },
+  creator?: {
+    username: string,
+    profilePic: {
+      profilePicName: string
+    }
+  }
   name: string,
   originalName?: string,
-  description: string,
-  ingredients: Array<string>,
-  instructions: Array<string>,
-  cookTime: number,
-  difficulty: number,
+  description?: string,
+  ingredients?: Array<string>,
+  instructions?: Array<string>,
+  cookTime?: number,
+  difficulty?: number,
   originalRecipeUrl?: string,
   youtubeUrl?: string,
   createdAt?: string,
-  updatedAt?: string
+  updatedAt?: string,
+  message?: string // for error messages
 }

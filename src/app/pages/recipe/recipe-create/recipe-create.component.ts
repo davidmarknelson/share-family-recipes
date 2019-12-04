@@ -191,7 +191,9 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
       difficulty: this.createRecipeForm.value.difficulty,
       originalRecipeUrl: this.createRecipeForm.value.originalRecipeUrl,
       youtubeUrl: this.createRecipeForm.value.youtubeUrl,
-      mealPic: (this.createRecipeForm.value.mealPic) ? this.createRecipeForm.value.mealPic.replace("C:\\fakepath\\", "") : null,
+      mealPic: 
+        (this.createRecipeForm.value.mealPic) ? 
+        { mealPicName: this.createRecipeForm.value.mealPic.replace("C:\\fakepath\\", "") } : null
     };
 
     this.recipeService.createRecipe(recipe, this.selectedFile).pipe(

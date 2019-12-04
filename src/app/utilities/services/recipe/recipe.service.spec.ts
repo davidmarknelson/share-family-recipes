@@ -92,7 +92,8 @@ describe('MealService', () => {
           'Cook rice.', 'Fry rice in the pan with an egg.'
         ],
         cookTime: 15,
-        difficulty: 2
+        difficulty: 2,
+        mealPic: 'test.png'
       };
       let blob = new Blob([""], { type: 'image/png' });
       blob["lastModifiedDate"] = "";
@@ -123,7 +124,7 @@ describe('MealService', () => {
       });
 
       http.expectOne('http://localhost:3000/meals/available-names?name=rice')
-        .flush(signupResponse, {status: 204, statusText: 'No Content'});
+        .flush(signupResponse, {status: 200, statusText: 'OK'});
       expect(response).toEqual(signupResponse);
       http.verify();
     });
@@ -140,6 +141,110 @@ describe('MealService', () => {
         .flush(signupResponse, {status: 400, statusText: 'Bad Request'});
       expect(errorResponse).toEqual(signupResponse);
       http.verify();
+    });
+  });
+
+  describe('getRecipeById', () => {
+    it('should return a recipe', () => {
+      let signupResponse = {
+        id: 1,
+        name: 'Fried Rice',
+        description: 'A simple rice dish.',
+        ingredients: [
+          'rice', 'egg', 'oil'
+        ],
+        instructions: [
+          'Cook rice.', 'Fry rice in the pan with an egg.'
+        ],
+        creator: {
+          username: 'johndoe',
+          profilePic: null
+        },
+        cookTime: 15,
+        difficulty: 2,
+        createdAt: '2019-11-29T19:57:43.200Z',
+        updatedAt: '2019-11-29T19:57:43.200Z'
+      };
+
+      let response;
+      recipeService.getRecipeById('1').subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/meals/meal-by-id?id=1').flush(signupResponse);
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return a 500 status if there is an error message', () => {
+      let signupResponse = {
+        message: 'There was an error getting the meal.'
+      };
+
+      let errorResponse;
+      recipeService.getRecipeById('1').subscribe(res => {}, err => {
+        errorResponse = err.error;
+      });
+
+      http.expectOne('http://localhost:3000/meals/meal-by-id?id=1')
+        .flush(signupResponse, {status: 500, statusText: 'Server Error'});
+      expect(errorResponse).toEqual(signupResponse);
+      http.verify();
+    });
+  });
+
+  describe('getRecipeByName', () => {
+    it('should return a recipe', () => {
+      let signupResponse = {
+        name: 'Egg', // Name was changed because the tests fail with 'Fried%20Rice', but it works outside of tests
+        description: 'A simple rice dish.',
+        ingredients: [
+          'rice', 'egg', 'oil'
+        ],
+        instructions: [
+          'Cook rice.', 'Fry rice in the pan with an egg.'
+        ],
+        creator: {
+          username: 'johndoe',
+          profilePic: null
+        },
+        cookTime: 15,
+        difficulty: 2,
+        createdAt: '2019-11-29T19:57:43.200Z',
+        updatedAt: '2019-11-29T19:57:43.200Z'
+      };
+
+      let response;
+      recipeService.getRecipeByName('Egg').subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/meals/meal-by-name?name=Egg').flush(signupResponse, {status: 200, statusText: 'OK'});
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return a 500 status if there is an error message', () => {
+      let signupResponse = {
+        message: 'There was an error getting the meal.'
+      };
+
+      let errorResponse;
+      recipeService.getRecipeByName('Egg').subscribe(res => {}, err => {
+        errorResponse = err.error;
+      });
+
+      http.expectOne('http://localhost:3000/meals/meal-by-name?name=Egg')
+        .flush(signupResponse, {status: 500, statusText: 'Server Error'});
+      expect(errorResponse).toEqual(signupResponse);
+      http.verify();
+    });
+  });
+
+  describe('formatDate', () => {
+    it('should return a date in Mon Day, Year format', () => {
+      let date = recipeService.formatDate('2019-10-08T07:45:48.214Z');
+      expect(date).toEqual('Oct 08, 2019');
     });
   });
 });

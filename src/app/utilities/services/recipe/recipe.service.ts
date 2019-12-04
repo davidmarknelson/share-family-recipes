@@ -16,7 +16,7 @@ export class RecipeService {
 
   constructor(private http: HttpClient) { }
 
-  createRecipe(fields: Recipe, file): Observable<any>  {
+  createRecipe(fields, file): Observable<Recipe>  {
     let fd = new FormData();
     fd.append('name', fields.name);
     fd.append('description', fields.description);
@@ -36,8 +36,96 @@ export class RecipeService {
   }
 
   checkRecipeNameAvailability(name: string): Observable<any>  {
-    return this.http.get(`${this.apiUrl}meals/available-names`, { params: {
+    return this.http.get<any>(`${this.apiUrl}meals/available-names`, { params: {
       name: name
     }});
   }
+
+  getRecipeById(id: string): Observable<Recipe> {
+    return this.http.get<Recipe>(`${this.apiUrl}meals/meal-by-id`, { params: {
+      id: id
+    }}).pipe(
+      map(res => {
+        res.createdAt = this.formatDate(res.createdAt);
+        res.updatedAt = this.formatDate(res.updatedAt);
+        // res.ingredients = this.formatIngredients(res.ingredients);
+        // res.instructions = this.formatInstructions(res.instructions);
+        res.mealPic = this.formatMealPic(res.mealPic);
+        // res.originalRecipeUrl = this.formatOriginalRecipeUrl(res.originalRecipeUrl);
+        res.creator.profilePic = this.formatProfilePic(res.creator.profilePic);
+        return res;
+      })
+    );
+  }
+
+  getRecipeByName(name: string): Observable<Recipe> {
+    name = name.replace(' ', '%20');
+
+    return this.http.get<Recipe>(`${this.apiUrl}meals/meal-by-name`, { params: {
+      name: name
+    }}).pipe(
+      map(res => {
+        res.createdAt = this.formatDate(res.createdAt);
+        res.updatedAt = this.formatDate(res.updatedAt);
+        // res.ingredients = this.formatIngredients(res.ingredients);
+        // res.instructions = this.formatInstructions(res.instructions);
+        res.mealPic = this.formatMealPic(res.mealPic);
+        // res.originalRecipeUrl = this.formatOriginalRecipeUrl(res.originalRecipeUrl);
+        res.creator.profilePic = this.formatProfilePic(res.creator.profilePic);
+        return res;
+      })
+    );
+  }
+
+  formatDate(date) {
+    return format(new Date(date), 'MMM dd, yyyy');
+  }
+
+  formatMealPic(pic) {
+    if (pic) {
+      return {
+        mealPicName: `${environment.apiUrl}public/images/mealPics/${pic.mealPicName}`
+      };
+    } else {
+      return {
+        mealPicName: '../../../assets/images/default-img/default-meal-pic.jpg'
+      };
+    }
+  }
+
+  formatProfilePic(pic) {
+    if (pic) {
+      return {
+        profilePicName: `${environment.apiUrl}public/images/profilePics/${pic.profilePicName}`
+      }
+    } else {
+      return {
+        profilePicName: '../../../assets/images/default-img/default-profile-pic.jpg'
+      };
+    }
+  }
+
+  // formatIngredients(ingredients) {
+  //   let tempArray = [];
+  //   for (let ingredient of ingredients) {
+  //     let obj = JSON.parse(ingredient);
+  //     tempArray.push(obj.ingredient);
+  //   }
+  //   return tempArray;
+  // }
+
+  // formatInstructions(instructions) {
+  //   let tempArray = [];
+  //   for (let instruction of instructions) {
+  //     let obj = JSON.parse(instruction);
+  //     tempArray.push(obj.instruction);
+  //   }
+  //   return tempArray;
+  // }
+
+  // formatOriginalRecipeUrl(url: string) {
+  //   if (!url.startsWith('http://') || !url.startsWith('https://')) {
+  //     return `http://${url}`;
+  //   }
+  // }
 }
