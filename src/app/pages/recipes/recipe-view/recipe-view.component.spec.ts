@@ -6,6 +6,7 @@ import { RecipesModule } from '../recipes.module';
 import { ActivatedRoute} from '@angular/router';
 import { RecipeService } from '../../../utilities/services/recipe/recipe.service';
 import { AuthService } from '../../../utilities/services/auth/auth.service';
+import { LikesService } from '../../../utilities/services/likes/likes.service';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -35,6 +36,29 @@ const recipeObj = {
   youtubeUrl: "https://www.youtube-nocookie.com/embed/MV0F_XiR48Q"
 };
 
+const recipe2Obj = {
+  id: 1,
+  name: "Eggs and Rice",
+  description: "A delicious and easy dish.",
+  creatorId: 1,
+  creator: { 
+    username: "johndoe", 
+    profilePic: {
+      profilePicName: "../../../assets/images/default-img/default-profile-pic.jpg"
+    } 
+  },
+  ingredients: [ "3 eggs", "rice", "vegetables" ],
+  instructions: [ "cooks eggs", "cook rice", "mix and serve" ],
+  cookTime: 20,
+  difficulty: 1,
+  likes: [],
+  mealPic: { 
+    mealPicName: "../../../assets/images/default-img/default-meal-pic.jpg" 
+  },
+  createdAt: "Dec 04, 2019",
+  updatedAt: "Dec 04, 2019",
+};
+
 const userObj = {
   id: 1,
   isAdmin: false,
@@ -61,11 +85,21 @@ class MockAuthService {
   currentUser() {}
 }
 
+class MockLikesService {
+  addLike(recipeId) {
+    return of()
+  }
+  removeLike(recipeId) {
+    return of()
+  }
+}
+
 describe('RecipeViewComponent', () => {
   let component: RecipeViewComponent;
   let authService: AuthService;
   let activatedRoute: ActivatedRoute;
   let recipeService: RecipeService;
+  let likesService: LikesService;
   let fixture: ComponentFixture<RecipeViewComponent>;
 
   beforeEach(async(() => {
@@ -77,7 +111,8 @@ describe('RecipeViewComponent', () => {
         providers: [
           { provide: RecipeService, useClass: MockRecipeService },
           { provide: ActivatedRoute, useClass: MockActivatedRoute },
-          { provide: AuthService, useClass: MockAuthService }
+          { provide: AuthService, useClass: MockAuthService },
+          { provide: LikesService, useClass: MockLikesService }
         ]
       }
     }).compileComponents();
@@ -88,6 +123,7 @@ describe('RecipeViewComponent', () => {
     component = fixture.componentInstance;
     authService = fixture.debugElement.injector.get(AuthService);
     recipeService = fixture.debugElement.injector.get(RecipeService);
+    likesService = fixture.debugElement.injector.get(LikesService);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
   });
 
@@ -158,15 +194,17 @@ describe('RecipeViewComponent', () => {
 
       let title: DebugElement = fixture.debugElement.query(By.css('.page-header__title'));
       let editBtn: DebugElement = fixture.debugElement.query(By.css('[data-test=edit-btn]'));
+      let iframeVideo: DebugElement = fixture.debugElement.query(By.css('iframe'));
 
       expect(title.nativeElement.innerText).toEqual('Eggs and Rice');
       expect(editBtn).toBeTruthy();
+      expect(iframeVideo).toBeTruthy();
     });
 
     it('should populate the page with the information and not show the edit button', () => {
       spyOn(component, 'getRecipeById').and.callThrough();
       spyOn(recipeService, 'getRecipeById').and.callFake(() => {
-        return of(recipeObj);        
+        return of(recipe2Obj);        
       });
 
       fixture.detectChanges();
@@ -180,5 +218,70 @@ describe('RecipeViewComponent', () => {
       expect(title.nativeElement.innerText).toEqual('Eggs and Rice');
       expect(editBtn).toBeFalsy();
     });
-  })
+  });
+
+  describe('likes', () => {
+    beforeEach(() => {
+      spyOn(authService, 'isLoggedIn').and.callFake(() => true);
+      spyOn(authService, 'currentUser').and.callFake(() => userObj);
+
+      spyOn(component, 'getRecipeById').and.callThrough();
+      spyOn(recipeService, 'getRecipeById').and.callFake(() => {
+        return of(recipe2Obj);        
+      });
+      spyOn(component, 'checkLikes');
+
+      fixture.detectChanges();
+    });
+
+    it('should call checkLikes when the page loads', () => {
+      expect(component.checkLikes).toHaveBeenCalled();
+    });
+
+    it('should add a like', () => {
+      let likeBtn: DebugElement = fixture.debugElement.query(By.css('.info__icon-btn'));
+
+      spyOn(component, 'toggleLikes').and.callThrough();
+      spyOn(likesService, 'addLike').and.callFake(() => {
+        return of({
+          message: 'Meal successfully liked.'
+        })
+      });
+
+      likeBtn.nativeElement.click();
+
+      fixture.detectChanges();
+
+      expect(component.toggleLikes).toHaveBeenCalled();
+      expect(likesService.addLike).toHaveBeenCalled();
+    });
+
+    it('should remove a like', () => {
+      let likeBtn: DebugElement = fixture.debugElement.query(By.css('.info__icon-btn'));
+
+      spyOn(component, 'toggleLikes').and.callThrough();
+      spyOn(likesService, 'addLike').and.callFake(() => {
+        return of({
+          message: 'Meal successfully liked.'
+        })
+      });
+
+      likeBtn.nativeElement.click();
+
+      fixture.detectChanges();
+
+      spyOn(likesService, 'removeLike').and.callFake(() => {
+        return of({
+          message: 'Meal successfully unliked.'
+        })
+      });
+
+      likeBtn.nativeElement.click();
+
+      fixture.detectChanges();
+
+      expect(component.toggleLikes).toHaveBeenCalledTimes(2);
+      expect(likesService.removeLike).toHaveBeenCalled();
+    });
+  });
 });

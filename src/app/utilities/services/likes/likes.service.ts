@@ -17,6 +17,6 @@ export class LikesService {
   }
 
   removeLike(recipeId): Observable<any>  {
-    return this.http.post<any>(`${this.apiUrl}likes/remove`, { recipeId: recipeId});
+    return this.http.request<any>('delete', `${this.apiUrl}likes/remove`, { body: { recipeId: recipeId}});
   }
 }

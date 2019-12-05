@@ -8,7 +8,8 @@ export interface Recipe {
     profilePic: {
       profilePicName: string
     }
-  }
+  },
+  likes?: Array<{userId: number}>,
   name: string,
   originalName?: string,
   description?: string,

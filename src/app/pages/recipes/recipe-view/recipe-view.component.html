@@ -48,7 +48,10 @@
 
       <!-- Likes -->
       <div>
-        <button class='info__icon-btn'>
+        <button 
+          class='info__icon-btn' 
+          (click)='toggleLikes()'
+          [class.info__icon-btn__liked]='isRecipeLiked'>
           <fa-icon [icon]="faThumbsUp" size='2x'></fa-icon>
         </button>
         <span class='info__numbers'>{{ recipe.likes.length }}</span>
@@ -128,7 +131,7 @@
       class="has-ratio"
       width="560" 
       height="315" 
-      [src]="youtubeUrl()" 
+      [src]="recipe.youtubeUrl | safeUrl" 
       frameborder="0" 
       allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" 
       allowfullscreen>

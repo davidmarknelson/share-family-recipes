@@ -19,8 +19,7 @@ describe('MealService', () => {
   });
 
   it('should be created', () => {
-    const service: RecipeService = TestBed.get(RecipeService);
-    expect(service).toBeTruthy();
+    expect(recipeService).toBeTruthy();
   });
 
   describe('createRecipe', () => {
