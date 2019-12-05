@@ -284,4 +284,32 @@ describe('RecipeViewComponent', () => {
       expect(likesService.removeLike).toHaveBeenCalled();
     });
   });
+
+  describe('likes for a user not signed in', () => {
+    beforeEach(() => {
+      spyOn(authService, 'isLoggedIn').and.callFake(() => false);
+
+      spyOn(component, 'getRecipeById').and.callThrough();
+      spyOn(recipeService, 'getRecipeById').and.callFake(() => {
+        return of(recipe2Obj);        
+      });
+      spyOn(component, 'checkLikes');
+
+      fixture.detectChanges();
+    });
+
+    it('should not call likes service', () => {
+      let likeBtn: DebugElement = fixture.debugElement.query(By.css('.info__icon-btn'));
+
+      spyOn(component, 'toggleLikes').and.callThrough();
+      spyOn(likesService, 'addLike');
+
+      likeBtn.nativeElement.click();
+
+      fixture.detectChanges();
+
+      expect(component.toggleLikes).toHaveBeenCalled();
+      expect(likesService.addLike).not.toHaveBeenCalled();
+    });
+  });
 });

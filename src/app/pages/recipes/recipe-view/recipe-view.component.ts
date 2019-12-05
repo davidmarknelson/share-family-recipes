@@ -99,6 +99,11 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
   }
 
   toggleLikes() {
+    // show error is person is not signed in
+    if (!this.user) {
+      return this.errorToast('You must be signed in to do that.');
+    }
+
     // Loop through array of likes to find user's id
     for (let i = 0; i < this.recipe.likes.length; i++) {
       if (this.recipe.likes[i].userId === this.user.id) {

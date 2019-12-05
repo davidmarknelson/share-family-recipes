@@ -49,4 +49,38 @@ describe('Recipe View', () => {
     });
   });
 
+  describe('likes', () => {
+    beforeEach(() => {
+      cy.login('verified@email.com', 'password');
+    });
+
+    it('should add and remove likes', () => {
+      cy
+        .visit('/recipes/1')
+        .url().should('include', '/recipes/1')
+        .get('[data-test=likes]').should('contain', '0')
+        .get('.info__icon-btn').click()
+        .get('[data-test=likes]').should('contain', '1')
+        .get('.notification').invoke('text')
+        .should('contain', 'Meal successfully liked.')
+        .get('.info__icon-btn').click()
+        .get('[data-test=likes]').should('contain', '0')
+        .get('.notification').invoke('text')
+        .should('contain', 'Meal successfully unliked.');
+    });
+  });
+
+  describe('likes for a user not signed in', () => {
+    it('should show an error message', () => {
+      cy
+        .visit('/recipes/1')
+        .url().should('include', '/recipes/1')
+        .get('[data-test=likes]').should('contain', '0')
+        .get('.info__icon-btn').click()
+        .get('.notification').invoke('text')
+        .should('contain', 'You must be signed in to do that.')
+        .get('[data-test=likes]').should('contain', '0');
+    });
+  });
+
 });
