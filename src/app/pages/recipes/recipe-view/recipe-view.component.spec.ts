@@ -6,10 +6,10 @@ import { RecipesModule } from '../recipes.module';
 import { ActivatedRoute} from '@angular/router';
 import { RecipeService } from '../../../utilities/services/recipe/recipe.service';
 import { AuthService } from '../../../utilities/services/auth/auth.service';
-import { LikesService } from '../../../utilities/services/likes/likes.service';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 const recipeObj = {
   id: 1,
@@ -85,34 +85,23 @@ class MockAuthService {
   currentUser() {}
 }
 
-class MockLikesService {
-  addLike(recipeId) {
-    return of()
-  }
-  removeLike(recipeId) {
-    return of()
-  }
-}
-
 describe('RecipeViewComponent', () => {
   let component: RecipeViewComponent;
   let authService: AuthService;
   let activatedRoute: ActivatedRoute;
   let recipeService: RecipeService;
-  let likesService: LikesService;
   let fixture: ComponentFixture<RecipeViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RecipesModule, RouterTestingModule]
+      imports: [RecipesModule, RouterTestingModule, HttpClientTestingModule]
     })
     .overrideComponent(RecipeViewComponent, {
       set: {
         providers: [
           { provide: RecipeService, useClass: MockRecipeService },
           { provide: ActivatedRoute, useClass: MockActivatedRoute },
-          { provide: AuthService, useClass: MockAuthService },
-          { provide: LikesService, useClass: MockLikesService }
+          { provide: AuthService, useClass: MockAuthService }
         ]
       }
     }).compileComponents();
@@ -123,7 +112,6 @@ describe('RecipeViewComponent', () => {
     component = fixture.componentInstance;
     authService = fixture.debugElement.injector.get(AuthService);
     recipeService = fixture.debugElement.injector.get(RecipeService);
-    likesService = fixture.debugElement.injector.get(LikesService);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
   });
 
@@ -217,99 +205,6 @@ describe('RecipeViewComponent', () => {
 
       expect(title.nativeElement.innerText).toEqual('Eggs and Rice');
       expect(editBtn).toBeFalsy();
-    });
-  });
-
-  describe('likes', () => {
-    beforeEach(() => {
-      spyOn(authService, 'isLoggedIn').and.callFake(() => true);
-      spyOn(authService, 'currentUser').and.callFake(() => userObj);
-
-      spyOn(component, 'getRecipeById').and.callThrough();
-      spyOn(recipeService, 'getRecipeById').and.callFake(() => {
-        return of(recipe2Obj);        
-      });
-      spyOn(component, 'checkLikes');
-
-      fixture.detectChanges();
-    });
-
-    it('should call checkLikes when the page loads', () => {
-      expect(component.checkLikes).toHaveBeenCalled();
-    });
-
-    it('should add a like', () => {
-      let likeBtn: DebugElement = fixture.debugElement.query(By.css('.info__icon-btn'));
-
-      spyOn(component, 'toggleLikes').and.callThrough();
-      spyOn(likesService, 'addLike').and.callFake(() => {
-        return of({
-          message: 'Meal successfully liked.'
-        })
-      });
-
-      likeBtn.nativeElement.click();
-
-      fixture.detectChanges();
-
-      expect(component.toggleLikes).toHaveBeenCalled();
-      expect(likesService.addLike).toHaveBeenCalled();
-    });
-
-    it('should remove a like', () => {
-      let likeBtn: DebugElement = fixture.debugElement.query(By.css('.info__icon-btn'));
-
-      spyOn(component, 'toggleLikes').and.callThrough();
-      spyOn(likesService, 'addLike').and.callFake(() => {
-        return of({
-          message: 'Meal successfully liked.'
-        })
-      });
-
-      likeBtn.nativeElement.click();
-
-      fixture.detectChanges();
-
-      spyOn(likesService, 'removeLike').and.callFake(() => {
-        return of({
-          message: 'Meal successfully unliked.'
-        })
-      });
-
-      likeBtn.nativeElement.click();
-
-      fixture.detectChanges();
-
-      expect(component.toggleLikes).toHaveBeenCalledTimes(2);
-      expect(likesService.removeLike).toHaveBeenCalled();
-    });
-  });
-
-  describe('likes for a user not signed in', () => {
-    beforeEach(() => {
-      spyOn(authService, 'isLoggedIn').and.callFake(() => false);
-
-      spyOn(component, 'getRecipeById').and.callThrough();
-      spyOn(recipeService, 'getRecipeById').and.callFake(() => {
-        return of(recipe2Obj);        
-      });
-      spyOn(component, 'checkLikes');
-
-      fixture.detectChanges();
-    });
-
-    it('should not call likes service', () => {
-      let likeBtn: DebugElement = fixture.debugElement.query(By.css('.info__icon-btn'));
-
-      spyOn(component, 'toggleLikes').and.callThrough();
-      spyOn(likesService, 'addLike');
-
-      likeBtn.nativeElement.click();
-
-      fixture.detectChanges();
-
-      expect(component.toggleLikes).toHaveBeenCalled();
-      expect(likesService.addLike).not.toHaveBeenCalled();
     });
   });
 });

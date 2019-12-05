@@ -59,11 +59,11 @@ describe('Recipe View', () => {
         .visit('/recipes/1')
         .url().should('include', '/recipes/1')
         .get('[data-test=likes]').should('contain', '0')
-        .get('.info__icon-btn').click()
+        .get('.btn').click()
         .get('[data-test=likes]').should('contain', '1')
         .get('.notification').invoke('text')
         .should('contain', 'Meal successfully liked.')
-        .get('.info__icon-btn').click()
+        .get('.btn').click()
         .get('[data-test=likes]').should('contain', '0')
         .get('.notification').invoke('text')
         .should('contain', 'Meal successfully unliked.');
@@ -76,7 +76,7 @@ describe('Recipe View', () => {
         .visit('/recipes/1')
         .url().should('include', '/recipes/1')
         .get('[data-test=likes]').should('contain', '0')
-        .get('.info__icon-btn').click()
+        .get('.btn').click()
         .get('.notification').invoke('text')
         .should('contain', 'You must be signed in to do that.')
         .get('[data-test=likes]').should('contain', '0');

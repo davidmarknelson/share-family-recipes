@@ -14,7 +14,7 @@ describe('Email verification', () => {
       cy
         .get('[data-test=emailVerifyMsg] > p > a').click()
         .get('[data-test=emailSending]').should('contain', 'Sending email...')
-        .wait(5000)
+        .wait(6000)
         .get('.notification').invoke('text')
         .should('contain', 'Email has successfully been sent.')
         .get('[data-test=emailVerifySuccess]').should('exist');
