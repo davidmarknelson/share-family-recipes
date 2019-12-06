@@ -56,13 +56,13 @@
       </div>
     
       <!-- Difficulty -->
-      <div class='info--align'>
+      <div class='info--align info--pointer' data-tooltip="Difficulty">
         <fa-icon [icon]="faFireAlt" size='lg'></fa-icon>
         <span class='info__numbers'>{{ recipe.difficulty }}</span>
       </div>
     
       <!-- Cook time -->
-      <div class='info--align'>
+      <div class='info--align info--pointer' data-tooltip="Cook time">
         <fa-icon [icon]="faClock" size='lg'></fa-icon>
         <span class='info__numbers'>{{ recipe.cookTime }}</span>
       </div>
@@ -71,14 +71,16 @@
     <div class="column info__container">
       <a 
         data-test='edit-btn' 
-        class='button is-primary is-rounded'
+        class='button is-primary is-rounded is-small'
         *ngIf='user && user.id === recipe.creatorId'>
         Edit 
         <fa-icon [icon]="faChevronRight" class='info__numbers'></fa-icon>
       </a>
-      <button class='button is-primary is-rounded'>
-        Save
-      </button>
+
+      <app-saved-recipe-button
+        [recipeId]='recipe.id'
+        [user]='user'
+      ></app-saved-recipe-button>
     </div>
   </div>
 </div>

@@ -61,14 +61,16 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       this.loading = false;
-      console.log(res)
 
+      // The user info must be called before
+      // the recipe is assigned because child components require the
+      // user data and the recipe data
       this.returnUserObj();
 
       this.recipe = res;
     }, err => {
       this.loading = false;
-      console.log(err)
+
       // This shows the error message
       this.error = err.error.message;
     });
@@ -81,8 +83,10 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       this.loading = false;
-      console.log(res)
 
+      // The user info must be called before
+      // the recipe is assigned because child components require the
+      // user data and the recipe data
       this.returnUserObj();
 
       this.recipe = res;

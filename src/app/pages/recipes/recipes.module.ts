@@ -6,16 +6,18 @@ import { RecipeBrowseComponent } from './recipes-browse/recipe-browse.component'
 import { RecipeViewComponent } from './recipe-view/recipe-view.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LikesButtonModule } from '../../partials/likes-button/likes-button.module';
+import { SavedRecipeButtonModule } from '../../partials/saved-recipe-button/saved-recipe-button.module';
 // Pipes
 import { SafeUrlPipe } from '../../utilities/pipes/safe-url/safe-url.pipe';
 
 @NgModule({
-    declarations: [RecipeBrowseComponent, RecipeViewComponent, SafeUrlPipe],
+  declarations: [RecipeBrowseComponent, RecipeViewComponent, SafeUrlPipe],
   imports: [
     CommonModule,
     RecipesRoutingModule,
     FontAwesomeModule,
-    LikesButtonModule
+    LikesButtonModule,
+    SavedRecipeButtonModule
   ]
 })
 export class RecipesModule { }

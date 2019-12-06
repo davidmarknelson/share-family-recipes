@@ -91,4 +91,8 @@ ul {
   &__numbers {
     margin-left: 5px;
   }
+
+  &--pointer {
+    cursor: default;
+  }
 }

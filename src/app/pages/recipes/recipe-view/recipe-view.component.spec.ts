@@ -56,13 +56,14 @@ const recipe2Obj = {
     mealPicName: "../../../assets/images/default-img/default-meal-pic.jpg" 
   },
   createdAt: "Dec 04, 2019",
-  updatedAt: "Dec 04, 2019",
+  updatedAt: "Dec 04, 2019"
 };
 
 const userObj = {
   id: 1,
   isAdmin: false,
   username: "johndoe",
+  savedRecipes: [],
   iat: 1575496172,
   exp: 2180296172
 };

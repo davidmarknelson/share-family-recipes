@@ -26,6 +26,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "bulma": "^0.8.0",
     "bulma-toast": "^1.5.3",
+    "bulma-tooltip": "^3.0.2",
     "date-fns": "^2.6.0",
     "ngx-page-scroll": "^7.0.0",
     "ngx-page-scroll-core": "^7.0.0",

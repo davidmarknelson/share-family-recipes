@@ -33,6 +33,7 @@ const userObj = {
   id: 1,
   isAdmin: false,
   username: "johndoe",
+  savedRecipes: [],
   iat: 1575496172,
   exp: 2180296172
 };
@@ -97,7 +98,7 @@ describe('LikesButtonComponent', () => {
       spyOn(component, 'toggleLikes').and.callThrough();
       spyOn(likesService, 'addLike').and.callFake(() => {
         return of({
-          message: 'Meal successfully liked.'
+          message: 'Recipe successfully liked.'
         })
       });
 
@@ -115,7 +116,7 @@ describe('LikesButtonComponent', () => {
       spyOn(component, 'toggleLikes').and.callThrough();
       spyOn(likesService, 'addLike').and.callFake(() => {
         return of({
-          message: 'Meal successfully liked.'
+          message: 'Recipe successfully liked.'
         })
       });
 
@@ -125,7 +126,7 @@ describe('LikesButtonComponent', () => {
 
       spyOn(likesService, 'removeLike').and.callFake(() => {
         return of({
-          message: 'Meal successfully unliked.'
+          message: 'Recipe successfully unliked.'
         })
       });
 
@@ -143,6 +144,7 @@ describe('LikesButtonComponent', () => {
       component.recipe = recipeObj;
       component.user = null;
       spyOn(component, 'checkLikes');
+      spyOn(component, 'errorToast');
 
       fixture.detectChanges();
     });
@@ -159,6 +161,7 @@ describe('LikesButtonComponent', () => {
 
       expect(component.toggleLikes).toHaveBeenCalled();
       expect(likesService.addLike).not.toHaveBeenCalled();
+      expect(component.errorToast).toHaveBeenCalled();
     });
   });
 });

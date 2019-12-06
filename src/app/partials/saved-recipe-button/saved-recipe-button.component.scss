@@ -1,0 +1,14 @@
+.saved-btn {
+  background-color: #11672C;
+  border: none;
+  color: #FFF;
+
+  &:hover {
+    background-color: #114910;
+    color: #FFF;
+  }
+
+  &:focus {
+    color: #FFF;
+  }
+}

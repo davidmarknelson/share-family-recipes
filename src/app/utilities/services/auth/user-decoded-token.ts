@@ -1,5 +1,6 @@
 export interface UserDecodedToken {
   id: number,
   isAdmin: boolean,
-  username: string
+  username: string,
+  savedRecipes: Array<{mealId: number}>
 }

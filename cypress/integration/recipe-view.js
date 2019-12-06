@@ -14,14 +14,14 @@ describe('Recipe View', () => {
       cy
         .visit('/recipes/2')
         .url().should('include', '/recipes/2')
-        .get('.message-body').should('contain', 'That meal does not exist.');
+        .get('.message-body').should('contain', 'That recipe does not exist.');
     });
 
     it('should show for a recipe that does not exist with the name', () => {
       cy
         .visit('/recipes/pizza')
         .url().should('include', '/recipes/pizza')
-        .get('.message-body').should('contain', 'That meal does not exist.');
+        .get('.message-body').should('contain', 'That recipe does not exist.');
     });
   });
 
@@ -62,11 +62,11 @@ describe('Recipe View', () => {
         .get('.btn').click()
         .get('[data-test=likes]').should('contain', '1')
         .get('.notification').invoke('text')
-        .should('contain', 'Meal successfully liked.')
+        .should('contain', 'Recipe successfully liked.')
         .get('.btn').click()
         .get('[data-test=likes]').should('contain', '0')
         .get('.notification').invoke('text')
-        .should('contain', 'Meal successfully unliked.');
+        .should('contain', 'Recipe successfully unliked.');
     });
   });
 
@@ -80,6 +80,38 @@ describe('Recipe View', () => {
         .get('.notification').invoke('text')
         .should('contain', 'You must be signed in to do that.')
         .get('[data-test=likes]').should('contain', '0');
+    });
+  });
+
+  describe('saves', () => {
+    beforeEach(() => {
+      cy.login('verified@email.com', 'password');
+    });
+
+    it('should save and unsave a recipe', () => {
+      cy
+        .visit('/recipes/1')
+        .url().should('include', '/recipes/1')
+        .get('[data-test=save-button]').should('contain', 'Save')
+        .get('[data-test=save-button]').click()
+        .get('[data-test=save-button]').should('contain', 'Saved')
+        .get('.notification').invoke('text')
+        .should('contain', 'Recipe successfully saved.')
+        .get('[data-test=save-button]').click()
+        .get('[data-test=save-button]').should('contain', 'Save')
+        .get('.notification').invoke('text')
+        .should('contain', 'Recipe successfully unsaved.');
+    });
+  });
+
+  describe('saves for a user not signed in', () => {
+    it('should show an error message', () => {
+      cy
+        .visit('/recipes/1')
+        .url().should('include', '/recipes/1')
+        .get('[data-test=save-button]').click()
+        .get('.notification').invoke('text')
+        .should('contain', 'You must be signed in to do that.');
     });
   });
 

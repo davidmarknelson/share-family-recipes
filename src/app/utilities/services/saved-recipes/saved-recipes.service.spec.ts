@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { LikesService } from './likes.service';
+import { SavedRecipesService } from './saved-recipes.service';
 
-describe('LikesService', () => {
-  let likesService: LikesService;
+describe('SavedRecipesService', () => {
+  let savedRecipesService: SavedRecipesService;
   let http: HttpTestingController;
 
   beforeEach(() => {
@@ -12,73 +12,72 @@ describe('LikesService', () => {
       imports: [
         HttpClientTestingModule
       ],
-      providers: [LikesService]
+      providers: [SavedRecipesService]
     });
     
     http = TestBed.get(HttpTestingController);
-    likesService = TestBed.get(LikesService);
+    savedRecipesService = TestBed.get(SavedRecipesService);
   });
 
   it('should be created', () => {
-    const service: LikesService = TestBed.get(LikesService);
-    expect(service).toBeTruthy();
+    expect(savedRecipesService).toBeTruthy();
   });
 
-  describe('addLike', () => {
+  describe('saveRecipe', () => {
     it('should return a message when the recipe is successfully liked', () => {
       const likeResponse = { 
-        message: 'Recipe successfully liked.'
+        message: 'Recipe successfully saved.'
       };
       let response;
 
-      likesService.addLike(1).subscribe(res => {
+      savedRecipesService.saveRecipe(1).subscribe(res => {
         response = res;
       });
 
-      http.expectOne('http://localhost:3000/likes/add').flush(likeResponse);
+      http.expectOne('http://localhost:3000/saved/save').flush(likeResponse);
       expect(response).toEqual(likeResponse);
       http.verify();
     });
 
     it('should return an error message when the recipe is unsuccessfully liked', () => {
-      const likeResponse = 'There was an error liking this recipe.';
+      const likeResponse = 'There was an error saving this recipe.';
       let errorResponse;
 
-      likesService.addLike(1).subscribe(res => {}, err => {
+      savedRecipesService.saveRecipe(1).subscribe(res => {}, err => {
         errorResponse = err;
       });
 
-      http.expectOne('http://localhost:3000/likes/add').flush({message: likeResponse}, {status: 500, statusText: 'Server Error'});
+      http.expectOne('http://localhost:3000/saved/save').flush({message: likeResponse}, {status: 500, statusText: 'Server Error'});
       expect(errorResponse.error.message).toEqual(likeResponse);
       http.verify();
     });
   });
 
-  describe('removeLike', () => {
+  describe('unsaveRecipe', () => {
     it('should return a message when the recipe is successfully liked', () => {
       const likeResponse = { 
-        message: 'Recipe successfully unliked.'
+        message: 'Recipe successfully unsaved.'
       };
       let response;
 
-      likesService.removeLike(1).subscribe(res => {
+      savedRecipesService.unsaveRecipe(1).subscribe(res => {
         response = res;
       });
 
-      http.expectOne('http://localhost:3000/likes/remove').flush(likeResponse);
+      http.expectOne('http://localhost:3000/saved/unsave').flush(likeResponse);
       expect(response).toEqual(likeResponse);
       http.verify();
     });
 
     it('should return an error message when the recipe is unsuccessfully liked', () => {
-      const likeResponse = 'There was an error unliking this recipe.';
+      const likeResponse = 'There was an error unsaving this recipe.';
       let errorResponse;
 
-      likesService.removeLike(1).subscribe(res => {}, err => {
+      savedRecipesService.unsaveRecipe(1).subscribe(res => {}, err => {
         errorResponse = err;
       });
 
-      http.expectOne('http://localhost:3000/likes/remove').flush({message: likeResponse}, {status: 500, statusText: 'Server Error'});
+      http.expectOne('http://localhost:3000/saved/unsave').flush({message: likeResponse}, {status: 500, statusText: 'Server Error'});
       expect(errorResponse.error.message).toEqual(likeResponse);
       http.verify();
     });

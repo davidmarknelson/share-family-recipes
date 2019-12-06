@@ -1,0 +1,13 @@
+<button 
+  (click)='toggleSaveRecipes()'
+  class='button is-primary is-rounded is-small'
+  data-test='save-button'
+  [attr.data-tooltip]="isRecipeSaved ? 'Unsave from your list' : 'Save to your list'"
+  [class.saved-btn]='isRecipeSaved'>
+  <span *ngIf='!isRecipeSaved'>
+    Save
+  </span>
+  <span *ngIf='isRecipeSaved'>
+    Saved
+  </span>
+</button>
