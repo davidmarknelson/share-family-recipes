@@ -1,0 +1,17 @@
+.description {
+  &--rounded {
+    border-radius: 10px;
+  }
+
+  &__character-count {
+    position: absolute;
+    bottom: 0;
+    right: 5px;
+  }
+}
+
+.page-error-msg {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}

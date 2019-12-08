@@ -246,4 +246,59 @@ describe('MealService', () => {
       expect(date).toEqual('Oct 08, 2019');
     });
   });
+
+  fdescribe('editRecipe', () => {
+    it('should return a message when the recipe is updated', () => {
+      const recipe = { 
+        name: 'Fried Rice',
+        description: 'A simple rice dish.',
+        ingredients: [
+          'rice', 'egg', 'oil'
+        ],
+        instructions: [
+          'Cook rice.', 'Fry rice in the pan with an egg.'
+        ],
+        cookTime: 15,
+        difficulty: 2
+      };
+      let editResponse = {
+        'message': 'Recipe successfully updated.'
+      };
+
+      let response;
+      recipeService.editRecipe(recipe, null).subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/meals/update').flush(editResponse);
+      expect(response).toEqual(editResponse);
+      http.verify();
+    });
+
+    it('should return an error when email is already being used', () => {
+      const recipe = { 
+        name: 'Fried Rice',
+        description: 'A simple rice dish.',
+        ingredients: [
+          'rice', 'egg', 'oil'
+        ],
+        instructions: [
+          'Cook rice.', 'Fry rice in the pan with an egg.'
+        ],
+        cookTime: 15,
+        difficulty: 2
+      };
+
+      const editResponse = 'This email account is already in use.';
+      let errorResponse;
+
+      recipeService.editRecipe(recipe, null).subscribe(res => {}, err => {
+        errorResponse = err;
+      });
+
+      http.expectOne('http://localhost:3000/meals/update').flush({message: editResponse}, {status: 500, statusText: 'Server Error'});
+      expect(errorResponse.error.message).toEqual(editResponse);
+      http.verify();
+    });
+  });
 });

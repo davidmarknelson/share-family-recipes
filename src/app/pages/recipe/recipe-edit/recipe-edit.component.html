@@ -1,10 +1,19 @@
 <section class="section page-header">
-  <h1 class="title page-header__title has-text-centered">Create Recipe</h1>
-  <p class="subtitle has-text-centered">Create a new recipe.</p>
+  <h1 class="title page-header__title has-text-centered">Edit Recipe</h1>
+  <p class="subtitle has-text-centered">
+    Edit your recipe by changing the information in the fields you wish to edit.
+  </p>
 </section>
 
-<div class="form__container">
-  <form [formGroup]="createRecipeForm" (ngSubmit)="onSubmit()" novalidate>
+<!-- Page Error -->
+<article class="message is-danger page-error-msg" *ngIf='pageError'>
+  <div class="message-body">
+    {{ pageError }} Go to the <a routerLink='/recipes'>recipes page</a> to find the recipe you are looking for.
+  </div>
+</article>
+
+<div class="form__container" *ngIf='!pageError'>
+  <form [formGroup]="editRecipeForm" (ngSubmit)="onSubmit()" novalidate>
     <p class="has-text-right is-size-7">* required</p>
 
     <div class="columns">
@@ -24,15 +33,15 @@
               (!availableName && name.valid)"
               [class.is-success]="availableName && name.valid"
               required>
-              <div *ngIf="name.invalid && (name.dirty || name.touched || submitted)" class="has-text-danger">
-                <p *ngIf="name.errors.required" data-test='nameRequired'>Name is required</p>
-              </div>
-              <div *ngIf="availableName && name.valid" class="has-text-success">
-                <p data-test="nameAvailable">This name is available</p>
-              </div>
-              <div *ngIf="!availableName && name.valid" class="has-text-danger">
-                <p data-test="nameUnavailable">This name is already taken</p>
-              </div>
+            <div *ngIf="name.invalid && (name.dirty || name.touched || submitted)" class="has-text-danger">
+              <p *ngIf="name.errors.required" data-test='nameRequired'>Name is required</p>
+            </div>
+            <div *ngIf="availableName && name.valid" class="has-text-success">
+              <p data-test="nameAvailable">This name is available</p>
+            </div>
+            <div *ngIf="!availableName && name.valid" class="has-text-danger">
+              <p data-test="nameUnavailable">This name is already taken</p>
+            </div>
           </div>
         </div>
       </div>
@@ -130,16 +139,13 @@
             </button>
           </div>
         </div>
-
       </div>
-
 
       <!-- Ingredient error message -->
       <div class="notification is-danger" *ngIf="ingredientError" data-test="ingredientErrorMsg">
         <button type="button" class="delete" (click)='clearIngredientErrorMessage()'></button>
         {{ ingredientError }}
       </div>
-
     </div>
 
     <!-- Instructions -->
@@ -198,7 +204,6 @@
             </button>
           </div>
         </div>
-
       </div>
 
       <!-- Instructions error message -->
@@ -206,7 +211,6 @@
         <button type="button" class="delete" (click)='clearInstructionErrorMessage()'></button>
         {{ instructionError }}
       </div>
-
     </div>
 
     <div class="columns">
@@ -332,7 +336,7 @@
                 type="file" 
                 name="mealPic" 
                 id="mealPic" 
-                formControlName="mealPic" 
+                formControlName="mealPic"
                 (change)="onFileSelected($event)">
               <span class="file-cta form--rounded-left">
                 <span class="file-icon">
@@ -342,7 +346,7 @@
                   Choose a file…
                 </span>
               </span>
-              <span class="file-name form--rounded-right" [class.has-text-secondary]="selectedFile">
+              <span class="file-name form--rounded-right" [class.has-text-secondary]="selectedFile || mealPicName !== 'example.jpeg'">
                 {{ mealPicName }}
               </span>
             </label>
@@ -371,7 +375,7 @@
           class="button is-accent is-rounded" 
           type="submit" 
           [class.is-loading]="sendingForm">
-          Create Recipe
+          Edit Recipe
         </button>
       </p>
     </div>

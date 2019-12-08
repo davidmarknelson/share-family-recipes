@@ -312,7 +312,7 @@ describe('AuthService', () => {
       let user = {
         firstName: 'Joe'
       }
-      let signupResponse = {
+      let updateResponse = {
         'message': 'User successfully updated.'
       };
 
@@ -321,8 +321,8 @@ describe('AuthService', () => {
         response = res;
       });
 
-      http.expectOne('http://localhost:3000/user/update').flush(signupResponse);
-      expect(response).toEqual(signupResponse);
+      http.expectOne('http://localhost:3000/user/update').flush(updateResponse);
+      expect(response).toEqual(updateResponse);
       http.verify();
     });
 

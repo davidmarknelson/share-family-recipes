@@ -4,17 +4,17 @@ import { Location } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // Services and Interfaces
-import { UserLogin } from '../../utilities/services/auth/user-login';
-import { AuthService } from '../../utilities/services/auth/auth.service';
+import { UserLogin } from '../../../utilities/services/auth/user-login';
+import { AuthService } from '../../../utilities/services/auth/auth.service';
 // Font Awesome
 import { faLock, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  selector: 'app-login-view',
+  templateUrl: './login-view.component.html',
+  styleUrls: ['./login-view.component.scss']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginViewComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   // Font Awesome
   faEnvelope = faEnvelope;

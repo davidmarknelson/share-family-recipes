@@ -1,15 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { AuthService } from '../../utilities/services/auth/auth.service';
-import { LoginComponent } from './login.component';
+import { AuthService } from '../../../utilities/services/auth/auth.service';
+import { LoginViewComponent } from './login-view.component';
 import { DebugElement } from '@angular/core';
-import { LoginModule } from './login.module';
+import { LoginModule } from '../login.module';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { RouterTestingModule } from '@angular/router/testing';
 
-let fixture: ComponentFixture<LoginComponent>;
+let fixture: ComponentFixture<LoginViewComponent>;
 
 class LoginPage {
   loginBtn: DebugElement;
@@ -37,7 +37,7 @@ class MockAuthService {
 
 
 describe('LoginComponent', () => {
-  let component: LoginComponent;
+  let component: LoginViewComponent;
   let authService: AuthService;
   let router: Router;
   let location: Location;
@@ -50,7 +50,7 @@ describe('LoginComponent', () => {
         RouterTestingModule
       ]
     })
-    .overrideComponent(LoginComponent, {
+    .overrideComponent(LoginViewComponent, {
       set: {
         providers: [
           { provide: AuthService, useClass: MockAuthService }
@@ -61,7 +61,7 @@ describe('LoginComponent', () => {
   }));
 
   beforeEach(async(() => {
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(LoginViewComponent);
     component = fixture.componentInstance;
 
     loginPage = new LoginPage();

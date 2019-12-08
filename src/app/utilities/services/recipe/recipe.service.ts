@@ -17,15 +17,18 @@ export class RecipeService {
   constructor(private http: HttpClient) { }
 
   createRecipe(fields, file): Observable<Recipe>  {
+    // Formarray makes the ingredients and instructions fields into the objects  
+    // {ingredient: ''}. These functions format the fields into the array of only the 
+    // values
+    fields.ingredients = this.formatIngredients(fields.ingredients);
+    fields.instructions = this.formatInstructions(fields.instructions);
+
     let fd = new FormData();
-    fd.append('name', fields.name);
-    fd.append('description', fields.description);
-    fd.append('ingredients', JSON.stringify(fields.ingredients));
-    fd.append('instructions', JSON.stringify(fields.instructions));
-    fd.append('cookTime', String(fields.cookTime));
-    fd.append('difficulty', String(fields.difficulty));
-    if (fields.originalRecipeUrl) fd.append('originalRecipeUrl', fields.originalRecipeUrl);
-    if (fields.youtubeUrl) fd.append('youtubeUrl', fields.youtubeUrl);
+    for (let key of Object.keys(fields)) {
+      if (fields[key] && (key !== 'mealPic')) {
+        fd.append(key, fields[key]);
+      }
+    }
     if (file) fd.append('mealPic', file, fields.mealPic);
 
     return this.http.post<any>(`${this.apiUrl}meals/create`, fd, { 
@@ -36,6 +39,8 @@ export class RecipeService {
   }
 
   checkRecipeNameAvailability(name: string): Observable<any>  {
+    name = name.replace(' ', '%20');
+
     return this.http.get<any>(`${this.apiUrl}meals/available-names`, { params: {
       name: name
     }});
@@ -48,10 +53,7 @@ export class RecipeService {
       map(res => {
         res.createdAt = this.formatDate(res.createdAt);
         res.updatedAt = this.formatDate(res.updatedAt);
-        // res.ingredients = this.formatIngredients(res.ingredients);
-        // res.instructions = this.formatInstructions(res.instructions);
         res.mealPic = this.formatMealPic(res.mealPic);
-        // res.originalRecipeUrl = this.formatOriginalRecipeUrl(res.originalRecipeUrl);
         res.creator.profilePic = this.formatProfilePic(res.creator.profilePic);
         return res;
       })
@@ -67,14 +69,33 @@ export class RecipeService {
       map(res => {
         res.createdAt = this.formatDate(res.createdAt);
         res.updatedAt = this.formatDate(res.updatedAt);
-        // res.ingredients = this.formatIngredients(res.ingredients);
-        // res.instructions = this.formatInstructions(res.instructions);
         res.mealPic = this.formatMealPic(res.mealPic);
-        // res.originalRecipeUrl = this.formatOriginalRecipeUrl(res.originalRecipeUrl);
         res.creator.profilePic = this.formatProfilePic(res.creator.profilePic);
         return res;
       })
     );
+  }
+
+  editRecipe(fields, file): Observable<any>  {
+    // Formarray makes the ingredients and instructions fields into the objects  
+    // {ingredient: ''}. These functions format the fields into the array of only the 
+    // values
+    fields.ingredients = this.formatIngredients(fields.ingredients);
+    fields.instructions = this.formatInstructions(fields.instructions);
+
+    let fd = new FormData();
+    for (let key of Object.keys(fields)) {
+      if (fields[key] && (key !== 'mealPic')) {
+        fd.append(key, fields[key]);
+      }
+    }
+    if (file) fd.append('mealPic', file, fields.mealPic);
+
+    return this.http.put<any>(`${this.apiUrl}meals/update`, fd, { 
+      headers: { 
+        header: 'multipart/form-data'
+      }
+    });
   }
 
   formatDate(date) {
@@ -105,27 +126,21 @@ export class RecipeService {
     }
   }
 
-  // formatIngredients(ingredients) {
-  //   let tempArray = [];
-  //   for (let ingredient of ingredients) {
-  //     let obj = JSON.parse(ingredient);
-  //     tempArray.push(obj.ingredient);
-  //   }
-  //   return tempArray;
-  // }
-
-  // formatInstructions(instructions) {
-  //   let tempArray = [];
-  //   for (let instruction of instructions) {
-  //     let obj = JSON.parse(instruction);
-  //     tempArray.push(obj.instruction);
-  //   }
-  //   return tempArray;
-  // }
-
-  // formatOriginalRecipeUrl(url: string) {
-  //   if (!url.startsWith('http://') || !url.startsWith('https://')) {
-  //     return `http://${url}`;
-  //   }
-  // }
+  formatIngredients(ingredients) {
+    let tempArray = [];
+    for (let ingredient of ingredients) {
+      tempArray.push(ingredient.ingredient);
+    }
+    // Formdata can only send strings
+    return JSON.stringify(tempArray);
+  }
+  
+  formatInstructions(instructions) {
+    let tempArray = [];
+    for (let instruction of instructions) {
+      tempArray.push(instruction.instruction);
+    }
+    // Formdata can only send strings
+    return JSON.stringify(tempArray);
+  }
 }

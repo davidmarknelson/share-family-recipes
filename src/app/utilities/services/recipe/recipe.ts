@@ -9,6 +9,7 @@ export interface Recipe {
       profilePicName: string
     }
   },
+  creatorId?: number,
   likes?: Array<{userId: number}>,
   name: string,
   originalName?: string,
