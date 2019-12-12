@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // Services
@@ -33,6 +33,7 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute, 
+    private router: Router, 
     private recipeService: RecipeService,
     private authService: AuthService
   ) { }
@@ -102,5 +103,9 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
     if (this.authService.isLoggedIn()) {
       this.user = this.authService.currentUser();
     }
+  }
+
+  goToEditPage() {
+    this.router.navigateByUrl(`/create/edit?recipe=${this.recipe.id}`);
   }
 }

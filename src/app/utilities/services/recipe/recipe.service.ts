@@ -85,7 +85,7 @@ export class RecipeService {
 
     let fd = new FormData();
     for (let key of Object.keys(fields)) {
-      if (fields[key] && (key !== 'mealPic')) {
+      if (key !== 'mealPic') {
         fd.append(key, fields[key]);
       }
     }

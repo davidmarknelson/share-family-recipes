@@ -143,7 +143,12 @@
 
       <!-- Ingredient error message -->
       <div class="notification is-danger" *ngIf="ingredientError" data-test="ingredientErrorMsg">
-        <button type="button" class="delete" (click)='clearIngredientErrorMessage()'></button>
+        <button 
+          type="button" 
+          class="delete" 
+          (click)='clearIngredientErrorMessage()'
+          data-test="clearIngredientErrorMsg">
+        </button>
         {{ ingredientError }}
       </div>
     </div>
@@ -208,7 +213,12 @@
 
       <!-- Instructions error message -->
       <div class="notification is-danger" *ngIf="instructionError" data-test="instructionErrorMsg">
-        <button type="button" class="delete" (click)='clearInstructionErrorMessage()'></button>
+        <button 
+          type="button" 
+          class="delete" 
+          (click)='clearInstructionErrorMessage()'
+          data-test="clearInstructionErrorMsg">
+        </button>
         {{ instructionError }}
       </div>
     </div>
@@ -375,7 +385,7 @@
           class="button is-accent is-rounded" 
           type="submit" 
           [class.is-loading]="sendingForm">
-          Edit Recipe
+          Submit
         </button>
       </p>
     </div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
-import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, mergeMap } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 // Services
@@ -57,19 +57,22 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.recipeParam = this.route.snapshot.queryParams['recipe'];
-    this.createForm();
 
     if (!this.recipeParam) {
       return this.pageError = 'There is no recipe selected to edit.'
     }
 
+    this.createForm();
+
     // if 'recipeParam' is a number(id), it will return the number
     // and be a truthy value. If the value is a string(name), it will 
-    // return NaN and be a falsy value
+    // return NaN and be a falsy value.
+    // The way to get to the edit page is to click on the edit button
+    // in the recipe view page. That edit button sends the id of the recipe
     if (Number(this.recipeParam)) {
       this.getRecipeById(this.recipeParam);
     } else {
-      this.getRecipeByName(this.recipeParam);
+      return this.pageError = 'There was an error getting your recipe to edit.'
     }
 
     // Listen for changes in the form
@@ -95,25 +98,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
       this.recipe = res;
       
-      this.checkRecipeOwnerAndUpdateForm(this.recipe);
-    }, err => {
-      this.loading = false;
-
-      // This shows the error message
-      this.pageError = err.error.message;
-    });
-  }
-
-  getRecipeByName(name) {
-    this.loading = true;
-
-    this.recipeService.getRecipeByName(name).pipe(
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(res => {
-      this.loading = false;
-
-      this.recipe = res;
-
       this.checkRecipeOwnerAndUpdateForm(this.recipe);
     }, err => {
       this.loading = false;
@@ -227,22 +211,29 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
 
   // This checks for available recipe names
   onNameChanges() {
-    // Marks the name as available because the loaded recipe uses the name
-    if (this.recipe && this.recipe.name === this.name.value) {
-      return this.availableName = true;
-    }
-
     this.editRecipeForm.get('name').valueChanges
       .pipe(
         debounceTime(500),
-        mergeMap(val => this.recipeService.checkRecipeNameAvailability(val)),
+        switchMap(val => {
+          // Checks if the name in the input is the same as the name of the recipe and 
+          // marks it as available. If the function calls checkRecipeNameAvailability, then
+          // the name will come back as unavailable. It should show the user that the name is available because
+          // updating the recipe with the same name is acceptable
+          if (this.recipe.name !== val) {
+            return this.recipeService.checkRecipeNameAvailability(val);
+          } else {
+            // this must still call a successful response to mark availableName as true.
+            // the string, 'false', is not used and only there to show that this is the false result
+            return of('false');
+          }
+        }),
         takeUntil(this.ngUnsubscribe)
       ).subscribe(res => {
         this.availableName = true;
       }, err => {
         this.availableName = false;
         // The api returns a 400 error when the username is taken.
-        // The resubscribes to the observable because subscriptions 
+        // This resubscribes to the observable because subscriptions 
         // complete on errors.
         this.onNameChanges();
       });
@@ -345,7 +336,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     this.recipeService.editRecipe(recipe, this.selectedFile).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
-      this.router.navigate(['/recipes', res.id])
+      this.router.navigate(['/recipes', res.id]);
     }, err => {
       // This stops the loading indicator
       this.sendingForm = false;

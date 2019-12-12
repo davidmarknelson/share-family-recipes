@@ -113,7 +113,7 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
       }, err => {
         this.availableName = false;
         // The api returns a 400 error when the username is taken.
-        // The resubscribes to the observable because subscriptions 
+        // Theis resubscribes to the observable because subscriptions 
         // complete on errors.
         this.onNameChanges();
       });
@@ -199,7 +199,7 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
     this.recipeService.createRecipe(recipe, this.selectedFile).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
-      this.router.navigate(['/recipes', res.id])
+      this.router.navigate(['/recipes', res.id]);
     }, err => {
 
       // This stops the loading indicator

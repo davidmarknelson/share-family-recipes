@@ -71,6 +71,7 @@
     <div class="column info__container">
       <a 
         data-test='edit-btn' 
+        (click)='goToEditPage()'
         class='button is-primary is-rounded is-small'
         *ngIf='user && user.id === recipe.creatorId'>
         Edit 

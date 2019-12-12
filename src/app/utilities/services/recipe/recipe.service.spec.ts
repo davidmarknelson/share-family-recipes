@@ -247,7 +247,7 @@ describe('MealService', () => {
     });
   });
 
-  fdescribe('editRecipe', () => {
+  describe('editRecipe', () => {
     it('should return a message when the recipe is updated', () => {
       const recipe = { 
         name: 'Fried Rice',

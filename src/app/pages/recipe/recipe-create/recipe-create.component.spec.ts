@@ -161,11 +161,6 @@ describe('RecipeCreateComponent', () => {
         expect(input.errors['required']).toBeTruthy();
       });
 
-      it('should be invalid when empty', () => {
-        let input = component.createRecipeForm.controls['description'];
-        expect(input.errors['required']).toBeTruthy();
-      });
-
       it('should initialize with the character count set to 0', () => {
         expect(descriptionCount.nativeElement.innerText).toEqual('0/150');
       });
@@ -570,7 +565,7 @@ describe('RecipeCreateComponent', () => {
           return of({ 
             id: 1,
             name: 'eggs',
-            message: 'Meal successfully created.' 
+            message: 'Recipe successfully created.' 
           });
         });
         spyOn(router, 'navigate');
