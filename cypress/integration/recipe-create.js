@@ -39,7 +39,7 @@ describe('Recipe Create', () => {
   });
 
   describe('errors', () => {
-    it('should show required fields and stop the form from submitting', () => {
+    it('should show in the appropriate fields', () => {
       cy
         .visit('/create')
         .url().should('include', '/create')
@@ -51,64 +51,22 @@ describe('Recipe Create', () => {
         .get('[data-test=instructionRequired]').should('exist')
         .get('[data-test=cookTimeRequired]').should('exist')
         .get('[data-test=difficultyRequired]').should('exist')
-    });
-
-    it('should show when the name is unavailable', () => {
-      cy
-        .visit('/create')
-        .url().should('include', '/create')
         .get('[data-test=name]').type('Chicken and fries')
         .wait(1000)
-        .get('[data-test=nameUnavailable]').should('exist');
-    });
-
-    it('should show when the name is unavailable regardless of capitalization', () => {
-      cy
-        .visit('/create')
-        .url().should('include', '/create')
-        .get('[data-test=name]').type('chicken and fries')
+        .get('[data-test=nameUnavailable]').should('exist')
+        .get('[data-test=name]').clear().type('chicken and fries')
         .wait(1000)
-        .get('[data-test=nameUnavailable]').should('exist');
-    });
-
-    it('should show when the tries to delete the only ingredient input', () => {
-      cy
-        .visit('/create')
-        .url().should('include', '/create')
+        .get('[data-test=nameUnavailable]').should('exist')
         .get('[data-test=removeIngredient]').click()
-        .get('[data-test=ingredientErrorMsg]').should('contain', 'You must have at least 1 ingredient. ');
-    });
-
-    it('should show when the tries to delete the only ingredient input', () => {
-      cy
-        .visit('/create')
-        .url().should('include', '/create')
+        .get('[data-test=ingredientErrorMsg]').should('contain', 'You must have at least 1 ingredient. ')
         .get('[data-test=removeInstruction]').click()
-        .get('[data-test=instructionErrorMsg]').should('contain', 'You must have at least 1 instruction. ');
-    });
-
-    it('should show a number is required for the cookTime input', () => {
-      cy
-        .visit('/create')
-        .url().should('include', '/create')
+        .get('[data-test=instructionErrorMsg]').should('contain', 'You must have at least 1 instruction. ')
         .get('[data-test=cookTime]').type('a')
-        .get('[data-test=cookTimePattern]').should('exist');
-    });
-
-    it('should show a number between 1-5 is required for the difficulty input', () => {
-      cy
-        .visit('/create')
-        .url().should('include', '/create')
+        .get('[data-test=cookTimePattern]').should('exist')
         .get('[data-test=difficulty]').type('a')
         .get('[data-test=difficultyPattern]').should('exist')
         .get('[data-test=difficulty]').clear().type('6')
-        .get('[data-test=difficultyPattern]').should('exist');
-    });
-
-    it('should show when the description is more that 150 characters', () => {
-      cy
-        .visit('/create')
-        .url().should('include', '/create')
+        .get('[data-test=difficultyPattern]').should('exist')
         .get('textarea').type(createLongValue())
         .get('[data-test=descriptionMaxLength]').should('exist');
     });

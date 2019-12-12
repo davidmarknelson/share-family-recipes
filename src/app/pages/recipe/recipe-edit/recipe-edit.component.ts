@@ -219,7 +219,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
           // marks it as available. If the function calls checkRecipeNameAvailability, then
           // the name will come back as unavailable. It should show the user that the name is available because
           // updating the recipe with the same name is acceptable
-          if (this.recipe.name !== val) {
+          if (this.recipe.name.toLowerCase() !== val.toLowerCase()) {
             return this.recipeService.checkRecipeNameAvailability(val);
           } else {
             // this must still call a successful response to mark availableName as true.

@@ -63,6 +63,7 @@ describe('Recipe View', () => {
         .get('[data-test=likes]').should('contain', '1')
         .get('.notification').invoke('text')
         .should('contain', 'Recipe successfully liked.')
+        .wait(6000)
         .get('.btn').click()
         .get('[data-test=likes]').should('contain', '0')
         .get('.notification').invoke('text')
@@ -94,13 +95,14 @@ describe('Recipe View', () => {
         .url().should('include', '/recipes/1')
         .get('[data-test=save-button]').should('contain', 'Save')
         .get('[data-test=save-button]').click()
-        .get('[data-test=save-button]').should('contain', 'Saved')
         .get('.notification').invoke('text')
         .should('contain', 'Recipe successfully saved.')
+        .get('[data-test=save-button]').should('contain', 'Saved')
+        .wait(6000)
         .get('[data-test=save-button]').click()
-        .get('[data-test=save-button]').should('contain', 'Save')
         .get('.notification').invoke('text')
-        .should('contain', 'Recipe successfully unsaved.');
+        .should('contain', 'Recipe successfully unsaved.')
+        .get('[data-test=save-button]').should('contain', 'Save');
     });
   });
 

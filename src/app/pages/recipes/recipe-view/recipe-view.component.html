@@ -114,7 +114,7 @@
 
 
 <!-- Original Recipe url -->
-<div class="step-container" *ngIf='recipe && recipe.originalRecipeUrl'>
+<div data-test='originalRecipeUrl' class="step-container" *ngIf='recipe && recipe.originalRecipeUrl'>
   <p>
     You can view the original recipe at 
     <a 
@@ -126,7 +126,7 @@
 </div>
 
 <!-- Recipe YouTube Video -->
-<div class="step-container" *ngIf='recipe && recipe.youtubeUrl'>
+<div data-test='youtubeUrl'  class="step-container" *ngIf='recipe && recipe.youtubeUrl'>
   <figure class="image is-16by9">
     <iframe 
       class="has-ratio"
