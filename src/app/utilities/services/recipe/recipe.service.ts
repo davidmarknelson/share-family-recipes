@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { format } from 'date-fns';
 // Interfaces
 import { Recipe } from './recipe';
+import { RecipeCardInfo } from './recipe-card-info';
 // Environment 
 import { environment } from '../../../../environments/environment';
 
@@ -96,6 +97,14 @@ export class RecipeService {
         header: 'multipart/form-data'
       }
     });
+  }
+
+  deleteRecipe(recipeid: number): Observable<any> {
+    return this.http.request<any>('DELETE', `${this.apiUrl}meals/delete`, { body: { id: recipeid }});
+  }
+
+  getRecipesAtoZ() {
+
   }
 
   formatDate(date) {

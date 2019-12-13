@@ -371,12 +371,26 @@
       <button type="button" class="delete" (click)='clearErrorMessage()'></button>
       {{ formError }}
     </div>
+
+    <!-- Delete error message -->
+    <div class="notification is-danger" *ngIf="deleteError" data-test="deleteErrorMsg">
+      <button type="button" class="delete" (click)='clearDeleteErrorMessage()'></button>
+      {{ deleteError }}
+    </div>
     
     <!-- Form buttons -->
     <div class="field is-grouped is-grouped-right form__buttons">
       <p class="control">
         <a class="button is-light is-rounded" (click)="navigateBack()">
           Back
+        </a>
+      </p>
+      <p class="control">
+        <a 
+          class="button is-light is-danger is-rounded" 
+          (click)='toggleModal()'
+          data-test="delete-button">
+          Delete
         </a>
       </p>
       <p class="control">
@@ -391,4 +405,33 @@
     </div>
 
   </form>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal" [class.is-active]='isModalOpen' *ngIf='recipe'>
+  <div class="modal-background" (click)='toggleModal()'></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Delete {{ recipe.name }}?</p>
+      <button class="delete" data-test="modal-close" aria-label="close" (click)='toggleModal()'></button>
+    </header>
+    <section class="modal-card-body">
+      <p>This action cannot be undone.</p>
+    </section>
+    <footer class="modal-card-foot">
+      <button 
+        class="button is-danger is-rounded" 
+        [class.is-loading]="isDeleting" 
+        data-test="modal-delete" 
+        (click)='deleteRecipe()'>
+        Delete recipe
+      </button>
+      <button 
+        class="button is-light is-rounded" 
+        data-test="modal-cancel"
+        (click)='toggleModal()'>
+        Cancel
+      </button>
+    </footer>
+  </div>
 </div>

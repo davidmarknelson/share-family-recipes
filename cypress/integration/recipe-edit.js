@@ -184,4 +184,33 @@ describe('Recipe edit', () => {
         .should('contain', 'http://example.com');
     });
   });
+
+  describe('Delete profile', () => {
+    beforeEach(() => {
+      cy.request('DELETE', 'http://localhost:3000/tests/delete')
+        .request('POST', 'http://localhost:3000/tests/seed')
+        .request('POST', 'http://localhost:3000/tests/seedmeal')
+        .login('verified@email.com', 'password');
+    });
+
+    it('should delete the user when clicking the delete button in the modal and the close buttons should work', () => {
+      cy
+        .visit('/create/edit?recipe=1')
+        .url().should('include', '/create/edit?recipe=1')
+        .get('[data-test=delete-button]').click()
+        .get('.modal').should('be.visible')
+        .get('[data-test=modal-cancel]').click()
+        .get('.modal').should('not.be.visible')
+        .get('[data-test=delete-button]').click()
+        .get('.modal').should('be.visible')
+        .get('[data-test=modal-close]').click()
+        .get('.modal').should('not.be.visible')
+        .get('[data-test=delete-button]').click()
+        .get('.modal').should('be.visible')
+        .get('[data-test=modal-delete]').click()
+        .get('.notification').invoke('text')
+        .should('contain', 'Recipe successfully deleted.')
+        .url().should('include', '/recipes');
+    });
+  });
 });

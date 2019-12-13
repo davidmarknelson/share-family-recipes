@@ -301,4 +301,34 @@ describe('MealService', () => {
       http.verify();
     });
   });
+
+  describe('deleteRecipe', () => {
+    it('should return a message when the user is deleted', () => {
+      let signupResponse = {
+        'message': 'Recipe successfully deleted.'
+      };
+
+      let response;
+      recipeService.deleteRecipe(1).subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/meals/delete').flush(signupResponse);
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return an error on error', () => {
+      const updateResponse = 'There was an error deleting your recipe.';
+      let errorResponse;
+
+      recipeService.deleteRecipe(1).subscribe(res => {}, err => {
+        errorResponse = err;
+      });
+
+      http.expectOne('http://localhost:3000/meals/delete').flush({message: updateResponse}, {status: 500, statusText: 'Server Error'});
+      expect(errorResponse.error.message).toEqual(updateResponse);
+      http.verify();
+    });
+  });
 });

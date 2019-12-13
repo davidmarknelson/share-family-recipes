@@ -44,6 +44,10 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   instructionError: string;
   // Available name
   availableName: boolean;
+  // =======
+  isModalOpen: boolean;
+  isDeleting: boolean;
+  deleteError: string;
 
 
   constructor(
@@ -351,5 +355,29 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   // ===========================================
   navigateBack() {
     this.location.back();
+  }
+
+
+  // ===========================================
+  // Delete functions
+  // ===========================================
+  toggleModal() {
+    this.isModalOpen = !this.isModalOpen;
+  }
+
+  deleteRecipe() {
+    this.isDeleting = true;
+    this.recipeService.deleteRecipe(this.recipe.id).subscribe(res => {
+      this.isDeleting = false;
+      this.router.navigate(['/recipes']);
+    }, err => {
+      this.isDeleting = false;
+      this.isModalOpen = false;
+      this.deleteError = err.error.message;
+    });
+  }
+
+  clearDeleteErrorMessage() {
+    this.deleteError = '';
   }
 }

@@ -121,6 +121,9 @@ class MockRecipeService {
   editRecipe(fields, file) {
     return of();
   }
+  deleteRecipe() {
+    return of()
+  }
 }
 
 class MockActivatedRoute {
@@ -713,6 +716,85 @@ describe('RecipeEditComponent', () => {
       // show notification error
       let notification = fixture.debugElement.query(By.css('[data-test=formErrorMsg]'));
       expect(notification.nativeElement.innerText).toEqual('There was an error updating your recipe.');
+    });
+  });
+
+  describe('deleteRecipe', () => {
+    beforeEach(() => {
+      spyOn(recipeService, 'getRecipeById').and.callFake(() => of(recipeObj));
+      spyOn(authService, 'currentUser').and.callFake(() => creator);
+      fixture.detectChanges();
+      selectElements();
+    });
+
+    it('should open the modal when clicking on the delete button and close when clicking the x', () => {
+      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
+      let modal = fixture.debugElement.query(By.css('.modal'));
+      let modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
+
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+      
+      expect(component.isModalOpen).toEqual(true);
+      expect(modal.classes['is-active']).toEqual(true);
+
+      modalClose.nativeElement.click();
+      fixture.detectChanges();
+
+      expect(component.isModalOpen).toEqual(false);
+      expect(modal.classes['is-active']).toEqual(false);
+    });
+
+    it('should navigate to the landing page when successfully deleting the profile', () => {
+      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
+      let modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
+      let modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
+
+      spyOn(component, 'deleteRecipe').and.callThrough();
+      spyOn(recipeService, 'deleteRecipe').and.callFake(() => {
+        return of({ message: 'Recipe successfully deleted.'});
+      });
+      spyOn(router, 'navigate');
+
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+
+      modalDelete.nativeElement.click();
+      fixture.detectChanges();
+
+      expect(component.deleteRecipe).toHaveBeenCalled();
+      expect(recipeService.deleteRecipe).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith(['/recipes']);
+
+      // close the modal in the testing window
+      modalClose.nativeElement.click();
+      fixture.detectChanges();
+    });
+
+    it('should show an error message on error', () => {
+      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
+      let modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
+
+      spyOn(component, 'deleteRecipe').and.callThrough();
+      spyOn(recipeService, 'deleteRecipe').and.callFake(() => {
+        return throwError({ error: { 
+          message: 'There was an error deleting your recipe.'
+        }});
+      });
+      spyOn(router, 'navigate');
+
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+
+      modalDelete.nativeElement.click();
+      fixture.detectChanges();
+
+      let errorMsg = fixture.debugElement.query(By.css('.notification'));
+
+      expect(component.deleteRecipe).toHaveBeenCalled();
+      expect(recipeService.deleteRecipe).toHaveBeenCalled();
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(errorMsg.nativeElement.innerText).toEqual('There was an error deleting your recipe.');
     });
   });
 
