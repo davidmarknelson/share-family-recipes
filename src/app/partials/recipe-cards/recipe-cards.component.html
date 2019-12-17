@@ -1,0 +1,82 @@
+<div class="container padding">
+  <div class="columns is-multiline">
+    <div class="column is-one-third" *ngFor='let recipe of recipes.rows'>
+      <div class="card height rounded-corners">
+
+
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img class='rounded-top' src="{{ recipe.mealPic.mealPicName }}" alt="Image of {{ recipe.name }}">
+          </figure>
+        </div>
+        <div class="card-content">
+          <div class="media">
+            <div class="media-content">
+              <!-- Title -->
+              <div [attr.data-tooltip]="recipe.name.length > 15 ? recipe.name : null" class='title-container'>
+                <p class="title overflow">
+                  {{ recipe.name }}
+                </p>
+              </div>
+              <!-- Subtitle -->
+              <p class="subtitle is-size-7 subtitle-height">
+                Created by <a data-tooltip="View user's recipes">{{ recipe.creator.username }}</a>
+                on <time>{{ recipe.createdAt }}</time>
+              </p>
+            </div>
+          </div>
+      
+          <!-- Description -->
+          <div class="content overflow-description">
+            {{ recipe.description }}
+          </div>
+
+          <!-- Icons -->
+          <div class='icon-info'>
+            <div class="icon-info--items">
+              <app-likes-button
+                [user]='user'
+                [recipe]='recipe'
+              ></app-likes-button>
+            </div>
+
+            <!-- Difficulty -->
+            <div class="icon-info--items">
+              <div class='icon-info--pointer' data-tooltip="Difficulty">
+                <fa-icon [icon]="faFireAlt" size='lg'></fa-icon>
+                <span class='icon-info--numbers'>{{ recipe.difficulty }}</span>
+              </div>
+            </div>
+          
+            <!-- Cook time -->
+            <div class="icon-info--items">              
+              <div class='icon-info--pointer' data-tooltip="Cook time">
+                <fa-icon [icon]="faClock" size='lg'></fa-icon>
+                <span class='icon-info--numbers'>{{ recipe.cookTime }}</span>
+              </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class='icon-info--items'>              
+              <app-saved-recipe-button
+                [recipeId]='recipe.id'
+                [user]='user'
+              ></app-saved-recipe-button>
+            </div>
+          </div>
+          
+
+          <!-- View recipe button -->
+          <div class="view-btn__container view-btn--margin">
+            <button class='button is-accent is-rounded' (click)='goToRecipe(recipe.id)'>
+              View Recipe <fa-icon [icon]="faChevronRight" class='view-btn--arrow'></fa-icon>
+            </button>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

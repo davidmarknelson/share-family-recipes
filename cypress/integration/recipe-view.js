@@ -61,13 +61,8 @@ describe('Recipe View', () => {
         .get('[data-test=likes]').should('contain', '0')
         .get('.btn').click()
         .get('[data-test=likes]').should('contain', '1')
-        .get('.notification').invoke('text')
-        .should('contain', 'Recipe successfully liked.')
-        .wait(6000)
         .get('.btn').click()
-        .get('[data-test=likes]').should('contain', '0')
-        .get('.notification').invoke('text')
-        .should('contain', 'Recipe successfully unliked.');
+        .get('[data-test=likes]').should('contain', '0');
     });
   });
 
@@ -95,13 +90,8 @@ describe('Recipe View', () => {
         .url().should('include', '/recipes/1')
         .get('[data-test=save-button]').should('contain', 'Save')
         .get('[data-test=save-button]').click()
-        .get('.notification').invoke('text')
-        .should('contain', 'Recipe successfully saved.')
         .get('[data-test=save-button]').should('contain', 'Saved')
-        .wait(6000)
         .get('[data-test=save-button]').click()
-        .get('.notification').invoke('text')
-        .should('contain', 'Recipe successfully unsaved.')
         .get('[data-test=save-button]').should('contain', 'Save');
     });
   });

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { Subject, of } from 'rxjs';
-import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
+import { takeUntil, filter, debounceTime, switchMap } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 // Services
@@ -126,7 +126,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   // ===========================================
   createForm() {
     this.editRecipeForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.maxLength(150)]],
       ingredients: this.fb.array([
         this.createIngredient()
@@ -217,6 +217,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   onNameChanges() {
     this.editRecipeForm.get('name').valueChanges
       .pipe(
+        filter(val => val.length <= 50),
         debounceTime(500),
         switchMap(val => {
           // Checks if the name in the input is the same as the name of the recipe and 
@@ -268,7 +269,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     this.editRecipeForm.get('originalRecipeUrl').setValue(recipe.originalRecipeUrl);
     this.editRecipeForm.get('youtubeUrl').setValue(this.formatYoutubeUrl(recipe.youtubeUrl));
     // This shows the user that they have previously uploaded a picture
-    if (recipe.mealPic.mealPicName === '../../../assets/images/default-img/default-meal-pic.jpg') {
+    if (recipe.mealPic.mealPicName === '../../../../assets/images/default-img/default-meal-pic.jpg') {
       this.mealPicName = 'example.jpeg';
     } else {
       this.mealPicName = recipe.mealPic.mealPicName.replace(`${environment.apiUrl}public/images/mealPics/`, '');

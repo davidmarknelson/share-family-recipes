@@ -9,6 +9,14 @@ import { Location } from '@angular/common';
 import { of, throwError } from 'rxjs';
 
 
+function longName() {
+  let string = '';
+  for (let i = 0; i < 51; i++) {
+    string = string + 'a';
+  }
+  return string;
+}
+
 let fixture: ComponentFixture<RecipeCreateComponent>;
 let name: DebugElement;
 let description: DebugElement;
@@ -152,6 +160,27 @@ describe('RecipeCreateComponent', () => {
         let availableName = fixture.debugElement.query(By.css('[data-test=nameUnavailable]'));
         expect(name.classes['is-danger']).toBeTruthy();
         expect(availableName).toBeTruthy();
+      }));
+
+      it('should show that a name is too long', fakeAsync(() => {
+        let input = component.createRecipeForm.controls['name'];
+
+        spyOn(recipeService, 'checkRecipeNameAvailability').and.callFake(() => {
+          component.availableName = false;
+          return throwError({});
+        });
+
+        input.setValue(longName());
+        name.nativeElement.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        // This is used because the function has a 500ms wait time
+        tick(1000);
+        fixture.detectChanges();
+        expect(recipeService.checkRecipeNameAvailability).not.toHaveBeenCalled();
+        expect(input.errors).toBeTruthy();
+        let maxlength = fixture.debugElement.query(By.css('[data-test=nameMaxLength]'));
+        expect(name.classes['is-danger']).toBeTruthy();
+        expect(maxlength).toBeTruthy();
       }));
     });
 

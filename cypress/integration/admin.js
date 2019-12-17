@@ -1,5 +1,3 @@
-import { get } from "selenium-webdriver/http";
-
 describe('Admin Page', () => {
   before(() => {
     Cypress.config('baseUrl', 'http://localhost:4200');
@@ -126,7 +124,7 @@ describe('Admin Page', () => {
         .url().should('include', '/profile/admin')
         .get('[data-test=first-ellipsis]').should('not.exist')
         .get('[data-test=second-ellipsis]').should('not.exist')
-        .get('.pagination-previous').should('not.exist')
+        .get('.pagination-previous').should('be', 'disabled')
         .get('.pagination-next').should('exist')
         .get('.pagination > ul > li:nth-child(3)').click().wait(1000)
         .get('.pagination-previous').should('exist')
@@ -137,7 +135,7 @@ describe('Admin Page', () => {
         .get('.pagination > ul > li:nth-child(5)').click().wait(1000)
         .get('tbody tr').should('be.length', 7)
         .get('.pagination-previous').should('exist')
-        .get('.pagination-next').should('not.exist');
+        .get('.pagination-next').should('be', 'disabled');
     });
   });
 });

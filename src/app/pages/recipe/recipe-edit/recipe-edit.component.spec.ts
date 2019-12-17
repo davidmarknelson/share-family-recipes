@@ -10,6 +10,14 @@ import { Location } from '@angular/common';
 import { of, throwError } from 'rxjs';
 import { RecipeModule } from '../recipe.module';
 
+function longName() {
+  let string = '';
+  for (let i = 0; i < 51; i++) {
+    string = string + 'a';
+  }
+  return string;
+}
+
 let fixture: ComponentFixture<RecipeEditComponent>;
 let pageErrorMsg: DebugElement;
 let name: DebugElement;
@@ -94,7 +102,7 @@ const recipeObj = {
   creator: { 
     username: "johndoe", 
     profilePic: {
-      profilePicName: "../../../assets/images/default-img/default-profile-pic.jpg"
+      profilePicName: "../../../../assets/images/default-img/default-profile-pic.jpg"
     } 
   },
   ingredients: [ "3 eggs", "rice", "vegetables" ],
@@ -103,7 +111,7 @@ const recipeObj = {
   difficulty: 1,
   likes: [],
   mealPic: { 
-    mealPicName: "../../../assets/images/default-img/default-meal-pic.jpg" 
+    mealPicName: "../../../../assets/images/default-img/default-meal-pic.jpg" 
   },
   createdAt: "Dec 04, 2019",
   updatedAt: "Dec 04, 2019",
@@ -134,7 +142,6 @@ class MockAuthService {
   currentUser() {
     return;
   }
-
 }
 
 class MockLocation {
@@ -334,6 +341,27 @@ describe('RecipeEditComponent', () => {
         let availableName = fixture.debugElement.query(By.css('[data-test=nameUnavailable]'));
         expect(name.classes['is-danger']).toBeTruthy();
         expect(availableName).toBeTruthy();
+      }));
+
+      it('should show that a name is too long', fakeAsync(() => {
+        let input = component.editRecipeForm.controls['name'];
+
+        spyOn(recipeService, 'checkRecipeNameAvailability').and.callFake(() => {
+          component.availableName = false;
+          return throwError({});
+        });
+
+        input.setValue(longName());
+        name.nativeElement.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        // This is used because the function has a 500ms wait time
+        tick(1000);
+        fixture.detectChanges();
+        expect(recipeService.checkRecipeNameAvailability).not.toHaveBeenCalled();
+        expect(input.errors).toBeTruthy();
+        let maxlength = fixture.debugElement.query(By.css('[data-test=nameMaxLength]'));
+        expect(name.classes['is-danger']).toBeTruthy();
+        expect(maxlength).toBeTruthy();
       }));
     });
 

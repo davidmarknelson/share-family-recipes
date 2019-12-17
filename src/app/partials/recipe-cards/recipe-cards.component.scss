@@ -1,0 +1,88 @@
+.padding {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.overflow {
+  white-space: nowrap;
+  overflow-x: hidden;
+  position: relative;
+
+  &:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25%;
+    height: 1.2em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgb(255, 255, 255) 70%);
+  }
+}
+
+.overflow-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 3rem;
+  position: relative;
+
+  &:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25%;
+    height: 1.2em;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgb(255, 255, 255) 70%);
+  }
+}
+
+.subtitle-height {
+  height: 2rem;
+}
+
+.height {
+  height: 100%;
+}
+
+.title-container {
+  margin-bottom: 5px;
+  cursor: default;
+}
+
+.icon-info {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  margin-top: 40px;
+
+  &--items {
+    display: grid;
+    place-items: center;
+    width: 55px;
+  }
+
+  &--pointer {
+    cursor: default;
+  }
+
+  &--numbers {
+    margin-left: 5px;
+  }
+}
+
+.view-btn {
+  &__container {
+    display: grid;
+    place-items: center;
+  }
+
+  &--arrow {
+    margin-left: 5px;
+  }
+
+  &--margin {
+    margin-top: 40px;
+  }
+}

@@ -8,7 +8,7 @@ import { Recipe } from '../../../utilities/services/recipe/recipe';
 import { AuthService } from '../../../utilities/services/auth/auth.service';
 import { UserDecodedToken } from '../../../utilities/services/auth/user-decoded-token';
 // Font Awesome
-import { faThumbsUp, faFireAlt, faClock, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faFireAlt, faClock, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-recipe-view',
@@ -19,7 +19,6 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   user: UserDecodedToken;
   // Font Awesome
-  faThumbsUp = faThumbsUp;
   faFireAlt = faFireAlt;
   faClock = faClock;
   faChevronRight = faChevronRight;

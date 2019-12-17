@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { format } from 'date-fns';
 // Interfaces
 import { Recipe } from './recipe';
-import { RecipeCardInfo } from './recipe-card-info';
 // Environment 
 import { environment } from '../../../../environments/environment';
 
@@ -28,6 +27,8 @@ export class RecipeService {
     for (let key of Object.keys(fields)) {
       if (fields[key] && (key !== 'mealPic')) {
         fd.append(key, fields[key]);
+      } else {
+        fd.append(key, '');
       }
     }
     if (file) fd.append('mealPic', file, fields.mealPic);
@@ -86,8 +87,10 @@ export class RecipeService {
 
     let fd = new FormData();
     for (let key of Object.keys(fields)) {
-      if (key !== 'mealPic') {
+      if (fields[key] && (key !== 'mealPic')) {
         fd.append(key, fields[key]);
+      } else {
+        fd.append(key, '');
       }
     }
     if (file) fd.append('mealPic', file, fields.mealPic);
@@ -103,10 +106,6 @@ export class RecipeService {
     return this.http.request<any>('DELETE', `${this.apiUrl}meals/delete`, { body: { id: recipeid }});
   }
 
-  getRecipesAtoZ() {
-
-  }
-
   formatDate(date) {
     return format(new Date(date), 'MMM dd, yyyy');
   }
@@ -118,7 +117,7 @@ export class RecipeService {
       };
     } else {
       return {
-        mealPicName: '../../../assets/images/default-img/default-meal-pic.jpg'
+        mealPicName: '../../../../assets/images/default-img/default-meal-pic.jpg'
       };
     }
   }
@@ -130,7 +129,7 @@ export class RecipeService {
       }
     } else {
       return {
-        profilePicName: '../../../assets/images/default-img/default-profile-pic.jpg'
+        profilePicName: '../../../../assets/images/default-img/default-profile-pic.jpg'
       };
     }
   }

@@ -1,7 +1,7 @@
 <div class="container pag--container-padding">
   <nav class="pagination is-rounded pag--margin" role="navigation" aria-label="pagination">
-    <a class="pagination-previous" (click)='emitPageNumber(currentPage - 1)' *ngIf='currentPage !== 1'>Previous</a>
-    <a class="pagination-next" (click)='emitPageNumber(currentPage + 1)' *ngIf='currentPage !== totalPages'>Next page</a>
+    <button class="pagination-previous button" (click)='emitPageNumber(currentPage - 1)' [disabled]='currentPage === 1'>Previous</button>
+    <button class="pagination-next button" (click)='emitPageNumber(currentPage + 1)' [disabled]='currentPage === totalPages'>Next page</button>
     <ul class="pagination-list">
 
       <li>

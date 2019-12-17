@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, mergeMap } from 'rxjs/operators';
+import { takeUntil, filter, debounceTime, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 // Services
@@ -56,7 +56,7 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
 
   createForm() {
     this.createRecipeForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.maxLength(50)]],
       description: ['', [Validators.required, Validators.maxLength(150)]],
       ingredients: this.fb.array([
         this.createIngredient()
@@ -105,6 +105,7 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
   onNameChanges() {
     this.createRecipeForm.get('name').valueChanges
       .pipe(
+        filter(val => val.length <= 50),
         debounceTime(500),
         mergeMap(val => this.recipeService.checkRecipeNameAvailability(val)),
         takeUntil(this.ngUnsubscribe)

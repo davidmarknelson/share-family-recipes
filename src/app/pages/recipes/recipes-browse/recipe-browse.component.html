@@ -2,7 +2,130 @@
 <section class="section page-header">
   <div class="container">
     <h1 class="title page-header__title has-text-centered page-header--max-width">Browse Recipes</h1>
-    <p class="subtitle has-text-centered page-header--max-width">View and sort a list of recipes.</p>
+    <p class="subtitle has-text-centered page-header--max-width">
+      View and sort a list of recipes. Add ingredients to the filter to find recipes that match what you have in your fridge.
+    </p>
   </div>
 </section>
 
+<div class="container filters__container">
+  <div class="columns">
+  
+    <!-- Ingredients input -->
+    <div class="column is-half">
+      <form #form="ngForm" (ngSubmit)="addIngredient(form.value)">
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input 
+              class="input is-rounded" 
+              type="text" 
+              name='ingredient'
+              [(ngModel)]="ingredientInput.ingredient"
+              placeholder="eggs">
+          </div>
+          <div class="control">
+            <button 
+              class="button is-primary filters--rounded-right"
+              type='submit'>
+              Add Ingredient
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Ingredient Error -->
+      <div class="notification is-danger filters__ingredient-error" *ngIf='ingredientError'>
+        <button class="delete" (click)='clearIngredientError()'></button>
+        {{ ingredientError }}
+      </div>
+
+      <!-- Ingredient tags -->
+      <div class="columns" *ngIf='ingredients.length > 0'>
+        
+        <div class='column filters__tag-container'>
+          <span 
+            class="tag is-rounded filters__tag" 
+            *ngFor='let ingredient of ingredients; let i = index;'>
+            {{ ingredient }}
+            <button 
+              class="delete is-small"
+              (click)='clearIngredient(i)'
+              data-test="ingredient-tag-delete"></button>
+          </span>
+        </div>
+
+        <div class="column is-narrow filters__ingredient-btn -center">
+          <button 
+            data-test="clear-ingredients"
+            class='button is-rounded is-small is-primary'
+            (click)='clearIngredients()'>
+            Clear Ingredients
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+
+
+    <!-- Pagination count -->
+    <div class="column filters--content-align-center" *ngIf='recipes'>
+      <p class='has-text-right'>
+        {{ initialPageRecipeNumber }}-{{ finalPageRecipeNumber }} of {{ recipes.count }} recipes
+      </p>
+    </div>
+  
+    <!-- Select Amount options -->
+    <div class="column is-narrow filters--content-right-center">
+      <div class="select is-primary is-rounded is-small">
+        <select 
+          (change)="onAmountChange($event.target.value)"
+          data-test='amount-select'>
+          <option *ngFor="let amount of recipesShown">
+            Show {{ amount }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Select sorting options -->
+    <div class="column is-narrow filters--content-right-center">
+      <div class="select is-primary is-rounded is-small">
+        <select 
+          (change)="onSortingChange($event.target.value)"
+          data-test='sorting-select'>
+          <option>Newest</option>
+          <option>Oldest</option>
+          <option>A - Z</option>
+          <option>Z - A</option>
+        </select>
+      </div>
+    </div>
+  
+  </div>
+</div>
+
+<div class='error-message'>
+  <div class="notification is-danger" *ngIf='errorMessage' data-test='errorMsg'>
+    <button class="delete" (click)='clearErrorMessage()' data-test="closeErrorMsg"></button>
+    {{ errorMessage }}
+  </div>
+</div>
+
+<!-- Loading info -->
+<p class='has-text-centered' data-test='loadingMsg' *ngIf='!recipes && !errorMessage'>Getting recipes...</p>
+
+
+<app-recipe-cards
+  *ngIf='recipes' 
+  [user]='user'
+  [recipes]='recipes'>
+</app-recipe-cards>
+
+<app-pagination
+  *ngIf='recipes'
+  (pageChange)='onPageChange($event)'
+  [count]='recipes.count'
+  [limit]='limit'
+  [offset]='offset'
+></app-pagination>

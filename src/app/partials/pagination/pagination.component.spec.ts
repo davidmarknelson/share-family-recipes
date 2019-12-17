@@ -66,7 +66,7 @@ describe('PaginationComponent', () => {
     });
       
     it('should not show a previous button when on page one', () => {  
-      expect(previousBtn).toBeFalsy();
+      expect(previousBtn.nativeElement.disabled).toEqual(true);
       expect(nextBtn).toBeTruthy();
     });
   
@@ -87,7 +87,7 @@ describe('PaginationComponent', () => {
     });
       
     it('should not show a previous button when on page one', () => {
-      expect(previousBtn).toBeFalsy();
+      expect(previousBtn.nativeElement.disabled).toEqual(true);
       expect(nextBtn).toBeTruthy();
     });
   
@@ -109,7 +109,7 @@ describe('PaginationComponent', () => {
 
     it('should show the previous button when on the last page and highlight the last page button', () => {
       expect(previousBtn).toBeTruthy();
-      expect(nextBtn).toBeFalsy();
+      expect(nextBtn.nativeElement.disabled).toEqual(true);
       expect(lastPageBtn.classes['is-current']).toEqual(true);     
     });
   });
@@ -168,7 +168,7 @@ describe('PaginationComponent', () => {
       expect(firstPageBtn.nativeElement.innerText).toEqual('1');
       expect(page2.nativeElement.innerText).toEqual('2');
       expect(lastPageBtn.nativeElement.innerText).toEqual('3');
-      expect(previousBtn).toBeFalsy();
+      expect(previousBtn.nativeElement.disabled).toEqual(true);
       expect(nextBtn).toBeTruthy();
     });
 
@@ -184,7 +184,7 @@ describe('PaginationComponent', () => {
       expect(firstPageBtn.nativeElement.innerText).toEqual('1');
       expect(page2.nativeElement.innerText).toEqual('2');
       expect(lastPageBtn.nativeElement.innerText).toEqual('4');
-      expect(previousBtn).toBeFalsy();
+      expect(previousBtn.nativeElement.disabled).toEqual(true);
       expect(nextBtn).toBeTruthy();
       expect(secondEllipsis).toBeTruthy();
     });
@@ -202,7 +202,7 @@ describe('PaginationComponent', () => {
       expect(page3.nativeElement.innerText).toEqual('3');
       expect(lastPageBtn.nativeElement.innerText).toEqual('4');
       expect(previousBtn).toBeTruthy();
-      expect(nextBtn).toBeFalsy();
+      expect(nextBtn.nativeElement.disabled).toEqual(true);
       expect(firstEllipsis).toBeTruthy();
       expect(secondEllipsis).toBeFalsy();
     });

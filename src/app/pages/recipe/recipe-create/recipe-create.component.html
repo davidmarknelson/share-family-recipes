@@ -11,7 +11,12 @@
       <!-- Recipe Name -->
       <div class="column">
         <div class="field">
-          <label class="label" for="name">Recipe Name *</label>
+          <label class="label" for="name">
+            Recipe Name *
+            <span class="has-text-weight-light is-size-7">
+              max 50 characters
+            </span>
+          </label>
           <div class="control">
             <input 
               data-test='name'
@@ -26,6 +31,7 @@
               required>
               <div *ngIf="name.invalid && (name.dirty || name.touched || submitted)" class="has-text-danger">
                 <p *ngIf="name.errors.required" data-test='nameRequired'>Name is required</p>
+                <p *ngIf="name.errors.maxlength" data-test='nameMaxLength'>Name has a max of 50 characters.</p>
               </div>
               <div *ngIf="availableName && name.valid" class="has-text-success">
                 <p data-test="nameAvailable">This name is available</p>
