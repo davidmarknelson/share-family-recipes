@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Router } from '@angular/router';
 // Services
 import { AuthService } from '../../../utilities/services/auth/auth.service';
 import { EmailVerificationService } from '../../../utilities/services/email-verification/email-verification.service';
@@ -21,7 +22,11 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
   emailSuccess: boolean = false;
   emailError: string;
 
-  constructor(private auth: AuthService, private email: EmailVerificationService) { }
+  constructor(
+    private auth: AuthService, 
+    private email: EmailVerificationService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.getUserProfile();
@@ -54,5 +59,9 @@ export class ProfileViewComponent implements OnInit, OnDestroy {
       this.sendingEmail = false;
       this.emailError = err.error.message;
     });
+  }
+
+  goToUsersRecipes(username) {
+    this.router.navigateByUrl(`/recipes/user-recipes?username=${username}`);
   }
 }

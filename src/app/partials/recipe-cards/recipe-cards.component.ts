@@ -26,4 +26,8 @@ export class RecipeCardsComponent implements OnInit {
   goToRecipe(id) {
     this.router.navigate([`/recipes/${id}`]);
   }
+
+  goToUsersRecipes(username) {
+    this.router.navigateByUrl(`/recipes/user-recipes?username=${username}`);
+  }
 }

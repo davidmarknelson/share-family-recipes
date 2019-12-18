@@ -12,9 +12,10 @@ import { PaginationModule } from '../../partials/pagination/pagination.module';
 import { RecipeCardsModule } from '../../partials/recipe-cards/recipe-cards.module';
 // Pipes
 import { SafeUrlPipe } from '../../utilities/pipes/safe-url/safe-url.pipe';
+import { UserRecipesComponent } from './user-recipes/user-recipes.component';
 
 @NgModule({
-  declarations: [RecipeBrowseComponent, RecipeViewComponent, SafeUrlPipe],
+  declarations: [RecipeBrowseComponent, RecipeViewComponent, SafeUrlPipe, UserRecipesComponent],
   imports: [
     CommonModule,
     RecipesRoutingModule,

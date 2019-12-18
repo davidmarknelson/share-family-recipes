@@ -4,6 +4,7 @@ import { EmailVerificationService } from '../../../utilities/services/email-veri
 import { ProfileViewComponent } from './profile-view.component';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 const user1 = {
   id: 1,
@@ -41,6 +42,10 @@ class MockAuthService {
   }
 }
 
+class MockRouter {
+  navigateByUrl(path) {}
+}
+
 class MockEmailService {
   sendVerificationEmail(email) {
     return of();
@@ -52,13 +57,15 @@ describe('ProfileComponent', () => {
   let fixture: ComponentFixture<ProfileViewComponent>;
   let emailService: EmailVerificationService;
   let authService: AuthService;
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ProfileViewComponent ],
       providers: [
         { provide: AuthService, useClass:  MockAuthService },
-        { provide: EmailVerificationService, useClass:  MockEmailService }
+        { provide: EmailVerificationService, useClass:  MockEmailService },
+        { provide: Router, useClass:  MockRouter }
       ]
     })
     .compileComponents();
@@ -69,6 +76,7 @@ describe('ProfileComponent', () => {
     component = fixture.componentInstance;
     authService = fixture.debugElement.injector.get(AuthService);
     emailService = fixture.debugElement.injector.get(EmailVerificationService);
+    router = fixture.debugElement.injector.get(Router);
   });
 
   it('should create', () => {
@@ -182,6 +190,18 @@ describe('ProfileComponent', () => {
     it('should show a message to verify the email', () => {
       const emailVerifyMsg = fixture.debugElement.query(By.css('[data-test=emailVerifyMsg]'));
       expect(emailVerifyMsg).toBeFalsy();
+    });
+
+    it('should navigate to the recipes page for the user', () => {
+      let yourRecipesBtn = fixture.debugElement.query(By.css('[data-test=your-recipes]'));
+
+      spyOn(router, 'navigateByUrl');
+
+      yourRecipesBtn.nativeElement.click();
+      yourRecipesBtn.nativeElement.dispatchEvent(new Event('click'));
+      fixture.detectChanges();
+
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/recipes/user-recipes?username=jacksmith');
     });
   });
 });

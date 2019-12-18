@@ -54,20 +54,28 @@
   </div>
 </div>
 
-<div class="buttons btn-field">
-  <a class="button is-primary is-rounded" routerLink='/profile/edit'>
+<div class="buttons btn-field" *ngIf="user">
+  <a 
+    data-test='edit-profile'
+    class="button is-primary is-rounded" 
+    routerLink='/profile/edit'>
     Edit Profile
   </a>
-  <a class="button is-secondary is-rounded" routerLink='/saved'>
+  <a 
+    class="button is-secondary is-rounded" 
+    >
     Saved List
   </a>
-  <a class="button is-secondary is-rounded" routerLink='/yourrecipes'>
+  <a 
+    data-test='your-recipes'
+    class="button is-secondary is-rounded" 
+    (click)='goToUsersRecipes(user.username)'>
     Your Recipes
   </a>
   <a 
     class="button is-secondary is-rounded" 
     routerLink='/profile/admin' 
-    *ngIf='user && user.isAdmin'
+    *ngIf='user.isAdmin'
     data-test="admin-link">
     Admin
   </a>

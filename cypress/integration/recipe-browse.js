@@ -15,10 +15,10 @@ describe('Recipe Browse', () => {
   describe('signed in user', () => {
     beforeEach(() => {
       cy.request('DELETE', 'http://localhost:3000/tests/delete')
-      .request('POST', 'http://localhost:3000/tests/seed')
-      .request('POST', 'http://localhost:3000/tests/seedmeal')
-      .request('POST', 'http://localhost:3000/tests/seedmeal2')
-      .login('verified@email.com', 'password');
+        .request('POST', 'http://localhost:3000/tests/seed')
+        .request('POST', 'http://localhost:3000/tests/seedmeal')
+        .request('POST', 'http://localhost:3000/tests/seedmeal2')
+        .login('verified@email.com', 'password');
     });
 
     it('should show the newest recipe when the page loads', () => {

@@ -1,0 +1,86 @@
+<!-- Title -->
+<section class="section page-header">
+  <div class="container">
+    <p 
+      data-test='loading-msg'
+      class='has-text-centered' 
+      *ngIf='!recipes && !errorMessage && !isPageError'>
+      Getting data...
+    </p>
+    <h1 class="title page-header__title has-text-centered page-header--max-width" *ngIf='recipes'>
+      {{ recipes.username }}'s Recipes
+    </h1>
+    <p class="subtitle has-text-centered page-header--max-width" *ngIf='recipes'>
+      View recipes created by {{ recipes.username }}.
+    </p>
+  </div>
+</section>
+
+<p 
+  data-test='no-recipes-msg'
+  class='has-text-centered' 
+  *ngIf='recipes && recipes.rows.length === 0'>
+  This user has not created any recipes.
+</p>
+
+<div class="container filters" *ngIf='recipes && recipes.rows.length > 0'>
+  <div class="columns">
+
+    <div class="column"></div>
+
+    <!-- Pagination count -->
+    <div class="column is-narrow">
+      <p class='has-text-right' data-test='recipe-count'>
+        {{ initialPageRecipeNumber }}-{{ finalPageRecipeNumber }} of {{ recipes.count }} recipes
+      </p>
+    </div>
+  
+    <!-- Select Amount options -->
+    <div class="column is-narrow">
+      <div class="select is-primary is-rounded is-small">
+        <select 
+          (change)="onAmountChange($event.target.value)"
+          data-test='amount-select'>
+          <option *ngFor="let amount of recipesShown">
+            Show {{ amount }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Select sorting options -->
+    <div class="column is-narrow">
+      <div class="select is-primary is-rounded is-small">
+        <select 
+          (change)="onSortingChange($event.target.value)"
+          data-test='sorting-select'>
+          <option>A - Z</option>
+          <option>Z - A</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Error Message -->
+<div class='error-message' *ngIf='errorMessage'>
+  <div class="notification is-danger" data-test='errorMsg'>
+    <button class="delete" (click)='clearErrorMessage()' data-test="closeErrorMsg"></button>
+    {{ errorMessage }}
+  </div>
+</div>
+
+<app-recipe-cards
+  *ngIf='recipes && recipes.rows.length > 0' 
+  [user]='user'
+  [recipes]='recipes'>
+</app-recipe-cards>
+
+<app-pagination
+  *ngIf='recipes && recipes.rows.length > 0'
+  (pageChange)='onPageChange($event)'
+  [count]='recipes.count'
+  [limit]='limit'
+  [offset]='offset'
+></app-pagination>

@@ -116,6 +116,32 @@ export class SearchesService {
     );
   }
 
+  byUsernameAtoZ(offset, limit, username: string): Observable<RecipeCardInfo> {
+    return this.http.get<RecipeCardInfo>(`${this.apiUrl}search/byuser-a-z`, { params: {
+      offset: offset,
+      limit: limit,
+      username: username
+    }}).pipe(
+      map((res: RecipeCardInfo) => {
+        this.loopResposeItems(res);
+        return res;
+      })
+    );
+  }
+
+  byUsernameZtoA(offset, limit, username: string): Observable<RecipeCardInfo> {
+    return this.http.get<RecipeCardInfo>(`${this.apiUrl}search/byuser-z-a`, { params: {
+      offset: offset,
+      limit: limit,
+      username: username
+    }}).pipe(
+      map((res: RecipeCardInfo) => {
+        this.loopResposeItems(res);
+        return res;
+      })
+    );
+  }
+
   loopResposeItems(res: RecipeCardInfo) {
     for (let item of res.rows) {
       item.createdAt = this.formatDate(item.createdAt);

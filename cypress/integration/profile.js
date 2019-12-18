@@ -12,7 +12,7 @@ describe('Profile', () => {
   });
 
   describe('Unverified User', () => {
-    before(() => {
+    beforeEach(() => {
       cy.request('POST', 'http://localhost:3000/tests/seedunverified')
         .login('unverified@email.com', 'password');
     });
@@ -25,15 +25,38 @@ describe('Profile', () => {
   });
 
   describe('Verified User', () => {
-    before(() => {
-      cy.request('POST', 'http://localhost:3000/tests/seed')
+    beforeEach(() => {
+      cy.request('DELETE', 'http://localhost:3000/tests/delete')
+        .request('POST', 'http://localhost:3000/tests/seed')
         .login('verified@email.com', 'password');
     });
 
     it('should not show a message for verifying the email', () => {
-      cy
+      cy.visit('/profile')
+        .url().should('include', '/profile')
         .get('[data-test=emailVerifyMsg]')
         .should('not.exist');
+    });
+
+    it('should navigate to the user created recipes', () => {
+      cy.visit('/profile')
+        .url().should('include', '/profile')
+        .get('[data-test=your-recipes]').click()
+        .url().should('include', '/recipes/user-recipes?username=verifiedUser');
+    });
+
+    it('should navigate to the profile edit page', () => {
+      cy.visit('/profile')
+        .url().should('include', '/profile')
+        .get('[data-test=edit-profile]').click()
+        .url().should('include', '/profile/edit');
+    });
+
+    it('should navigate to the admin page', () => {
+      cy.visit('/profile')
+        .url().should('include', '/profile')
+        .get('[data-test=admin-link]').click()
+        .url().should('include', '/admin');
     });
   });
 });

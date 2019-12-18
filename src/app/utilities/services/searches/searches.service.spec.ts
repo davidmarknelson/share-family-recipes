@@ -292,4 +292,64 @@ describe('SearchesService', () => {
       http.verify();
     });
   });
+
+  describe('byUsernameAtoZ', () => {
+    it('should return an array of recipes', () => {
+      let signupResponse = recipesObj;
+
+      let response;
+      searchesService.byUsernameAtoZ(0, 10, 'johndoe').subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/search/byuser-a-z?offset=0&limit=10&username=johndoe')
+        .flush(signupResponse, {status: 200, statusText: 'OK'});
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return a 404 status if there are no recipes', () => {
+      let signupResponse = 'There are no recipes.';
+
+      let errorResponse;
+      searchesService.byUsernameAtoZ(0, 10, 'johndoe').subscribe(res => {}, err => {
+        errorResponse = err.error;
+      });
+
+      http.expectOne('http://localhost:3000/search/byuser-a-z?offset=0&limit=10&username=johndoe')
+        .flush(signupResponse, {status: 404, statusText: 'Not Found'});
+      expect(errorResponse).toEqual(signupResponse);
+      http.verify();
+    });
+  });
+
+  describe('byUsernameZtoA', () => {
+    it('should return an array of recipes', () => {
+      let signupResponse = recipesObj;
+
+      let response;
+      searchesService.byUsernameZtoA(0, 10, 'johndoe').subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/search/byuser-z-a?offset=0&limit=10&username=johndoe')
+        .flush(signupResponse, {status: 200, statusText: 'OK'});
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return a 404 status if there are no recipes', () => {
+      let signupResponse = 'There are no recipes.';
+
+      let errorResponse;
+      searchesService.byUsernameZtoA(0, 10, 'johndoe').subscribe(res => {}, err => {
+        errorResponse = err.error;
+      });
+
+      http.expectOne('http://localhost:3000/search/byuser-z-a?offset=0&limit=10&username=johndoe')
+        .flush(signupResponse, {status: 404, statusText: 'Not Found'});
+      expect(errorResponse).toEqual(signupResponse);
+      http.verify();
+    });
+  });
 });

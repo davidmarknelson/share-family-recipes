@@ -22,7 +22,13 @@
               </div>
               <!-- Subtitle -->
               <p class="subtitle is-size-7 subtitle-height">
-                Created by <a data-tooltip="View user's recipes">{{ recipe.creator.username }}</a>
+                Created by 
+                <a 
+                  data-tooltip="View user's recipes" 
+                  data-test='user-recipe-link'
+                  (click)='goToUsersRecipes(recipe.creator.username)'>
+                  {{ recipe.creator.username }}
+                </a>
                 on <time>{{ recipe.createdAt }}</time>
               </p>
             </div>
