@@ -54,7 +54,7 @@
           </span>
         </div>
 
-        <div class="column is-narrow filters__ingredient-btn -center">
+        <div class="column is-narrow filters__ingredient-btn">
           <button 
             data-test="clear-ingredients"
             class='button is-rounded is-small is-primary'
@@ -70,7 +70,7 @@
 
     <!-- Pagination count -->
     <div class="column filters--content-align-center" *ngIf='recipes'>
-      <p class='has-text-right'>
+      <p class='has-text-right' data-test='recipe-count'>
         {{ initialPageRecipeNumber }}-{{ finalPageRecipeNumber }} of {{ recipes.count }} recipes
       </p>
     </div>

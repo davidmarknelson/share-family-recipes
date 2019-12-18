@@ -14,7 +14,9 @@
             <div class="media-content">
               <!-- Title -->
               <div [attr.data-tooltip]="recipe.name.length > 15 ? recipe.name : null" class='title-container'>
-                <p class="title overflow">
+                <p 
+                  class="title overflow"
+                  data-test='recipe-name'>
                   {{ recipe.name }}
                 </p>
               </div>
