@@ -39,11 +39,6 @@ describe('FooterComponent', () => {
     expect(link.attributes.routerLink).toEqual('/create');
   });
 
-  it('should have a link to the about page when clicking the about link', () => {
-    const link = fixture.debugElement.query(By.css('[data-test=footer-about]'));
-    expect(link.attributes.routerLink).toEqual('/about');
-  });
-
   it('should have a link to the contact page when clicking the contact link', () => {
     const link = fixture.debugElement.query(By.css('[data-test=footer-contact]'));
     expect(link.attributes.routerLink).toEqual('/contact');

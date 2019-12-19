@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'profile/admin', loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule) },
   { path: 'create', loadChildren: () => import('./pages/recipe/recipe.module').then(m => m.RecipeModule) },
   { path: 'recipes', loadChildren: () => import('./pages/recipes/recipes.module').then(m => m.RecipesModule) },
+  { path: 'contact', loadChildren: () => import('./pages/contact/contact.module').then(m => m.ContactModule) },
   { path: 'notfound', loadChildren: () => import('./pages/not-found/not-found.module').then(m => m.NotFoundModule) },
   { path: '**', redirectTo: '/notfound' }
 ];
