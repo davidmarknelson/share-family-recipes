@@ -28,7 +28,7 @@ export class NavbarComponent implements OnInit {
     if (this.isLoggedIn) {
       this.auth.renewToken().subscribe();
     } else {
-      localStorage.clear();
+      this.auth.logout();
     }
   }
 

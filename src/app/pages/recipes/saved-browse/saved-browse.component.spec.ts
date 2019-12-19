@@ -1,11 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserRecipesComponent } from './user-recipes.component';
+import { SavedBrowseComponent } from './saved-browse.component';
 import { DebugElement } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
 import { RecipesModule } from '../recipes.module';
-import { SearchesService } from '../../../utilities/services/searches/searches.service';
+import { SavedRecipesService } from '../../../utilities/services/saved-recipes/saved-recipes.service';
 import { AuthService } from '../../../utilities/services/auth/auth.service';
 import { UserRecipeCardInfo } from '../../../utilities/services/searches/user-recipe-card-info';
 import { of, throwError } from 'rxjs';
@@ -13,7 +11,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-let fixture: ComponentFixture<UserRecipesComponent>;
+let fixture: ComponentFixture<SavedBrowseComponent>;
 let loadingMsg: DebugElement;
 let pageTitle: DebugElement;
 let pageError: DebugElement;
@@ -79,52 +77,45 @@ const user = {
   savedRecipes: []
 }
 
-class MockSearchesService {
-  byUsernameAtoZ(offest, limit, username) {
-    return of();
-  }
-  byUsernameZtoA(offest, limit, username) {
-    return of();
-  }
-}
-
 class MockAuthService {
   currentUser() {
     return;
   }
 }
 
-class MockActivatedRoute {
-  snapshot = { queryParams: { username: 'johndoe' } };
+class MockSavedService {
+  savedRecipesAtoZ(offset, limit) {
+    return of();
+  }
+  savedRecipesZtoA(offset, limit) {
+    return of();
+  }
 }
 
-describe('UserRecipesComponent', () => {
-  let component: UserRecipesComponent;
+describe('SavedBrowseComponent', () => {
+  let component: SavedBrowseComponent;
   let authService: AuthService;
-  let searchesService: SearchesService;
-  let activatedRoute: ActivatedRoute;
-
+  let savedService: SavedRecipesService;
+  
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RecipesModule, RouterTestingModule, HttpClientTestingModule]
     })
-    .overrideComponent(UserRecipesComponent, {
+    .overrideComponent(SavedBrowseComponent, {
       set: {
         providers: [
-          { provide: SearchesService, useClass: MockSearchesService },
-          { provide: AuthService, useClass: MockAuthService },
-          { provide: ActivatedRoute, useClass: MockActivatedRoute }
+          { provide: SavedRecipesService, useClass: MockSavedService },
+          { provide: AuthService, useClass: MockAuthService }
         ]
       }
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserRecipesComponent);
+    fixture = TestBed.createComponent(SavedBrowseComponent);
     component = fixture.componentInstance;
     authService = fixture.debugElement.injector.get(AuthService);
-    searchesService = fixture.debugElement.injector.get(SearchesService);
-    activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
+    savedService = fixture.debugElement.injector.get(SavedRecipesService);
   });
 
   it('should create', () => {
@@ -142,25 +133,25 @@ describe('UserRecipesComponent', () => {
     });
 
     it('should populate the page with the user\'s recipes', () => {
-      spyOn(searchesService, 'byUsernameAtoZ').and.callFake(() => of(recipesObj));
+      spyOn(savedService, 'savedRecipesAtoZ').and.callFake(() => of(recipesObj));
       spyOn(authService, 'currentUser').and.returnValue(user);
       spyOn(component, 'getData').and.callThrough();
 
       fixture.detectChanges();
       selectElements();
 
-      expect(searchesService.byUsernameAtoZ).toHaveBeenCalled();
+      expect(savedService.savedRecipesAtoZ).toHaveBeenCalled();
       expect(authService.currentUser).toHaveBeenCalled();
       expect(component.getData).toHaveBeenCalled();
 
-      expect(pageTitle.nativeElement.innerText).toContain('johndoe\'s Recipes');
+      expect(pageTitle.nativeElement.innerText).toContain('Saved Recipes');
       expect(recipeCount.nativeElement.innerText).toContain('1-1 of 1 recipes');
     });
 
-    it('should show an error if the user does not exist', () => {
-      spyOn(searchesService, 'byUsernameAtoZ').and.callFake(() => {
+    it('should show an error for a server error and not show loading when closing the error', () => {
+      spyOn(savedService, 'savedRecipesAtoZ').and.callFake(() => {
         return throwError({ error: {
-          message: 'This user does not exist.'
+          message: 'There was an error getting your list of saved recipes.'
         }});
       });
       spyOn(authService, 'currentUser').and.returnValue(user);
@@ -169,64 +160,42 @@ describe('UserRecipesComponent', () => {
       fixture.detectChanges();
       selectElements();
 
-      expect(searchesService.byUsernameAtoZ).toHaveBeenCalled();
+      expect(savedService.savedRecipesAtoZ).toHaveBeenCalled();
       expect(authService.currentUser).toHaveBeenCalled();
       expect(component.getData).toHaveBeenCalled();
       
-      expect(pageError.nativeElement.innerText).toContain('This user does not exist.');
-      expect(pageTitle).toBeFalsy();
+      expect(pageError.nativeElement.innerText).toContain('There was an error getting your list of saved recipes.');
+
+      closePageError.nativeElement.click()
+      closePageError.nativeElement.dispatchEvent(new Event('click'));
+      fixture.detectChanges();
+      selectElements();
+
+      expect(loadingMsg).toBeFalsy();
     });
 
-    it('should show an error if the user has not created any recipes', () => {
-      spyOn(searchesService, 'byUsernameAtoZ').and.callFake(() => of(recipesObjWithoutRecipes));
+    it('should show an error if the user has not saved any recipes', () => {
+      spyOn(savedService, 'savedRecipesAtoZ').and.callFake(() => of(recipesObjWithoutRecipes));
       spyOn(authService, 'currentUser').and.returnValue(user);
       spyOn(component, 'getData').and.callThrough();
 
       fixture.detectChanges();
       selectElements();
 
-      expect(searchesService.byUsernameAtoZ).toHaveBeenCalled();
+      expect(savedService.savedRecipesAtoZ).toHaveBeenCalled();
       expect(authService.currentUser).toHaveBeenCalled();
       expect(component.getData).toHaveBeenCalled();
       
-      expect(pageTitle.nativeElement.innerText).toContain('johndoe\'s Recipes');
-      expect(noRecipesMsg.nativeElement.innerText).toContain('This user has not created any recipes.');
+      expect(noRecipesMsg.nativeElement.innerText).toContain('You have not saved any recipes.');
     });
-
-    it('should show an error if there is no username parameter in the url', () => {
-      activatedRoute.snapshot.queryParams['username'] = '';
-      spyOn(searchesService, 'byUsernameAtoZ');
-      spyOn(authService, 'currentUser');
-      spyOn(component, 'getData');
-
-      fixture.detectChanges();
-      selectElements();
-
-      expect(searchesService.byUsernameAtoZ).not.toHaveBeenCalled();
-      expect(authService.currentUser).not.toHaveBeenCalled();
-      expect(component.getData).not.toHaveBeenCalled();
-      
-      expect(pageTitle).toBeFalsy();
-      expect(pageError.nativeElement.innerText).toContain('There was an error. You must search for a user.');
-
-      closePageError.nativeElement.click();
-      closePageError.nativeElement.dispatchEvent(new Event('click'));
-
-      fixture.detectChanges();
-      selectElements();
-
-      expect(pageError).toBeFalsy();
-      expect(loadingMsg).toBeFalsy();
-    });
-
   });
 
   describe('sorting changes', () => {
     beforeEach(() => {
       spyOn(authService, 'currentUser').and.returnValue(user);
       spyOn(component, 'getData').and.callThrough();
-      spyOn(searchesService, 'byUsernameAtoZ').and.callFake(() => of(recipesObj));
-      spyOn(searchesService, 'byUsernameZtoA').and.callFake(() => of(recipesObj));
+      spyOn(savedService, 'savedRecipesAtoZ').and.callFake(() => of(recipesObj));
+      spyOn(savedService, 'savedRecipesZtoA').and.callFake(() => of(recipesObj));
       spyOn(component, 'onSortingChange').and.callThrough();
 
       fixture.detectChanges();
@@ -239,8 +208,8 @@ describe('UserRecipesComponent', () => {
       fixture.detectChanges();
 
       expect(authService.currentUser).toHaveBeenCalled();
-      expect(searchesService.byUsernameAtoZ).toHaveBeenCalledTimes(1);
-      expect(searchesService.byUsernameZtoA).toHaveBeenCalledTimes(1);
+      expect(savedService.savedRecipesAtoZ).toHaveBeenCalledTimes(1);
+      expect(savedService.savedRecipesZtoA).toHaveBeenCalledTimes(1);
       expect(component.getData).toHaveBeenCalled();
       expect(component.onSortingChange).toHaveBeenCalled();
     });
@@ -251,8 +220,8 @@ describe('UserRecipesComponent', () => {
       fixture.detectChanges();
 
       expect(authService.currentUser).toHaveBeenCalled();
-      expect(searchesService.byUsernameAtoZ).toHaveBeenCalledTimes(2);
-      expect(searchesService.byUsernameZtoA).toHaveBeenCalledTimes(0);
+      expect(savedService.savedRecipesAtoZ).toHaveBeenCalledTimes(2);
+      expect(savedService.savedRecipesZtoA).toHaveBeenCalledTimes(0);
       expect(component.getData).toHaveBeenCalled();
       expect(component.onSortingChange).toHaveBeenCalled();
     });
@@ -262,8 +231,8 @@ describe('UserRecipesComponent', () => {
     beforeEach(() => {
       spyOn(authService, 'currentUser').and.returnValue(user);
       spyOn(component, 'getData').and.callThrough();
-      spyOn(searchesService, 'byUsernameAtoZ').and.callFake(() => of(recipesObj));
-      spyOn(searchesService, 'byUsernameZtoA');
+      spyOn(savedService, 'savedRecipesAtoZ').and.callFake(() => of(recipesObj));
+      spyOn(savedService, 'savedRecipesZtoA');
       spyOn(component, 'onAmountChange').and.callThrough();
 
       fixture.detectChanges();
@@ -276,8 +245,8 @@ describe('UserRecipesComponent', () => {
       fixture.detectChanges();
 
       expect(authService.currentUser).toHaveBeenCalled();
-      expect(searchesService.byUsernameAtoZ).toHaveBeenCalledWith(0, 18, 'johndoe');
-      expect(searchesService.byUsernameZtoA).not.toHaveBeenCalled();
+      expect(savedService.savedRecipesAtoZ).toHaveBeenCalledWith(0, 18);
+      expect(savedService.savedRecipesZtoA).not.toHaveBeenCalled();
       expect(component.getData).toHaveBeenCalled();
       expect(component.onAmountChange).toHaveBeenCalled();
     });
@@ -288,8 +257,8 @@ describe('UserRecipesComponent', () => {
       fixture.detectChanges();
 
       expect(authService.currentUser).toHaveBeenCalled();
-      expect(searchesService.byUsernameAtoZ).toHaveBeenCalledWith(0, 9, 'johndoe');
-      expect(searchesService.byUsernameZtoA).not.toHaveBeenCalled();
+      expect(savedService.savedRecipesAtoZ).toHaveBeenCalledWith(0, 9);
+      expect(savedService.savedRecipesZtoA).not.toHaveBeenCalled();
       expect(component.getData).toHaveBeenCalled();
       expect(component.onAmountChange).toHaveBeenCalled();
     });

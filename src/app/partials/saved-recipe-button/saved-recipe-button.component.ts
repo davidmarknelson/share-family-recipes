@@ -81,8 +81,6 @@ export class SavedRecipeButtonComponent implements OnInit, OnDestroy {
       for (let saved of this.user.savedRecipes) {
         if (saved.mealId === this.recipeId) {
           this.isRecipeSaved = true;
-        } else {
-          this.isRecipeSaved = false;
         }
       }
     }

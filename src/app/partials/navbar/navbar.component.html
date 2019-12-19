@@ -18,8 +18,12 @@
           Recipes
         </a>
   
+        <a class="navbar-item transition" routerLink='/recipes/saved-list' data-test='navbar-saved' *ngIf="isLoggedIn">
+          Saved
+        </a>
+
         <a class="navbar-item transition" routerLink='/create' data-test='navbar-create'>
-          Create Recipe
+          Create
         </a>
 
         <a class="navbar-item transition" routerLink='/profile' data-test='navbar-profile' *ngIf="isLoggedIn">

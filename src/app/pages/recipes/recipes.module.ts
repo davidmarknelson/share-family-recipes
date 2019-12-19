@@ -13,9 +13,10 @@ import { RecipeCardsModule } from '../../partials/recipe-cards/recipe-cards.modu
 // Pipes
 import { SafeUrlPipe } from '../../utilities/pipes/safe-url/safe-url.pipe';
 import { UserRecipesComponent } from './user-recipes/user-recipes.component';
+import { SavedBrowseComponent } from './saved-browse/saved-browse.component';
 
 @NgModule({
-  declarations: [RecipeBrowseComponent, RecipeViewComponent, SafeUrlPipe, UserRecipesComponent],
+  declarations: [RecipeBrowseComponent, RecipeViewComponent, SafeUrlPipe, UserRecipesComponent, SavedBrowseComponent],
   imports: [
     CommonModule,
     RecipesRoutingModule,

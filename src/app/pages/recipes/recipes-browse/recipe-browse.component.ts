@@ -202,6 +202,7 @@ export class RecipeBrowseComponent implements OnInit, OnDestroy {
   // This is called when the user changes the number
   // of recipes shown from the select input
   onAmountChange(value) {
+    // the first 5 characters for value are 'Show '
     this.limit = Number(value.slice(5));
     this.offset = 0;
     return this.getDataOrIngredientData();
