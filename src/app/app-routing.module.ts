@@ -12,7 +12,9 @@ const routes: Routes = [
   { path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule) },
   { path: 'profile/admin', loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule) },
   { path: 'create', loadChildren: () => import('./pages/recipe/recipe.module').then(m => m.RecipeModule) },
-  { path: 'recipes', loadChildren: () => import('./pages/recipes/recipes.module').then(m => m.RecipesModule) }
+  { path: 'recipes', loadChildren: () => import('./pages/recipes/recipes.module').then(m => m.RecipesModule) },
+  { path: 'notfound', loadChildren: () => import('./pages/not-found/not-found.module').then(m => m.NotFoundModule) },
+  { path: '**', redirectTo: '/notfound' }
 ];
 
 @NgModule({
