@@ -1,36 +1,81 @@
 <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
   <div class="container">
     <div class="navbar-brand">
-      <a class="navbar-item" routerLink='/' data-test='navbar-brand'>
+      <a class="navbar-item" routerLink='/' data-test='navbar-brand' (click)='closeSearchBar()'>
         <img src="../../../assets/images/navbar-img/sfr-logo.svg" alt="website logo" width="112" height="28">
       </a>
-  
-      <a role="button" class="navbar-burger burger" [class.is-active]="showMenu" aria-label="menu" aria-expanded="false" data-target="navbarMenu" (click)='toggleMenu()'>
+
+      <div class='center-btn'>
+        <button 
+          [attr.data-tooltip]='isSearchOpen ? "Open search bar" : "Close search bar"'
+          class='button is-rounded is-primary has-tooltip-left'
+          (click)='toggleSearchBar()'>
+          <fa-icon [icon]="faSearch"></fa-icon>
+        </button>
+      </div>  
+
+      <a 
+        role="button" 
+        class="navbar-burger burger" 
+        [class.is-active]="showMenu" 
+        aria-label="menu" 
+        aria-expanded="false" 
+        data-target="navbarMenu" 
+        (click)='toggleMenu()'>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
     </div>
-  
+
     <div id="navbarMenu" class="navbar-menu" [class.is-active]="showMenu">
-      <div class="navbar-start">
-        <a class="navbar-item transition" routerLink='/recipes' data-test='navbar-recipes'>
+      <div class='navbar-start'>
+        <a 
+          class="navbar-item transition" 
+          (click)='closeSearchBar()' 
+          routerLink='/recipes' 
+          data-test='navbar-recipes'>
           Recipes
         </a>
   
-        <a class="navbar-item transition" routerLink='/recipes/saved-list' data-test='navbar-saved' *ngIf="isLoggedIn">
+        <a 
+          class="navbar-item transition" 
+          (click)='closeSearchBar()' 
+          routerLink='/recipes/saved-list' 
+          data-test='navbar-saved' 
+          *ngIf="isLoggedIn">
           Saved
         </a>
 
-        <a class="navbar-item transition" routerLink='/create' data-test='navbar-create'>
+        <a 
+          class="navbar-item transition" 
+          (click)='closeSearchBar()' 
+          (click)='goToYourRecipes()' 
+          data-test='navbar-your-recipes' 
+          *ngIf="isLoggedIn">
+          Your Recipes
+        </a>
+
+        <a 
+          class="navbar-item transition" 
+          (click)='closeSearchBar()' 
+          routerLink='/create' 
+          data-test='navbar-create'>
           Create
         </a>
 
-        <a class="navbar-item transition" routerLink='/profile' data-test='navbar-profile' *ngIf="isLoggedIn">
+        <a 
+          class="navbar-item transition" 
+          (click)='closeSearchBar()' 
+          routerLink='/profile' 
+          data-test='navbar-profile' 
+          *ngIf="isLoggedIn">
           Profile
         </a>
+        
+
       </div>
-  
+
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
@@ -59,5 +104,44 @@
         </div>
       </div>
     </div>
+
   </div>
 </nav>
+
+<div class='search__container' *ngIf='isSearchOpen'>
+  <div class="container">
+    <form [formGroup]="searchBarForm" (ngSubmit)="onSubmit()" novalidate class='search--max-width'>
+      <div class="field has-addons search__input">
+        <p class="control is-expanded">
+          <input 
+            (keydown)="onKeydown($event)"
+            class="input is-rounded" 
+            type="text" 
+            id="name" 
+            #name
+            autocomplete="off"
+            formControlName="name"
+            placeholder="Recipe Name">
+        </p>
+        <p class="control">
+          <button 
+            type='submit'
+            class="button search__submit-btn">
+            Search
+          </button>
+        </p>
+
+        <div class='search__items-container' *ngIf='autocompleteItems.length > 0'>
+          <div
+            *ngFor='let item of autocompleteItems; let i = index;'
+            [class.search--highlighted]='highlightedIndex === i'>
+            <p 
+              class='search__items'>
+              {{ item.name }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

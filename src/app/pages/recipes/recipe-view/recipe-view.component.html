@@ -1,5 +1,5 @@
-<!-- Loading bar for getting the recipe -->
-<progress class="progress is-primary" max="100" *ngIf='loading'></progress>
+<!-- Loading message for getting the recipe -->
+<p class="has-text-centered loading-msg" *ngIf='loading'>Loading...</p>
 
 <!-- Error -->
 <div class="error-container">
@@ -11,7 +11,7 @@
 </div>
 
 <!-- Title -->
-<section class="section page-header" *ngIf='recipe'>
+<section class="section page-header" *ngIf='recipe && !error'>
   <div class="container">
     <h1 class="title page-header__title has-text-centered page-header--max-width">{{ recipe.name }}</h1>
     <p class="subtitle has-text-centered page-header--max-width">{{ recipe.description }}</p>
@@ -19,7 +19,7 @@
 </section>
 
 <!-- Pictures -->
-<div class="container container-padding" *ngIf='recipe'>
+<div class="container container-padding" *ngIf='recipe && !error'>
   <div class="columns">
     <div class="column">
       <!-- Meal picture -->
@@ -42,7 +42,7 @@
 </div>
 
 <!-- Buttons and info -->
-<div *ngIf='recipe' class='info'>
+<div *ngIf='recipe && !error' class='info'>
   <div class="columns">
     <div class="column info__container">
 
@@ -88,7 +88,7 @@
 
 
 <!-- Ingredients -->
-<div class="step-container" *ngIf='recipe'>
+<div class="step-container" *ngIf='recipe && !error'>
   <h2 class='title has-text-centered'>Ingredients</h2>
 
   <div class="columns is-multiline">
@@ -99,7 +99,7 @@
 </div>
 
 <!-- Instructions -->
-<div class="step-container step-container--bottom-margin" *ngIf='recipe'>
+<div class="step-container step-container--bottom-margin" *ngIf='recipe && !error'>
   <h2 class='title has-text-centered'>Instructions</h2>
 
   <ul>
@@ -114,7 +114,7 @@
 
 
 <!-- Original Recipe url -->
-<div data-test='originalRecipeUrl' class="step-container" *ngIf='recipe && recipe.originalRecipeUrl'>
+<div data-test='originalRecipeUrl' class="step-container" *ngIf='recipe && recipe.originalRecipeUrl && !error'>
   <p>
     You can view the original recipe at 
     <a 
@@ -126,7 +126,7 @@
 </div>
 
 <!-- Recipe YouTube Video -->
-<div data-test='youtubeUrl'  class="step-container" *ngIf='recipe && recipe.youtubeUrl'>
+<div data-test='youtubeUrl'  class="step-container" *ngIf='recipe && recipe.youtubeUrl && !error'>
   <figure class="image is-16by9">
     <iframe 
       class="has-ratio"

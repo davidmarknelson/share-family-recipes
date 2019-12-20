@@ -2,6 +2,11 @@
   padding-left: 20px;
   padding-right: 20px;
   margin-bottom: 75px;
+
+  &--move-right {
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 
 .error-message {

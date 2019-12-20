@@ -352,4 +352,34 @@ describe('SearchesService', () => {
       http.verify();
     });
   });
+  
+  describe('recipesByName', () => {
+    it('should return an array of recipes', () => {
+      let signupResponse = recipesObj;
+
+      let response;
+      searchesService.recipesByName('rice', 10).subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/search/name?limit=10&name=rice')
+        .flush(signupResponse, {status: 200, statusText: 'OK'});
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return a 404 status if there are no recipes', () => {
+      let signupResponse = null;
+
+      let errorResponse;
+      searchesService.recipesByName('rice', 10).subscribe(res => {}, err => {
+        errorResponse = err.error;
+      });
+
+      http.expectOne('http://localhost:3000/search/name?limit=10&name=rice')
+        .flush(signupResponse, {status: 404, statusText: 'Not Found'});
+      expect(errorResponse).toEqual(signupResponse);
+      http.verify();
+    });
+  });
 });

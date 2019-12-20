@@ -237,7 +237,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
         this.availableName = true;
       }, err => {
         this.availableName = false;
-        // The api returns a 400 error when the username is taken.
+        // The api returns a 400 error when the name is taken.
         // This resubscribes to the observable because subscriptions 
         // complete on errors.
         this.onNameChanges();

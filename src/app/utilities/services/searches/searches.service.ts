@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { format } from 'date-fns';
 // Interfaces
 import { RecipeCardInfo } from './recipe-card-info';
+import { AutocompleteItems } from './autocomplete-items';
 // Environment 
 import { environment } from '../../../../environments/environment';
 
@@ -140,6 +141,13 @@ export class SearchesService {
         return res;
       })
     );
+  }
+
+  recipesByName(name: string, limit): Observable<Array<AutocompleteItems>> {
+    return this.http.get<Array<AutocompleteItems>>(`${this.apiUrl}search/name`, { params: {
+      limit: limit,
+      name: name
+    }});
   }
 
   loopResposeItems(res: RecipeCardInfo) {

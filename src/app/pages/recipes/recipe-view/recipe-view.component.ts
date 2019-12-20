@@ -38,15 +38,20 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.recipeParam = this.route.snapshot.params['recipe'];
-    // if 'recipeParam' is a number(id), it will return the number
-    // and be a truthy value. If the value is a string(name), it will 
-    // return NaN and be a falsy value
-    if (Number(this.recipeParam)) {
-      this.getRecipeById(this.recipeParam);
-    } else {
-      this.getRecipeByName(this.recipeParam);
-    }
+    this.route.params.pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(res => {
+      this.recipeParam = res['recipe'];
+
+      // if 'recipeParam' is a number(id), it will return the number
+      // and be a truthy value. If the value is a string(name), it will 
+      // return NaN and be a falsy value
+      if (Number(this.recipeParam)) {
+        this.getRecipeById(this.recipeParam);
+      } else {
+        this.getRecipeByName(this.recipeParam);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -66,7 +71,7 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
       // the recipe is assigned because child components require the
       // user data and the recipe data
       this.returnUserObj();
-
+      this.error = '';
       this.recipe = res;
     }, err => {
       this.loading = false;
@@ -88,7 +93,7 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
       // the recipe is assigned because child components require the
       // user data and the recipe data
       this.returnUserObj();
-
+      this.error = '';
       this.recipe = res;
     }, err => {
       this.loading = false;
