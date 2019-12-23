@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@an
 import { AuthService } from '../../utilities/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { filter, debounceTime, mergeMap, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { SearchesService } from '../../utilities/services/searches/searches.service';
@@ -29,7 +29,7 @@ export class NavbarComponent implements OnInit {
     private auth: AuthService, 
     private router: Router,
     private searchesService: SearchesService,
-    private changeDetector : ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef
   ) {
     this.auth.loggedIn.subscribe(status => this.isLoggedIn = status);
   }
@@ -70,8 +70,8 @@ export class NavbarComponent implements OnInit {
   // =================
   toggleSearchBar() {
     this.isSearchOpen = !this.isSearchOpen;
-    this.changeDetector.detectChanges();
     if (this.isSearchOpen) {
+      this.changeDetector.detectChanges();
       this.nameInput.nativeElement.focus();
     } else {
       this.searchBarForm.get('name').setValue('');
@@ -112,6 +112,8 @@ export class NavbarComponent implements OnInit {
       ).subscribe((res: Array<AutocompleteItems>) => {
         this.highlightedIndex = -1;
 
+        // When isAutocompleteOptionSelected is true, the if statement returns false.
+        // This keeps autocompleteItems an array.
         if (Array.isArray(res)) {
           this.autocompleteItems = res;
         } else {
@@ -128,6 +130,11 @@ export class NavbarComponent implements OnInit {
   }
 
   onKeydown(key) {
+    // escape key
+    if (key.keyCode === 27) {
+      return this.closeSearchBar();
+    }
+
     // arrow down
     if (key.keyCode === 40) {
       key.preventDefault();
@@ -135,9 +142,9 @@ export class NavbarComponent implements OnInit {
       // autocompleteItem list, this will reset 
       // the highlightedIndex to the first autocompleteItem
       if (this.highlightedIndex === this.autocompleteItems.length - 1) {
-        this.highlightedIndex = 0;
+        return this.highlightedIndex = 0;
       } else {
-        this.highlightedIndex = this.highlightedIndex + 1;
+        return this.highlightedIndex = this.highlightedIndex + 1;
       }
     }
 
@@ -148,28 +155,33 @@ export class NavbarComponent implements OnInit {
       // autocompleteItem list, this will reset 
       // the highlightedIndex to the last autocompleteItem
       if (this.highlightedIndex === 0 || this.highlightedIndex === -1) {
-        this.highlightedIndex = this.autocompleteItems.length - 1;
+        return this.highlightedIndex = this.autocompleteItems.length - 1;
       } else {
-        this.highlightedIndex = this.highlightedIndex - 1;
+        return this.highlightedIndex = this.highlightedIndex - 1;
       }
     }
 
-    // enter
-    if (key.keyCode === 13) {
-      // prevent default if the autocomplete box is visible
-      if (this.autocompleteItems.length > 0) {
-        key.preventDefault();
+    // enter key
+    // prevent default if the autocomplete box is visible
+    if (key.keyCode === 13 && this.autocompleteItems.length > 0) {
+      key.preventDefault();
 
-        // this dismisses autocompleteItems if the user has not selected an option
-        if (this.highlightedIndex === -1) {
-          return this.autocompleteItems = [];
-        }
-
-        // Changes the value to true so onNameChanges will not update the autocompleteItems box
-        this.isAutocompleteOptionSelected = true;
-        this.searchBarForm.get('name').setValue(this.autocompleteItems[this.highlightedIndex].name);
+      // this dismisses autocompleteItems if the user has not selected an option
+      if (this.highlightedIndex === -1) {
+        return this.autocompleteItems = [];
       }
+
+      // Changes the value to true so onNameChanges will not update the autocompleteItems box
+      this.isAutocompleteOptionSelected = true;
+      return this.searchBarForm.get('name').setValue(this.autocompleteItems[this.highlightedIndex].name);
     }
+  }
+
+  chooseSearchItem(index) {
+    // Changes the value to true so onNameChanges will not update the autocompleteItems box
+    this.isAutocompleteOptionSelected = true;
+    this.searchBarForm.get('name').setValue(this.autocompleteItems[index].name);
+    return this.nameInput.nativeElement.focus();
   }
 
   onSubmit() {

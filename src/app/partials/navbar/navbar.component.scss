@@ -67,7 +67,12 @@
   }
 
   &--highlighted {
-    background-color: green;
+    background-color: #11672C;
+    color: #fff;
+  }
+
+  &__items:hover {
+    background-color: #114910;
     color: #fff;
   }
 }

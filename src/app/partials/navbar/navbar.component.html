@@ -7,8 +7,9 @@
 
       <div class='center-btn'>
         <button 
-          [attr.data-tooltip]='isSearchOpen ? "Open search bar" : "Close search bar"'
-          class='button is-rounded is-primary has-tooltip-left'
+          [attr.data-tooltip]='isSearchOpen ? "Close search bar" : "Open search bar"'
+          class='button is-rounded is-primary has-tooltip-left' 
+          data-test="seachBarBtn"
           (click)='toggleSearchBar()'>
           <fa-icon [icon]="faSearch"></fa-icon>
         </button>
@@ -132,16 +133,17 @@
         </p>
 
         <div class='search__items-container' *ngIf='autocompleteItems.length > 0'>
-          <div
+          <p
             *ngFor='let item of autocompleteItems; let i = index;'
-            [class.search--highlighted]='highlightedIndex === i'>
-            <p 
-              class='search__items'>
-              {{ item.name }}
-            </p>
-          </div>
+            [class.search--highlighted]='highlightedIndex === i'
+            class='search__items'
+            (click)='chooseSearchItem(i)'>
+            {{ item.name }}
+          </p>
         </div>
+
       </div>
     </form>
+    
   </div>
 </div>

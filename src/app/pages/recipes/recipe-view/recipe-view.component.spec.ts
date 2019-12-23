@@ -6,7 +6,7 @@ import { RecipesModule } from '../recipes.module';
 import { ActivatedRoute} from '@angular/router';
 import { RecipeService } from '../../../utilities/services/recipe/recipe.service';
 import { AuthService } from '../../../utilities/services/auth/auth.service';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Observable } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -68,8 +68,19 @@ const userObj = {
   exp: 2180296172
 };
 
+// This allows the recipe to be changed in the tests to 
+// make it a number or a string.
+// It must be declared at the beginning of each test.
+let recipeItem;
+
 class MockActivatedRoute {
-  snapshot = { params: { recipe: '1' } };
+  params = new Observable(observer => {
+    const recipe = {
+      recipe: recipeItem // declared above
+    }
+    observer.next(recipe);
+    observer.complete();
+  });
 }
 
 class MockRecipeService {
@@ -116,7 +127,9 @@ describe('RecipeViewComponent', () => {
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
   });
 
-  it('should create', () => {
+  it('should create', () => { 
+    recipeItem = '1';
+
     fixture.detectChanges();
 
     expect(component).toBeTruthy();
@@ -124,6 +137,8 @@ describe('RecipeViewComponent', () => {
 
   describe('error', () => {
     it('should show an error message with the recipe id when the recipe does not exist', () => {
+      recipeItem = '1';
+
       spyOn(component, 'getRecipeById').and.callThrough();
       spyOn(recipeService, 'getRecipeById').and.callFake(() => {
         return throwError({
@@ -144,7 +159,7 @@ describe('RecipeViewComponent', () => {
     });
 
     it('should show an error message with the recipe name when the recipe does not exist', () => {
-      activatedRoute.snapshot.params.recipe = 'egg';
+      recipeItem = 'eggs';
 
       spyOn(component, 'getRecipeByName').and.callThrough();
       spyOn(recipeService, 'getRecipeByName').and.callFake(() => {
@@ -168,6 +183,8 @@ describe('RecipeViewComponent', () => {
 
   describe('recipe', () => {
     it('should populate the page with the information and show the edit button for the creator', () => {
+      recipeItem = '1';
+
       spyOn(authService, 'isLoggedIn').and.callFake(() => true);
       spyOn(authService, 'currentUser').and.callFake(() => userObj);
 
@@ -189,8 +206,35 @@ describe('RecipeViewComponent', () => {
       expect(editBtn).toBeTruthy();
       expect(iframeVideo).toBeTruthy();
     });
+    
+    it('should populate the page with the information and show the edit button for the creator and call getRecipeByName', () => {
+      recipeItem = 'eggs';
+
+      spyOn(authService, 'isLoggedIn').and.callFake(() => true);
+      spyOn(authService, 'currentUser').and.callFake(() => userObj);
+
+      spyOn(component, 'getRecipeByName').and.callThrough();
+      spyOn(recipeService, 'getRecipeByName').and.callFake(() => {
+        return of(recipeObj);        
+      });
+
+      fixture.detectChanges();
+
+      expect(component.getRecipeByName).toHaveBeenCalled();
+      expect(recipeService.getRecipeByName).toHaveBeenCalled();
+
+      let title: DebugElement = fixture.debugElement.query(By.css('.page-header__title'));
+      let editBtn: DebugElement = fixture.debugElement.query(By.css('[data-test=edit-btn]'));
+      let iframeVideo: DebugElement = fixture.debugElement.query(By.css('iframe'));
+
+      expect(title.nativeElement.innerText).toEqual('Eggs and Rice');
+      expect(editBtn).toBeTruthy();
+      expect(iframeVideo).toBeTruthy();
+    });
 
     it('should populate the page with the information and not show the edit button', () => {
+      recipeItem = '1';
+
       spyOn(component, 'getRecipeById').and.callThrough();
       spyOn(recipeService, 'getRecipeById').and.callFake(() => {
         return of(recipe2Obj);        

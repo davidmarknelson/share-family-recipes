@@ -36,4 +36,95 @@ describe('Navbar', () => {
         .click().url().should('include', '/');
     });
   });
+
+  describe('searchbar', () => {
+    beforeEach(() => {
+      cy.request('DELETE', 'http://localhost:3000/tests/delete')
+        .request('POST', 'http://localhost:3000/tests/seed')
+        .request('POST', 'http://localhost:3000/tests/seedmeal')
+        .request('POST', 'http://localhost:3000/tests/seedmeal2');
+    });
+
+    it('should open and close the searchbar by clicking on the search icon', () => {
+      cy.get('#name').should('not.exist')
+        .get('[data-test=seachBarBtn]').click()
+        .get('#name').should('exist')
+        .get('[data-test=seachBarBtn]').click()
+        .get('#name').should('not.exist');
+    });
+
+    it('should show a list of recipes when the user types a recipe', () => {
+      cy.get('#name').should('not.exist')
+        .get('[data-test=seachBarBtn]').click()
+        .get('#name').type('Chicken')
+        .get('.search__items').first()
+        .should('contain', 'Chicken and fries')
+        .get('.search__items').last()
+        .should('contain', 'Chicken and rice');
+    });
+
+    it('should choose the option when clicked and navigate to the ', () => {
+      cy.get('#name').should('not.exist')
+        .get('[data-test=seachBarBtn]').click()
+        .get('#name').type('Chicken')
+        .get('.search__items').first()
+        .should('contain', 'Chicken and fries')
+        .get('.search__items').first().click()
+        .get('.search__items-container').should('not.exist')
+        .get('[type=submit]').click()
+        .url().should('include', '/recipes/Chicken%20and%20fries')
+        .get('#name').should('not.exist');
+    });
+
+    it('should choose the option with the down arrow keys and enter key', () => {
+      cy.get('#name').should('not.exist')
+        .get('[data-test=seachBarBtn]').click()
+        .get('#name').type('Chicken')
+        .get('.search__items').first()
+        .should('contain', 'Chicken and fries')
+        .get('#name').type('{downarrow}')
+        .get('.search__items').first().should('have.class', 'search--highlighted')
+        .get('#name').type('{downarrow}')
+        .get('.search__items').last().should('have.class', 'search--highlighted')
+        .get('#name').type('{downarrow}')
+        .get('.search__items').first().should('have.class', 'search--highlighted')
+        .get('#name').type('{enter}')
+        .get('.search__items-container').should('not.exist')
+        .get('#name').invoke('val').should('contain', 'Chicken and fries')
+        .get('#name').type('{enter}')
+        .url().should('include', '/recipes/Chicken%20and%20fries')
+        .get('#name').should('not.exist');
+    });
+
+    it('should choose the option with the up arrow keys and enter key', () => {
+      cy.get('#name').should('not.exist')
+        .get('[data-test=seachBarBtn]').click()
+        .get('#name').type('Chicken')
+        .get('.search__items').first()
+        .should('contain', 'Chicken and fries')
+        .get('#name').type('{uparrow}')
+        .get('.search__items').last().should('have.class', 'search--highlighted')
+        .get('#name').type('{uparrow}')
+        .get('.search__items').first().should('have.class', 'search--highlighted')
+        .get('#name').type('{uparrow}')
+        .get('.search__items').last().should('have.class', 'search--highlighted')
+        .get('#name').type('{enter}')
+        .get('.search__items-container').should('not.exist')
+        .get('#name').invoke('val').should('contain', 'Chicken and rice')
+        .get('#name').type('{enter}')
+        .url().should('include', '/recipes/Chicken%20and%20rice')
+        .get('#name').should('not.exist');
+    });
+
+    it('should close the searchbar when the user presses the escape key', () => {
+      cy.get('#name').should('not.exist')
+        .get('[data-test=seachBarBtn]').click()
+        .get('#name').type('Chicken')
+        .get('.search__items').first()
+        .should('contain', 'Chicken and fries')
+        .get('#name').type('{esc}')
+        .get('.search__items-container').should('not.exist')
+        .get('#name').should('not.exist');
+    });
+  });
 });

@@ -144,9 +144,11 @@ export class SearchesService {
   }
 
   recipesByName(name: string, limit): Observable<Array<AutocompleteItems>> {
+    let formattedName = name.replace(' ', '%20');
+
     return this.http.get<Array<AutocompleteItems>>(`${this.apiUrl}search/name`, { params: {
       limit: limit,
-      name: name
+      name: formattedName
     }});
   }
 
