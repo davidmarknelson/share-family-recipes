@@ -17,7 +17,7 @@ export class SavedBrowseComponent implements OnInit, OnDestroy {
   // =============
   recipes: UserRecipeCardInfo;
   errorMessage: string;
-  // This is used to show the 'Getting data...'
+  // This is used to show 'Getting data...'
   isLoading: boolean;
   user: UserDecodedToken;
   username: string;

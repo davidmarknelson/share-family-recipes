@@ -113,7 +113,7 @@
 </div>
 
 <!-- Loading info -->
-<p class='has-text-centered' data-test='loadingMsg' *ngIf='!recipes && !errorMessage'>Getting recipes...</p>
+<p class='has-text-centered' data-test='loadingMsg' *ngIf='isLoading'>Getting recipes...</p>
 
 
 <app-recipe-cards

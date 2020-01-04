@@ -295,10 +295,10 @@ describe('NavbarComponent', () => {
         expect(searchItems[1].nativeElement).toHaveClass('search--highlighted');      
       });
 
-      it('should close the search items container on first enter keydown', () => {
+      it('should close the search bar when the user clicks the escape key twice', () => {
         const event = new KeyboardEvent("keydown",{
           // @ts-ignore
-          keyCode: '13'
+          keyCode: '27'
         });
   
         spyOn(component, 'onKeydown').and.callThrough();
@@ -309,13 +309,20 @@ describe('NavbarComponent', () => {
         searchInput.nativeElement.dispatchEvent(event);
         fixture.detectChanges();
         selectElements();
+
+        // second enter keypress
+        searchInput.nativeElement.dispatchEvent(event);
+        fixture.detectChanges();
+        selectElements();
   
-        expect(component.onKeydown).toHaveBeenCalled();
+        expect(component.onKeydown).toHaveBeenCalledTimes(2);
         expect(searchItemsContainer).toBeFalsy();
         expect(component.onSubmit).not.toHaveBeenCalled();
+        expect(searchInput).toBeFalsy();
+        expect(searchItems.length).toEqual(0);
       });
 
-      it('should close the search bar when the user clicks the escape key', () => {
+      it('should close the autocomplete items container when the user clicks the escape key', () => {
         const event = new KeyboardEvent("keydown",{
           // @ts-ignore
           keyCode: '27'
@@ -330,10 +337,10 @@ describe('NavbarComponent', () => {
         fixture.detectChanges();
         selectElements();
   
-        expect(component.onKeydown).toHaveBeenCalled();
+        expect(component.onKeydown).toHaveBeenCalledTimes(1);
         expect(searchItemsContainer).toBeFalsy();
         expect(component.onSubmit).not.toHaveBeenCalled();
-        expect(searchInput).toBeFalsy();
+        expect(searchInput).toBeTruthy();
         expect(searchItems.length).toEqual(0);
       });
 

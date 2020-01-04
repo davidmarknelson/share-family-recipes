@@ -111,26 +111,22 @@ export class RecipeService {
   }
 
   formatMealPic(pic) {
-    if (pic) {
-      return {
-        mealPicName: `${environment.apiUrl}public/images/mealPics/${pic.mealPicName}`
-      };
-    } else {
+    if (!pic) {
       return {
         mealPicName: '../../../../assets/images/default-img/default-meal-pic.jpg'
       };
+    } else {
+      return pic;
     }
   }
 
   formatProfilePic(pic) {
-    if (pic) {
-      return {
-        profilePicName: `${environment.apiUrl}public/images/profilePics/${pic.profilePicName}`
-      }
-    } else {
+    if (!pic) {
       return {
         profilePicName: '../../../../assets/images/default-img/default-profile-pic.jpg'
       };
+    } else {
+      return pic;
     }
   }
 

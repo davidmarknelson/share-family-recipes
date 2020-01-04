@@ -26,6 +26,24 @@
   }
 }
 
+// recipe image
+.center-img {
+  // !important is needed to override properties from bulma
+  height: auto !important;
+  width: auto !important;
+  top: -9999px !important;
+  bottom: -9999px !important;
+  left: -9999px !important;
+  right: -9999px !important;
+  min-width: 100%;
+  min-height: 100%;
+  margin: auto;
+
+  &__parent {
+    overflow: hidden;
+  }
+}
+
 .profile-img {
   &--width {
     max-width: 175px;

@@ -18,7 +18,7 @@
       <a 
         role="button" 
         class="navbar-burger burger" 
-        [class.is-active]="showMenu" 
+        [class.is-active]="isMenuOpen" 
         aria-label="menu" 
         aria-expanded="false" 
         data-target="navbarMenu" 
@@ -29,7 +29,7 @@
       </a>
     </div>
 
-    <div id="navbarMenu" class="navbar-menu" [class.is-active]="showMenu">
+    <div id="navbarMenu" class="navbar-menu" [class.is-active]="isMenuOpen">
       <div class='navbar-start'>
         <a 
           class="navbar-item transition" 

@@ -23,10 +23,12 @@
   <div class="columns">
     <div class="column">
       <!-- Meal picture -->
-      <img 
-        src="{{ recipe.mealPic.mealPicName }}" 
-        alt="image of {{ recipe.name }}"
-        class='rounded-corners'>
+      <figure class='image is-4by3 center-img__parent rounded-corners'>
+        <img 
+          src="{{ recipe.mealPic.mealPicName }}" 
+          alt="image of {{ recipe.name }}"
+          class='center-img'>
+      </figure>
     </div>
     <div class="column profile-img__container">
       <!-- Creator's profile picture -->
@@ -36,7 +38,7 @@
           alt="image of {{ recipe.creator.username }}"
           class='is-rounded'>
       </figure>
-      <p>Created {{ recipe.createdAt }} by <a href="">{{ recipe.creator.username }}</a>.</p>    
+      <p>Created {{ recipe.createdAt }} by <a (click)='goToUsersRecipes(recipe.creator.username)'>{{ recipe.creator.username }}</a>.</p>    
     </div>
   </div>
 </div>

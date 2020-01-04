@@ -1,0 +1,48 @@
+<div class="file has-name">
+  <label class="file-label">
+    <input 
+      class="file-input" 
+      type="file" 
+      name="image" 
+      id="image" 
+      (change)="onFileSelected($event)">
+    <span class="file-cta form--rounded-left">
+      <span class="file-icon">
+        <fa-icon [icon]="faFileUpload"></fa-icon>
+      </span>
+      <span class="file-label">
+        Choose a file…
+      </span>
+    </span>
+    <span class="file-name form--rounded-right" [class.has-text-secondary]='isFileSelected'>
+      {{ selectedFileName }}
+    </span>
+  </label>
+</div>
+
+<progress 
+  *ngIf='isImageSending'
+  class="progress upload-bar" 
+  value="{{ imageLoadedAmount }}" 
+  max="100">
+  {{ imageLoadedAmount }}%
+</progress>
+
+<div *ngIf='isFileSelected' class='upload-data'>
+  <span *ngIf='!isUploadCompleted && !hasImageErrored'>Uploaded {{ imageLoadedAmount }}%</span>
+  <span *ngIf='isUploadCompleted && !hasImageErrored'>Upload complete</span>
+
+  <button 
+    class='button is-danger is-light is-rounded is-small' 
+    [class.is-loading]='isSendingDeleteToken'
+    (click)='deleteUploadedFile()'
+    [disabled]='!isUploadCompleted && !hasImageErrored'>
+    Remove Image
+  </button>
+</div>
+
+<!-- Image error message -->
+<div class="notification is-danger image-err" *ngIf="imageError">
+  <button class="delete" (click)='clearImageErrorMessage()'></button>
+  {{ imageError }}
+</div>

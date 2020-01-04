@@ -5,9 +5,10 @@ import { takeUntil, filter, debounceTime, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 // Font Awesome
-import { faLock, faUser, faEnvelope, faFileUpload } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faUser, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 // Services
 import { AuthService } from '../../utilities/services/auth/auth.service';
+import { UploadedImage } from '../../utilities/services/cloudinary/uploadedImage';
 
 @Component({
   selector: 'app-signup',
@@ -17,21 +18,21 @@ import { AuthService } from '../../utilities/services/auth/auth.service';
 export class SignupComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   // Font Awesome
-  faFileUpload = faFileUpload;
   faEnvelope = faEnvelope;
   faLock = faLock;
   faUser = faUser;
   // Component
-  profilePicName: string = "example.jpeg";
   showAdminField: boolean = false;
   sendingForm: boolean = false;
   submitted: boolean = false;
   availableUsername: boolean;
   signupForm: FormGroup;
-  selectedFile: File;
   formError: string;
   emailTaken: boolean;
   takenUsername: boolean;
+  // image
+  uploadedImage: UploadedImage;
+  isImageLoading: boolean;
 
   constructor(
     private fb: FormBuilder, 
@@ -89,7 +90,6 @@ export class SignupComponent implements OnInit, OnDestroy {
       username: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(15), Validators.pattern('[^ ]*')]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       passwordConfirmation: ['', [Validators.required, Validators.minLength(8)]],
-      profilePic: [null],
       adminCode: ['']
     });
   }
@@ -102,10 +102,12 @@ export class SignupComponent implements OnInit, OnDestroy {
   get password() { return this.signupForm.get('password'); }
   get passwordConfirmation() { return this.signupForm.get('passwordConfirmation'); }
 
-  // This adds the profile picture to a variable
-  onFileSelected(event) {
-    this.selectedFile = event.target.files[0];
-    this.profilePicName = this.selectedFile.name;
+  onImageUpload(uploadedImage: UploadedImage) {
+    this.uploadedImage = uploadedImage;
+  }
+
+  onImageLoading(isImageLoading: boolean) {
+    this.isImageLoading = isImageLoading;
   }
 
   onSubmit() {
@@ -113,24 +115,37 @@ export class SignupComponent implements OnInit, OnDestroy {
     // the form before completing it
     this.submitted = true;
 
+    // Stops the form from submitting while the image is uploading
+    if (this.isImageLoading) {
+      return this.formError = 'You cannot submit the form while your image is loading.';
+    }
+
     // This stops the form submission if the form is invalid
     if (this.signupForm.invalid || !this.availableUsername) return;
 
     // This is to show a loading indicator
     this.sendingForm = true;
 
-    const user = {
+    let user = {
       firstName: this.signupForm.value.firstName,
       lastName: this.signupForm.value.lastName,
       email: this.signupForm.value.email,
       username: this.signupForm.value.username,
       password: this.signupForm.value.password,
       passwordConfirmation: this.signupForm.value.passwordConfirmation,
-      profilePic: (this.signupForm.value.profilePic) ? this.signupForm.value.profilePic.replace("C:\\fakepath\\", "") : null,
-      adminCode: this.signupForm.value.adminCode
+      adminCode: this.signupForm.value.adminCode,
+      // set image property defaults
+      profilePicName: null,
+      publicId: null
     }
 
-    this.auth.signup(user, this.selectedFile).pipe(
+    // Add image properties to user object if the image has uploaded
+    if (this.uploadedImage) {
+      user.profilePicName = this.uploadedImage.secure_url;
+      user.publicId = this.uploadedImage.public_id;
+    }
+
+    this.auth.signup(user).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       this.router.navigate(['/profile']);

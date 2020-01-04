@@ -328,7 +328,7 @@
           <label class="label" for="mealPic">
             Meal Picture
             <span class="has-text-weight-light is-size-7">
-              must be JPEG
+              must be JPEG max 5mb
             </span>
           </label>
           <div class="file has-name">
@@ -340,7 +340,7 @@
                 id="mealPic" 
                 formControlName="mealPic" 
                 (change)="onFileSelected($event)">
-              <span class="file-cta form--rounded-left">
+              <span class="file-cta">
                 <span class="file-icon">
                   <fa-icon [icon]="faFileUpload"></fa-icon>
                 </span>
@@ -348,7 +348,7 @@
                   Choose a file…
                 </span>
               </span>
-              <span class="file-name form--rounded-right" [class.has-text-secondary]="selectedFile">
+              <span class="file-name" [class.has-text-secondary]="selectedFile">
                 {{ mealPicName }}
               </span>
             </label>

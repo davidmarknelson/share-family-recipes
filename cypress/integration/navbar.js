@@ -63,7 +63,7 @@ describe('Navbar', () => {
         .should('contain', 'Chicken and rice');
     });
 
-    it('should choose the option when clicked and navigate to the ', () => {
+    it('should choose the option when clicked and navigate to the recipe', () => {
       cy.get('#name').should('not.exist')
         .get('[data-test=seachBarBtn]').click()
         .get('#name').type('Chicken')
@@ -116,7 +116,7 @@ describe('Navbar', () => {
         .get('#name').should('not.exist');
     });
 
-    it('should close the searchbar when the user presses the escape key', () => {
+    it('should close the searchbar when the user presses the escape key twice', () => {
       cy.get('#name').should('not.exist')
         .get('[data-test=seachBarBtn]').click()
         .get('#name').type('Chicken')
@@ -124,7 +124,18 @@ describe('Navbar', () => {
         .should('contain', 'Chicken and fries')
         .get('#name').type('{esc}')
         .get('.search__items-container').should('not.exist')
+        .get('#name').should('exist')
+        .get('#name').type('{esc}')
         .get('#name').should('not.exist');
+    });
+
+    it('should go directly to the recipe page when the user hits enter and an option is not highlighted', () => {
+      cy.get('#name').should('not.exist')
+        .get('[data-test=seachBarBtn]').click()
+        .get('#name').type('Chicken')
+        .get('#name').type('{enter}')
+        .url().should('include', '/recipes/Chicken')
+        .get('.error-container').should('exist');
     });
   });
 });

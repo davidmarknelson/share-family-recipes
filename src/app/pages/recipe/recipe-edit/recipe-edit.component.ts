@@ -268,12 +268,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     this.editRecipeForm.get('difficulty').setValue(recipe.difficulty);
     this.editRecipeForm.get('originalRecipeUrl').setValue(recipe.originalRecipeUrl);
     this.editRecipeForm.get('youtubeUrl').setValue(this.formatYoutubeUrl(recipe.youtubeUrl));
-    // This shows the user that they have previously uploaded a picture
-    if (recipe.mealPic.mealPicName === '../../../../assets/images/default-img/default-meal-pic.jpg') {
-      this.mealPicName = 'example.jpeg';
-    } else {
-      this.mealPicName = recipe.mealPic.mealPicName.replace(`${environment.apiUrl}public/images/mealPics/`, '');
-    }
   }
 
   formatYoutubeUrl(youtubeUrl: string) {

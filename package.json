@@ -27,6 +27,7 @@
     "bulma": "^0.8.0",
     "bulma-toast": "^1.5.3",
     "bulma-tooltip": "^3.0.2",
+    "compressorjs": "^1.0.6",
     "date-fns": "^2.6.0",
     "ngx-page-scroll": "^7.0.0",
     "ngx-page-scroll-core": "^7.0.0",

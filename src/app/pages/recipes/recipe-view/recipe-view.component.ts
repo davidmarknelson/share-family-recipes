@@ -112,4 +112,8 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
   goToEditPage() {
     this.router.navigateByUrl(`/create/edit?recipe=${this.recipe.id}`);
   }
+
+  goToUsersRecipes(username) {
+    this.router.navigateByUrl(`/recipes/user-recipes?username=${username}`);
+  }
 }

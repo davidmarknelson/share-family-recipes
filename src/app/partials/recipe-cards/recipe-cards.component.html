@@ -5,8 +5,8 @@
 
 
         <div class="card-image">
-          <figure class="image is-4by3">
-            <img class='rounded-top' src="{{ recipe.mealPic.mealPicName }}" alt="Image of {{ recipe.name }}">
+          <figure class="image is-4by3 center-img__parent rounded-top">
+            <img class='center-img' src="{{ recipe.mealPic.mealPicName }}" alt="Image of {{ recipe.name }}">
           </figure>
         </div>
         <div class="card-content">
@@ -50,7 +50,7 @@
 
             <!-- Difficulty -->
             <div class="icon-info--items">
-              <div class='icon-info--pointer' data-tooltip="Difficulty">
+              <div class='icon-info--pointer' data-tooltip="Difficulty 1-5">
                 <fa-icon [icon]="faFireAlt" size='lg'></fa-icon>
                 <span class='icon-info--numbers'>{{ recipe.difficulty }}</span>
               </div>
@@ -58,7 +58,7 @@
           
             <!-- Cook time -->
             <div class="icon-info--items">              
-              <div class='icon-info--pointer' data-tooltip="Cook time">
+              <div class='icon-info--pointer' data-tooltip="Cook time in min.">
                 <fa-icon [icon]="faClock" size='lg'></fa-icon>
                 <span class='icon-info--numbers'>{{ recipe.cookTime }}</span>
               </div>

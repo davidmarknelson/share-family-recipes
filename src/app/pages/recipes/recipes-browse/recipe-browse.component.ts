@@ -23,6 +23,8 @@ export class RecipeBrowseComponent implements OnInit, OnDestroy {
   recipes: RecipeCardInfo;
   errorMessage: string;
   user: UserDecodedToken;
+  // This is used to show 'Getting data...'
+  isLoading: boolean;
   // Sorting
   sortingOption: string = 'newest';
   // pagination
@@ -39,6 +41,8 @@ export class RecipeBrowseComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.isLoading = true;
+
     this.user = this.authService.currentUser();
     this.getData('newest', this.offset, this.limit);
   }
@@ -81,9 +85,11 @@ export class RecipeBrowseComponent implements OnInit, OnDestroy {
       takeUntil(this.ngUnsubscribe)
     ).subscribe((res: RecipeCardInfo) => {
       this.errorMessage = '';
+      this.isLoading = false;
       this.recipes = res;
       this.pageRecipeNumbers(this.offset, this.limit);
     }, err => {
+      this.isLoading = false;
       this.errorMessage = err.error.message;
     });
   }

@@ -28,21 +28,8 @@ export class AuthService {
     }});
   }
 
-  signup(credentials, file): Observable<JWT> {
-    let fd = new FormData();
-    fd.append('firstName', credentials.firstName);
-    fd.append('lastName', credentials.lastName);
-    fd.append('username', credentials.username);
-    fd.append('email', credentials.email);
-    fd.append('password', credentials.password);
-    fd.append('passwordConfirmation', credentials.passwordConfirmation);
-    fd.append('adminCode', credentials.adminCode);
-    if (file) fd.append('profilePic', file, credentials.profilePic);
-
-    return this.http.post<JWT>(`${this.apiUrl}user/signup`, fd, { 
-      headers: { 
-        header: 'multipart/form-data'
-      }}).pipe(
+  signup(credentials): Observable<JWT> {
+    return this.http.post<JWT>(`${this.apiUrl}user/signup`, credentials).pipe(
       map((res: JWT) => {
         localStorage.setItem('authToken', res.jwt);
         this.loggedIn.emit(true);
@@ -75,9 +62,7 @@ export class AuthService {
       map(res => {
         res.createdAt = this.formatDate(res.createdAt);
         res.updatedAt = this.formatDate(res.updatedAt);
-        if (res.profilePic) {
-          res.profilePic.profilePicName = `${environment.apiUrl}public/images/profilePics/${res.profilePic.profilePicName}`;
-        } else {
+        if (!res.profilePic) {
           res.profilePic = {
             profilePicName: '../../../assets/images/default-img/default-profile-pic.jpg'
           };

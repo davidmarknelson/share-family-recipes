@@ -194,40 +194,29 @@
     
     <div class="columns">
       <!-- Profile Picture -->
-      <div class="column">
+      <div class="column is-half">
         <div class="field">
-          <label class="label" for="profilePic">
+          <label class="label" for="image">
             Profile Picture
+            <br>
             <span class="has-text-weight-light is-size-7">
-              must be JPEG
+              must be JPEG max 5mb
+            </span>
+            <br>
+            <span class="has-text-weight-light is-size-7">
+              your face centered in the picture works best
             </span>
           </label>
-          <div class="file has-name">
-            <label class="file-label">
-              <input 
-                class="file-input" 
-                type="file" 
-                name="profilePic" 
-                id="profilePic" 
-                formControlName="profilePic" 
-                (change)="onFileSelected($event)">
-              <span class="file-cta form--rounded-left">
-                <span class="file-icon">
-                  <fa-icon [icon]="faFileUpload"></fa-icon>
-                </span>
-                <span class="file-label">
-                  Choose a file…
-                </span>
-              </span>
-              <span class="file-name form--rounded-right" [class.has-text-secondary]="selectedFile">
-                {{ profilePicName }}
-              </span>
-            </label>
-          </div>
+        
+          <!-- image upload -->
+          <app-image-upload
+            (uploadedImage)='onImageUpload($event)'
+            (isImageLoading)='onImageLoading($event)'>
+          </app-image-upload>
         </div>
       </div>
       <!-- Admin Code -->
-      <div class="column">
+      <div class="column is-half">
         <a 
           data-test="adminLink"
           href="javascript:void(0)" 

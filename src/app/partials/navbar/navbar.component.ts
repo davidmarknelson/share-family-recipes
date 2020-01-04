@@ -16,7 +16,7 @@ import { AutocompleteItems } from '../../utilities/services/searches/autocomplet
 export class NavbarComponent implements OnInit {
   @ViewChild('name', {static: false}) nameInput: ElementRef;
   faSearch = faSearch;
-  showMenu: boolean = false;
+  isMenuOpen: boolean = false;
   isLoggedIn: boolean;
   searchBarForm: FormGroup;
   isSearchOpen: boolean;
@@ -42,7 +42,7 @@ export class NavbarComponent implements OnInit {
   }
 
   toggleMenu() {
-    this.showMenu = !this.showMenu;
+    this.isMenuOpen = !this.isMenuOpen;
     this.isSearchOpen = false;
   }
 
@@ -81,6 +81,7 @@ export class NavbarComponent implements OnInit {
   closeSearchBar() {
     this.isSearchOpen = false;
     this.searchBarForm.get('name').setValue('');
+    this.isMenuOpen = false;
   }
 
   createForm() {
@@ -132,7 +133,11 @@ export class NavbarComponent implements OnInit {
   onKeydown(key) {
     // escape key
     if (key.keyCode === 27) {
-      return this.closeSearchBar();
+      if (this.autocompleteItems.length > 0) {
+        return this.autocompleteItems = [];
+      } else {
+        return this.closeSearchBar();
+      }
     }
 
     // arrow down
@@ -163,13 +168,8 @@ export class NavbarComponent implements OnInit {
 
     // enter key
     // prevent default if the autocomplete box is visible
-    if (key.keyCode === 13 && this.autocompleteItems.length > 0) {
+    if (key.keyCode === 13 && this.autocompleteItems.length > 0 && this.highlightedIndex !== -1) {
       key.preventDefault();
-
-      // this dismisses autocompleteItems if the user has not selected an option
-      if (this.highlightedIndex === -1) {
-        return this.autocompleteItems = [];
-      }
 
       // Changes the value to true so onNameChanges will not update the autocompleteItems box
       this.isAutocompleteOptionSelected = true;

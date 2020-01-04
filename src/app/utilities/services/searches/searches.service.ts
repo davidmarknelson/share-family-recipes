@@ -166,9 +166,7 @@ export class SearchesService {
 
   formatMealPic(pic) {
     if (pic) {
-      return {
-        mealPicName: `${environment.apiUrl}public/images/mealPics/${pic.mealPicName}`
-      };
+      return pic;
     } else {
       return {
         mealPicName: '../../../assets/images/default-img/default-meal-pic.jpg'
