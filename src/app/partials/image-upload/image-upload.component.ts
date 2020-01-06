@@ -27,11 +27,15 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
   @Output() isImageLoading = new EventEmitter<boolean>();
   // used to show the loading bar in this template
   isImageSending: boolean = false;
+  // this is used to stop the user from submitting the form while the image is deleting
+  @Output() isSendingDeleteToken = new EventEmitter<boolean>();
+  // this show the spinner on the delete button
+  isDeleting: boolean;
   deleteToken: string;
+  selectedFile: File;
   selectedFileName: string = 'example.jpeg';
   isFileSelected: boolean = false;
   isUploadCompleted: boolean = false;
-  isSendingDeleteToken: boolean = false;
   imageLoadedAmount: number = 0;
   hasImageErrored: boolean = false;
   imageError: string;
@@ -46,6 +50,9 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
     this.isImageLoading
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(res => this.isImageSending = res);
+    this.isSendingDeleteToken
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe(res => this.isDeleting = res);
   }
 
   ngOnDestroy() {
@@ -53,6 +60,7 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  // The picture is first saved to the property selectedFile and selectedFileName.
   onFileSelected(event) {
     // clear errors
     this.imageError = '';
@@ -60,15 +68,25 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
 
     this.isFileSelected = true;
     this.selectedFileName = event.target.files[0].name;
+    this.selectedFile = event.target.files[0];
 
     if (event.target.files[0].type !== 'image/jpeg') {
+      this.hasImageErrored = true;
+      return this.imageError = 'Your picture must be a JPEG image.';
+    }
+  }
+
+  // The image is then uploaded to cloudinary and the returned information is sent to
+  // other components to be used by the database.
+  uploadImage() {
+    if (this.selectedFile.type !== 'image/jpeg') {
       this.hasImageErrored = true;
       return this.imageError = 'Your picture must be a JPEG image.';
     }
 
     this.isImageLoading.emit(true);
 
-    this.compressor.compressImage(event.target.files[0]).pipe(
+    this.compressor.compressImage(this.selectedFile).pipe(
       concatMap(res => this.cloudinary.uploadPic(res, res.name)),
       takeUntil(this.ngUnsubscribe)
     ).subscribe(event => {
@@ -98,15 +116,19 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
     this.isFileSelected = false;
     this.hasImageErrored = false;
     this.selectedFileName = 'example.jpeg';
+    this.selectedFile = null;
     this.imageError = '';
   }
 
   deleteUploadedFile() {
+    // Delete the information from this component.
     if (!this.deleteToken) {
-      this.resetErrors();
+      return this.resetErrors();
     };
 
-    this.isSendingDeleteToken = true;
+    // Delete the information from cloudinary if the user has already uploaded to cloudinary.
+    // The delete token is only valid for 10 minutes.
+    this.isSendingDeleteToken.emit(true);
     
     this.cloudinary.deleteImageByToken(this.deleteToken).pipe(
       takeUntil(this.ngUnsubscribe)
@@ -121,10 +143,12 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
         pauseOnHover: true
       });
 
+      this.uploadedImage.emit(null);
       this.resetErrors();
-      this.isSendingDeleteToken = false;
+      this.isSendingDeleteToken.emit(false);
+      this.deleteToken = '';
     }, err => {
-      this.isSendingDeleteToken = false;
+      this.isSendingDeleteToken.emit(false);
       this.hasImageErrored = true;
       this.imageError = err.error.message
     });

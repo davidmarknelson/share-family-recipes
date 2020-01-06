@@ -81,7 +81,7 @@ describe('AuthService', () => {
       };
       let response;
 
-      authService.signup(user, profilePic).subscribe(res => {
+      authService.signup(user).subscribe(res => {
         response = res;
       });
       spyOn(authService.loggedIn, 'emit');
@@ -127,7 +127,7 @@ describe('AuthService', () => {
       const signupResponse = 'Please upload a JPEG image.';
       let errorResponse;
 
-      authService.signup(user, profilePic).subscribe(res => {}, err => {
+      authService.signup(user).subscribe(res => {}, err => {
         errorResponse = err;
       });
 

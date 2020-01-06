@@ -211,6 +211,7 @@
           <!-- image upload -->
           <app-image-upload
             (uploadedImage)='onImageUpload($event)'
+            (isSendingDeleteToken)='onImageDelete($event)'
             (isImageLoading)='onImageLoading($event)'>
           </app-image-upload>
         </div>
@@ -241,7 +242,7 @@
 
     <!-- Form error message -->
     <div class="notification is-danger" *ngIf="formError">
-      <button class="delete" (click)='clearErrorMessage()'></button>
+      <button class="delete" (click)='clearErrorMessage()' type="button"></button>
       {{ formError }}
     </div>
     

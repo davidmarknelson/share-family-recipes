@@ -30,6 +30,6 @@ export class CloudinaryService {
     let fd = new FormData();
     fd.append('token', deleteToken);
 
-    return this.http.post<any>(`https://api.cloudinary.com/v1_1/${environment.cloudName}/delete_by_token`, fd);
+    return this.http.post<any>(`${this.cloudinaryUrl}delete_by_token`, fd);
   }
 }

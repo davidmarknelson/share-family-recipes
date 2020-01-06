@@ -29,20 +29,43 @@
 </progress>
 
 <div *ngIf='isFileSelected' class='upload-data'>
-  <span *ngIf='!isUploadCompleted && !hasImageErrored'>Uploaded {{ imageLoadedAmount }}%</span>
-  <span *ngIf='isUploadCompleted && !hasImageErrored'>Upload complete</span>
+  <span 
+    *ngIf='isImageSending && !hasImageErrored'
+    data-test="uploading-percentage">
+    Uploaded {{ imageLoadedAmount }}%
+  </span>
+  <span 
+    *ngIf='isUploadCompleted && !hasImageErrored'
+    data-test="uploading-complete">
+    Upload complete
+  </span>
+
+  <button
+    *ngIf='!isImageSending && !isUploadCompleted && !hasImageErrored'
+    data-test='upload-btn'
+    class='button is-primary is-rounded is-small'
+    type="button"
+    (click)='uploadImage()'>
+    Upload
+  </button>
 
   <button 
     class='button is-danger is-light is-rounded is-small' 
-    [class.is-loading]='isSendingDeleteToken'
+    data-test='remove-img-btn'
+    [class.is-loading]='isDeleting'
     (click)='deleteUploadedFile()'
-    [disabled]='!isUploadCompleted && !hasImageErrored'>
+    type="button"
+    [disabled]='isImageSending'>
     Remove Image
   </button>
 </div>
 
 <!-- Image error message -->
 <div class="notification is-danger image-err" *ngIf="imageError">
-  <button class="delete" (click)='clearImageErrorMessage()'></button>
+  <button 
+    class="delete" 
+    (click)='clearImageErrorMessage()' 
+    type="button">
+  </button>
   {{ imageError }}
 </div>

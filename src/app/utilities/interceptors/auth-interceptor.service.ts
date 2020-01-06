@@ -12,7 +12,10 @@ export class AuthInterceptorService implements HttpInterceptor  {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = localStorage.getItem('authToken');
 
-    if (token) {
+    // This keeps the auth token out of the header when uploading
+    // pictures to cloudinary for signed in users
+    if (token && !req.url.startsWith('https://api.cloudinary.com/')) {
+      console.log(req)
       req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`

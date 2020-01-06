@@ -33,6 +33,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   // image
   uploadedImage: UploadedImage;
   isImageLoading: boolean;
+  isSendingDeleteToken: boolean;
 
   constructor(
     private fb: FormBuilder, 
@@ -109,6 +110,10 @@ export class SignupComponent implements OnInit, OnDestroy {
   onImageLoading(isImageLoading: boolean) {
     this.isImageLoading = isImageLoading;
   }
+  
+  onImageDelete(isSendingDeleteToken: boolean) {
+    this.isSendingDeleteToken = isSendingDeleteToken;
+  }
 
   onSubmit() {
     // This helps show errors on the form if a user tries to submit
@@ -118,6 +123,11 @@ export class SignupComponent implements OnInit, OnDestroy {
     // Stops the form from submitting while the image is uploading
     if (this.isImageLoading) {
       return this.formError = 'You cannot submit the form while your image is loading.';
+    }
+
+    // Stops the form from submitting while the image is deleting
+    if (this.isSendingDeleteToken) {
+      return this.formError = 'You cannot submit the form while your image is deleting.';
     }
 
     // This stops the form submission if the form is invalid

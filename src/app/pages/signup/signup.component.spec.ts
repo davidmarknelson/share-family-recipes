@@ -7,6 +7,7 @@ import { AuthService } from '../../utilities/services/auth/auth.service';
 import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
 import { Location } from '@angular/common';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 let fixture: ComponentFixture<SignupComponent>;
 let firstName: DebugElement;
@@ -52,7 +53,7 @@ describe('SignupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [SignupModule]
+      imports: [SignupModule, HttpClientTestingModule]
     })
     .overrideComponent(SignupComponent, {
       set: {
@@ -500,6 +501,72 @@ describe('SignupComponent', () => {
         fixture.detectChanges();
         expect(authService.signup).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalledWith(['/profile']);
+      });
+
+      it('should not submit if the image is sending', () => {
+        let form = component.signupForm.controls;
+
+        spyOn(authService, 'signup');
+        spyOn(router, 'navigate');
+
+        // set form values
+        form.firstName.setValue('John');
+        form.lastName.setValue('Doe');
+        form.username.setValue('myUser');
+        form.email.setValue('example@email.com');
+        form.password.setValue('password');
+        form.passwordConfirmation.setValue('password');
+
+        // this makes the username input valid
+        // this was already tested in the username testing suite 
+        // so we will just change the value this way
+        component.availableUsername = true;
+
+        component.isImageLoading = true;
+        
+        // check that there should not be any errors
+        expect(component.signupForm.errors).toBeFalsy();
+        
+        submitButton.nativeElement.click();
+        fixture.detectChanges();
+        expect(authService.signup).not.toHaveBeenCalled();
+        expect(router.navigate).not.toHaveBeenCalled();
+
+        let formErrorMsg = fixture.debugElement.query(By.css('.notification'));
+        expect(formErrorMsg.nativeElement.innerText).toContain('You cannot submit the form while your image is loading.');
+      });
+      
+      it('should not submit if the image is deleting', () => {
+        let form = component.signupForm.controls;
+
+        spyOn(authService, 'signup');
+        spyOn(router, 'navigate');
+
+        // set form values
+        form.firstName.setValue('John');
+        form.lastName.setValue('Doe');
+        form.username.setValue('myUser');
+        form.email.setValue('example@email.com');
+        form.password.setValue('password');
+        form.passwordConfirmation.setValue('password');
+
+        // this makes the username input valid
+        // this was already tested in the username testing suite 
+        // so we will just change the value this way
+        component.availableUsername = true;
+
+        component.isSendingDeleteToken = true;
+        
+        // check that there should not be any errors
+        expect(component.signupForm.errors).toBeFalsy();
+        
+        submitButton.nativeElement.click();
+        fixture.detectChanges();
+        expect(authService.signup).not.toHaveBeenCalled();
+        expect(router.navigate).not.toHaveBeenCalled();
+
+        let formErrorMsg = fixture.debugElement.query(By.css('.notification'));
+        expect(formErrorMsg.nativeElement.innerText).toContain('You cannot submit the form while your image is deleting.');
       });
 
       it('should return an error if the email is taken and change the email input class', () => {
