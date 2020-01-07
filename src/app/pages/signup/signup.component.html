@@ -241,7 +241,10 @@
     </div>
 
     <!-- Form error message -->
-    <div class="notification is-danger" *ngIf="formError">
+    <div 
+      class="notification is-danger" 
+      *ngIf="formError"
+      data-test="form-err">
       <button class="delete" (click)='clearErrorMessage()' type="button"></button>
       {{ formError }}
     </div>

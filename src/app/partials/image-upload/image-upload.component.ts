@@ -103,13 +103,14 @@ export class ImageUploadComponent implements OnInit, OnDestroy {
     }, err => {
       this.isImageLoading.emit(false);
       this.hasImageErrored = true;
-
-      this.imageError = 'Error uploading your picture.'
+      this.imageError = 'Error uploading your picture.';
+      this.changeDetector.detectChanges();
     });
   }
 
   clearImageErrorMessage() {
     this.imageError = '';
+    this.changeDetector.detectChanges();
   }
 
   resetErrors() {

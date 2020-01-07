@@ -1,0 +1,21 @@
+{
+  "access_mode": "public",
+  "bytes": 730000,
+  "created_at": "2020-01-03T21:25:52Z",
+  "etag": "1234",
+  "format": "jpg",
+  "height": 100,
+  "width": 100,
+  "original_extension": "jpeg",
+  "original_filename": "IMG_1111",
+  "placeholder": false,
+  "public_id": "sfr_unsigned_dev/asdf.jpeg",
+  "resource_type": "image",
+  "secure_url": "https://url",
+  "signature": "zxcv",
+  "tags": [],
+  "type": "upload",
+  "url": "http://url",
+  "version": 1234,
+  "delete_token": "1qaz"
+}

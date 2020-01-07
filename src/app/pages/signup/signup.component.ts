@@ -151,9 +151,13 @@ export class SignupComponent implements OnInit, OnDestroy {
 
     // Add image properties to user object if the image has uploaded
     if (this.uploadedImage) {
+      console.log('yay')
       user.profilePicName = this.uploadedImage.secure_url;
+      console.log(this.uploadedImage)
       user.publicId = this.uploadedImage.public_id;
     }
+
+    console.log(user)
 
     this.auth.signup(user).pipe(
       takeUntil(this.ngUnsubscribe)

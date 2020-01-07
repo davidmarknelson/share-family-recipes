@@ -61,11 +61,15 @@
 </div>
 
 <!-- Image error message -->
-<div class="notification is-danger image-err" *ngIf="imageError">
+<div 
+  class="notification is-danger image-err" 
+  *ngIf="imageError"
+  data-test="image-err-msg">
   <button 
     class="delete" 
     (click)='clearImageErrorMessage()' 
-    type="button">
+    type="button"
+    data-test="clear-img-err-msg">
   </button>
   {{ imageError }}
 </div>
