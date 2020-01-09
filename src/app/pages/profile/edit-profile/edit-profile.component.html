@@ -118,7 +118,7 @@
     
     <div class="columns">
       <!-- Profile Picture -->
-      <div class="column">
+      <div class="column is-half">
         <div class="field">
           <label class="label" for="profilePic">
             Profile Picture
@@ -126,32 +126,17 @@
               must be JPEG max 5mb
             </span>
           </label>
-          <div class="file has-name">
-            <label class="file-label">
-              <input 
-                class="file-input" 
-                type="file" 
-                name="profilePic" 
-                id="profilePic" 
-                formControlName="profilePic" 
-                (change)="onFileSelected($event)">
-              <span class="file-cta">
-                <span class="file-icon">
-                  <fa-icon [icon]="faFileUpload"></fa-icon>
-                </span>
-                <span class="file-label">
-                  Choose a file…
-                </span>
-              </span>
-              <span class="file-name" [class.has-text-secondary]="selectedFile">
-                {{ profilePicName }}
-              </span>
-            </label>
-          </div>
+
+          <!-- image upload -->
+          <app-image-upload
+          (uploadedImage)='onImageUpload($event)'
+          (isSendingDeleteToken)='onImageDelete($event)'
+          (isImageLoading)='onImageLoading($event)'>
+          </app-image-upload>
         </div>
       </div>
       <!-- Edit password link -->
-      <div class="column">
+      <div class="column is-half">
         <a 
           data-test="passwordLink"
           routerLink='/profile/edit/password'>

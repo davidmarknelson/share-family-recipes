@@ -76,20 +76,8 @@ export class AuthService {
     return format(new Date(date), 'MMM dd, yyyy');
   }
 
-  updateUser(credentials, file): Observable<any> {
-    let fd = new FormData();
-    for (let key of Object.keys(credentials)) {
-      if (credentials[key] && (key !== 'profilePic')) {
-        fd.append(key, credentials[key]);
-      }
-    }
-    if (file) fd.append('profilePic', file, credentials.profilePic);
-
-    return this.http.put<any>(`${this.apiUrl}user/update`, fd, { 
-      headers: { 
-        header: 'multipart/form-data'
-      }
-    });
+  updateUser(credentials): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}user/update`, credentials);
   }
 
   deleteUser(): Observable<any> {

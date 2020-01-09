@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../utilities/services/auth/auth.service';
 // Font Awesome
 import { faUser, faEnvelope, faFileUpload, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { UploadedImage } from '../../../utilities/services/cloudinary/uploadedImage';
 
 @Component({
   selector: 'app-edit-profile',
@@ -17,10 +18,8 @@ import { faUser, faEnvelope, faFileUpload, faChevronRight } from '@fortawesome/f
 export class EditProfileComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   editProfileForm: FormGroup;
-  profilePicName: string = "example.jpeg";
   sendingForm: boolean = false;
   availableUsername: boolean;
-  selectedFile: File;
   formError: string;
   emailTaken: boolean;
   takenUsername: boolean;
@@ -32,6 +31,10 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   // Modal
   isModalOpen: boolean = false;
   isDeleting: boolean = false;
+  // image
+  uploadedImage: UploadedImage;
+  isImageLoading: boolean;
+  isSendingDeleteToken: boolean;
 
   constructor(
     private auth: AuthService, 
@@ -65,12 +68,6 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   get lastName() { return this.editProfileForm.get('lastName'); }
   get email() { return this.editProfileForm.get('email'); }
   get username() { return this.editProfileForm.get('username'); }
-
-  // This adds the profile picture to a variable
-  onFileSelected(event) {
-    this.selectedFile = event.target.files[0];
-    this.profilePicName = this.selectedFile.name;
-  }
 
   // This checks for available usernames
   onUsernameChanges() {
@@ -112,22 +109,54 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     return user;
   }
 
+  onImageUpload(uploadedImage: UploadedImage) {
+    this.uploadedImage = uploadedImage;
+  }
+
+  onImageLoading(isImageLoading: boolean) {
+    this.isImageLoading = isImageLoading;
+  }
+  
+  onImageDelete(isSendingDeleteToken: boolean) {
+    this.isSendingDeleteToken = isSendingDeleteToken;
+  }
+
   onSubmit() {
-    let user = this.createUserObject();
+    let user: any = this.createUserObject();
+
+    // Stops the form from submitting while the image is uploading
+    if (this.isImageLoading) {
+      return this.formError = 'You cannot submit the form while your image is loading.';
+    }
+
+    // Stops the form from submitting while the image is deleting
+    if (this.isSendingDeleteToken) {
+      return this.formError = 'You cannot submit the form while your image is deleting.';
+    }
 
     // This stops the form submisson if the form is empty
-    if (Object.getOwnPropertyNames(user).length === 0 && !this.selectedFile) {
+    if (Object.getOwnPropertyNames(user).length === 0 && !this.uploadedImage) {
       this.formError = 'You must enter information to change your profile.';
       return;
     }
-    
+
     // This stops the form submission if the form is invalid
     if ((this.availableUsername === false) || (this.editProfileForm.status === 'INVALID')) return;
 
     // This is to show a loading indicator
     this.sendingForm = true;
+
+    // set image property defaults
+    user.profilePicName = null;
+    user.publicId = null;
+
+    // Add image properties to user object if the image has uploaded
+    if (this.uploadedImage) {
+      user.profilePicName = this.uploadedImage.secure_url;
+      user.publicId = this.uploadedImage.public_id;
+    }
     
-    this.auth.updateUser(user, this.selectedFile).pipe(
+    this.auth.updateUser(user).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       this.router.navigate(['/profile']);
@@ -144,10 +173,30 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   }
 
   toggleModal() {
+    // Stops the form from submitting while the image is uploading
+    if (this.isImageLoading) {
+      return this.formError = 'You cannot delete your profile while your image is loading.';
+    }
+
+    // Stops the form from submitting while the image is deleting
+    if (this.isSendingDeleteToken) {
+      return this.formError = 'You cannot delete your profile while your image is deleting.';
+    }
+
     this.isModalOpen = !this.isModalOpen;
   }
 
   deleteUser() {
+    // Stops the form from submitting while the image is uploading
+    if (this.isImageLoading) {
+      return this.formError = 'You cannot submit the form while your image is loading.';
+    }
+
+    // Stops the form from submitting while the image is deleting
+    if (this.isSendingDeleteToken) {
+      return this.formError = 'You cannot submit the form while your image is deleting.';
+    }
+
     this.isDeleting = true;
     this.auth.deleteUser().subscribe(res => {
       this.auth.logout();

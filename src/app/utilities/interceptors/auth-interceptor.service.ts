@@ -15,7 +15,6 @@ export class AuthInterceptorService implements HttpInterceptor  {
     // This keeps the auth token out of the header when uploading
     // pictures to cloudinary for signed in users
     if (token && !req.url.startsWith('https://api.cloudinary.com/')) {
-      console.log(req)
       req = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`

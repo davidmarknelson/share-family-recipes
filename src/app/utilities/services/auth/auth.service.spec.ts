@@ -317,7 +317,7 @@ describe('AuthService', () => {
       };
 
       let response;
-      authService.updateUser(user, null).subscribe(res => {
+      authService.updateUser(user).subscribe(res => {
         response = res;
       });
 
@@ -334,7 +334,7 @@ describe('AuthService', () => {
       const updateResponse = 'This email account is already in use.';
       let errorResponse;
 
-      authService.updateUser(user, null).subscribe(res => {}, err => {
+      authService.updateUser(user).subscribe(res => {}, err => {
         errorResponse = err;
       });
 

@@ -10,6 +10,7 @@ import { UpdatePasswordComponent } from './update-password/update-password.compo
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 // Font Awesome
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ImageUploadModule } from '../../partials/image-upload/image-upload.module';
 
 @NgModule({
   declarations: [ProfileViewComponent, EditProfileComponent, UpdatePasswordComponent],
@@ -20,7 +21,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     ReactiveFormsModule,
     FormsModule,
     // Font Awesome
-    FontAwesomeModule
+    FontAwesomeModule,
+    ImageUploadModule
   ]
 })
 export class ProfileModule { }

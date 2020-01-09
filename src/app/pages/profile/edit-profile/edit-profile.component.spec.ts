@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 let fixture: ComponentFixture<EditProfileComponent>;
 let firstName: DebugElement;
@@ -15,6 +16,19 @@ let lastName: DebugElement;
 let email: DebugElement;
 let username: DebugElement;
 let submitButton: DebugElement;
+let errorMsg: DebugElement;
+let errorBtn: DebugElement;
+let deleteBtn: DebugElement;
+let modal: DebugElement;
+let modalClose: DebugElement;
+let modalDelete: DebugElement;
+let usernamePattern: DebugElement;
+let unavailableUsername: DebugElement;
+let availableUsername: DebugElement;
+let usernameMaxLength: DebugElement;
+let notEmail: DebugElement;
+let emailTaken: DebugElement;
+let usernameMinLength: DebugElement;
 
 function selectElements() {
   firstName = fixture.debugElement.query(By.css('[data-test=firstName]'));
@@ -22,6 +36,41 @@ function selectElements() {
   email = fixture.debugElement.query(By.css('[data-test=email]'));
   username = fixture.debugElement.query(By.css('[data-test=username]'));
   submitButton = fixture.debugElement.query(By.css('[data-test=submit-button]'));
+  errorMsg = fixture.debugElement.query(By.css('.notification'));
+  errorBtn = fixture.debugElement.query(By.css('.notification > button'));
+  deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
+  modal = fixture.debugElement.query(By.css('.modal'));
+  modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
+  modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
+  usernamePattern = fixture.debugElement.query(By.css('[data-test=usernamePattern]'));
+  unavailableUsername = fixture.debugElement.query(By.css('[data-test=usernameUnavailable]'));
+  availableUsername = fixture.debugElement.query(By.css('[data-test=usernameAvailable]'));
+  usernameMaxLength = fixture.debugElement.query(By.css('[data-test=usernameMaxLength]'));
+  notEmail = fixture.debugElement.query(By.css('[data-test=notEmail]'));
+  emailTaken = fixture.debugElement.query(By.css('[data-test=emailTaken]'));
+  usernameMinLength = fixture.debugElement.query(By.css('[data-test=usernameMinLength]'));
+}
+
+let uploadedImage = {
+  access_mode: 'public',
+  bytes: 730000,
+  created_at: '2020-01-03T21:25:52Z',
+  etag: '1234',
+  format: 'jpg',
+  height: 100,
+  width: 100,
+  original_extension: 'jpeg',
+  original_filename: 'IMG_1111',
+  placeholder: false,
+  public_id: 'sfr_unsigned_dev/asdf.jpeg',
+  resource_type: 'image',
+  secure_url: 'https://url',
+  signature: 'zxcv',
+  tags: [],
+  type: 'upload',
+  url: 'http://url',
+  version: 1234,
+  delete_token: '1qaz'
 }
 
 class MockAuthService {
@@ -53,7 +102,8 @@ describe('EditProfileComponent', () => {
     TestBed.configureTestingModule({
       imports: [ 
         ProfileModule, 
-        RouterTestingModule
+        RouterTestingModule,
+        HttpClientTestingModule
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     })
@@ -84,8 +134,8 @@ describe('EditProfileComponent', () => {
       submitButton.nativeElement.click();
 
       fixture.detectChanges();
+      selectElements();
 
-      let errorMsg = fixture.debugElement.query(By.css('.notification'));
       expect(errorMsg.nativeElement.innerText).toEqual('You must enter information to change your profile.');
     });
 
@@ -93,13 +143,12 @@ describe('EditProfileComponent', () => {
       submitButton.nativeElement.click();
 
       fixture.detectChanges();
+      selectElements();
 
-      let errorMsg = fixture.debugElement.query(By.css('.notification'));
       expect(errorMsg).toBeTruthy();
 
       spyOn(component, 'clearErrorMessage').and.callThrough();
 
-      let errorBtn = fixture.debugElement.query(By.css('.notification > button'));
       errorBtn.nativeElement.click();
       errorBtn.nativeElement.dispatchEvent(new Event('click'));
 
@@ -207,7 +256,8 @@ describe('EditProfileComponent', () => {
       input.setValue("example");
       email.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      let notEmail = fixture.debugElement.query(By.css('[data-test=notEmail]'));
+      selectElements();
+
       expect(input.errors['email']).toBeTruthy();
       expect(email.classes['is-danger']).toBeTruthy();
       expect(notEmail).toBeTruthy();
@@ -274,14 +324,14 @@ describe('EditProfileComponent', () => {
       submitButton.nativeElement.click();
       submitButton.nativeElement.dispatchEvent(new Event('click'));
       fixture.detectChanges();
+      selectElements();
+
       expect(authService.updateUser).toHaveBeenCalled();
       expect(router.navigate).not.toHaveBeenCalled();
 
       // show notification and changes the input to danger
-      let emailTaken = fixture.debugElement.query(By.css('[data-test=emailTaken]'));
-      let notification = fixture.debugElement.query(By.css('.notification'));
       expect(email.classes['is-danger']).toBeTruthy();
-      expect(notification.nativeElement.textContent).toEqual(' This email account is already in use. ');
+      expect(errorMsg.nativeElement.textContent).toEqual(' This email account is already in use. ');
       expect(emailTaken).toBeTruthy();
 
       // user changes email
@@ -303,7 +353,8 @@ describe('EditProfileComponent', () => {
       input.setValue('user');
       username.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      let usernameMinLength = fixture.debugElement.query(By.css('[data-test=usernameMinLength]'));
+      selectElements();
+
       expect(input.errors['minlength']).toBeTruthy();
       expect(username.classes['is-danger']).toBeTruthy();
       expect(usernameMinLength).toBeTruthy();
@@ -315,7 +366,8 @@ describe('EditProfileComponent', () => {
       input.setValue('UsernameThatIsWayTooLong');
       username.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      let usernameMaxLength = fixture.debugElement.query(By.css('[data-test=usernameMaxLength]'));
+      selectElements();
+
       expect(input.errors['maxlength']).toBeTruthy();
       expect(username.classes['is-danger']).toBeTruthy();
       expect(usernameMaxLength).toBeTruthy();
@@ -327,7 +379,8 @@ describe('EditProfileComponent', () => {
       input.setValue('my User');
       username.nativeElement.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      let usernamePattern = fixture.debugElement.query(By.css('[data-test=usernamePattern]'));
+      selectElements();
+
       expect(input.errors['pattern']).toBeTruthy();
       expect(username.classes['is-danger']).toBeTruthy();
       expect(usernamePattern).toBeTruthy();
@@ -348,9 +401,10 @@ describe('EditProfileComponent', () => {
       // This is used because the function has a 500ms wait time
       tick(1000);
       fixture.detectChanges();
+      selectElements();
       expect(authService.checkUsernameAvailability).toHaveBeenCalledWith('myUser');
       expect(input.errors).toBeFalsy();
-      let availableUsername = fixture.debugElement.query(By.css('[data-test=usernameAvailable]'));
+
       expect(username.classes['is-success']).toBeTruthy();
       expect(availableUsername).toBeTruthy();
     }));
@@ -369,9 +423,11 @@ describe('EditProfileComponent', () => {
       // This is used because the function has a 500ms wait time
       tick(1000);
       fixture.detectChanges();
+      selectElements();
+
       expect(authService.checkUsernameAvailability).toHaveBeenCalledWith('myUser');
       expect(input.errors).toBeFalsy();
-      let unavailableUsername = fixture.debugElement.query(By.css('[data-test=usernameUnavailable]'));
+
       expect(username.classes['is-danger']).toBeTruthy();
       expect(unavailableUsername).toBeTruthy();
     }));
@@ -410,28 +466,44 @@ describe('EditProfileComponent', () => {
 
   describe('deleteUser', () => {
     it('should open the modal when clicking on the delete button and close when clicking the x', () => {
-      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
-      let modal = fixture.debugElement.query(By.css('.modal'));
-      let modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
-
       deleteBtn.nativeElement.click();
       fixture.detectChanges();
+      selectElements();
       
       expect(component.isModalOpen).toEqual(true);
       expect(modal.classes['is-active']).toEqual(true);
 
       modalClose.nativeElement.click();
       fixture.detectChanges();
+      selectElements();
 
       expect(component.isModalOpen).toEqual(false);
       expect(modal.classes['is-active']).toEqual(false);
     });
 
-    it('should navigate to the landing page when successfully deleting the profile', () => {
-      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
-      let modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
-      let modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
+    it('should not open the modal while the image is loading', () => {
+      component.isImageLoading = true;
 
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+
+      expect(component.isModalOpen).toEqual(false);
+      expect(errorMsg.nativeElement.innerText).toContain('You cannot delete your profile while your image is loading.');
+    });
+
+    it('should not open the modal while the image is deleting', () => {
+      component.isSendingDeleteToken = true;
+
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+
+      expect(component.isModalOpen).toEqual(false);
+      expect(errorMsg.nativeElement.innerText).toContain('You cannot delete your profile while your image is deleting.');
+    });
+
+    it('should navigate to the landing page when successfully deleting the profile', () => {
       spyOn(component, 'deleteUser').and.callThrough();
       spyOn(authService, 'deleteUser').and.callFake(() => {
         return of({ message: 'Profile successfully deleted.'});
@@ -441,9 +513,11 @@ describe('EditProfileComponent', () => {
 
       deleteBtn.nativeElement.click();
       fixture.detectChanges();
+      selectElements();
 
       modalDelete.nativeElement.click();
       fixture.detectChanges();
+      selectElements();
 
       expect(component.deleteUser).toHaveBeenCalled();
       expect(authService.deleteUser).toHaveBeenCalled();
@@ -456,9 +530,6 @@ describe('EditProfileComponent', () => {
     });
 
     it('should show an error message on error', () => {
-      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
-      let modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
-
       spyOn(component, 'deleteUser').and.callThrough();
       spyOn(authService, 'deleteUser').and.callFake(() => {
         return throwError({ error: { 
@@ -473,14 +544,76 @@ describe('EditProfileComponent', () => {
 
       modalDelete.nativeElement.click();
       fixture.detectChanges();
-
-      let errorMsg = fixture.debugElement.query(By.css('.notification'));
+      selectElements();
 
       expect(component.deleteUser).toHaveBeenCalled();
       expect(authService.deleteUser).toHaveBeenCalled();
       expect(authService.logout).not.toHaveBeenCalled();
       expect(router.navigate).not.toHaveBeenCalled();
       expect(errorMsg.nativeElement.innerText).toEqual('There was an error deleting your profile.');
+    });
+  });
+
+  describe('image', () => {
+    it('should not submit while the form is loading', () => {
+      let input = component.editProfileForm.controls['firstName'];
+      
+      input.setValue("John");
+      firstName.nativeElement.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      spyOn(component, 'onSubmit').and.callThrough();
+      spyOn(authService, 'updateUser')
+
+      component.isImageLoading = true;
+
+      submitButton.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+      expect(component.onSubmit).toHaveBeenCalled();
+      expect(authService.updateUser).not.toHaveBeenCalled();
+
+      expect(errorMsg.nativeElement.innerText).toContain('You cannot submit the form while your image is loading.');
+    });
+
+    it('should not submit while the form is deleting', () => {
+      let input = component.editProfileForm.controls['firstName'];
+      
+      input.setValue("John");
+      firstName.nativeElement.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      spyOn(component, 'onSubmit').and.callThrough();
+      spyOn(authService, 'updateUser')
+
+      component.isSendingDeleteToken = true;
+
+      submitButton.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+      expect(component.onSubmit).toHaveBeenCalled();
+      expect(authService.updateUser).not.toHaveBeenCalled();
+
+      expect(errorMsg.nativeElement.innerText).toContain('You cannot submit the form while your image is deleting.');
+    });
+
+    it('should submit when there is only an image', () => {
+      component.uploadedImage = uploadedImage;
+
+      spyOn(component, 'onSubmit').and.callThrough();
+      spyOn(authService, 'updateUser').and.callFake(() => {
+        return of({
+          message: 'User successfully updated.'
+        });
+      });
+      spyOn(router, 'navigate');
+
+      submitButton.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+      expect(component.onSubmit).toHaveBeenCalled();
+      expect(authService.updateUser).toHaveBeenCalled();
+      expect(router.navigate).toHaveBeenCalledWith(['/profile']);
     });
   });
 });

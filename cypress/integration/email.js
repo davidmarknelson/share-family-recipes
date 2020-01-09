@@ -32,9 +32,9 @@ describe('Email verification', () => {
       cy
         .visit('/verify?token=doesnotexist')
         .url().should('include', '/profile')
-        .get('[data-test=emailVerifyMsg]').should('exist')
         .get('.notification').invoke('text')
-        .should('contain', 'The token has expired. Please send another verification email.');
+        .should('contain', 'The token has expired. Please send another verification email.')
+        .get('[data-test=emailVerifyMsg]').should('exist');
     });
 
     it('should show a success message when the email is verified and not show a verify email message', () => {

@@ -10,6 +10,14 @@ describe('Signup', () => {
       .request('POST', 'http://localhost:3000/tests/seed');
   });
 
+  it('should not allow a user to visit the signup page if they are logged in', () => {
+    cy.login('verified@email.com', 'password')
+      .visit('/signup')
+      .url().should('include', '/')
+      .get('.notification').invoke('text')
+      .should('contain', 'You must log out to do that.');
+  });
+
   it('should navigate to the profile with valid credentials without a profile image', () => {
     cy
       .visit('/signup')
@@ -91,16 +99,6 @@ describe('Signup', () => {
       .visit('/signup')
       .url().should('include', '/signup');
 
-    // stub calls to cloudinary
-    cy.server();
-    cy.fixture('uploadedPicResponse.json').then(uploadedPicResponse => {
-      cy.route({
-        method: 'POST',      // Route all POST requests
-        url: 'https://api.cloudinary.com/v1_1/**',    // that have a URL that matches this
-        response: uploadedPicResponse // and force the response to be this
-      });
-    });
-
     cy.fixture('testImagePng.png').then(fileContent => {
       cy.get('[type=file]').upload({ fileContent, fileName: 'testImagePng.png', mimeType: 'image/png' });
     });
@@ -141,5 +139,44 @@ describe('Signup', () => {
       .get('.file-name').should('contain', 'testImg.jpg')
       .get('[data-test=remove-img-btn]').click()
       .get('.file-name').should('contain', 'example.jpeg');
+  });
+
+  it('should not add the image url to the user profile if the user deletes the image after uploading it', () => {
+    cy
+      .visit('/signup')
+      .url().should('include', '/signup')
+      .get('#firstName').type('John')
+      .get('#lastName').type('Doe')
+      .get('#email').type('example@email.com')
+      .get('#username').type('myUser').wait(1000)
+      .get('#password').type('password')
+      .get('#passwordConfirmation').type('password');
+
+    // stub calls to cloudinary
+    cy.server();
+    cy.fixture('uploadedPicResponse.json').then(uploadedPicResponse => {
+      cy.route({
+        method: 'POST',      // Route all POST requests
+        url: 'https://api.cloudinary.com/v1_1/**',    // that have a URL that matches this
+        response: uploadedPicResponse // and force the response to be this
+      });
+    });
+
+    cy.fixture('testImg.jpg').then(fileContent => {
+      cy.get('[type=file]').upload({ fileContent, fileName: 'testImg.jpg', mimeType: 'image/jpeg' });
+    });
+
+    cy.get('[data-test=upload-btn]').click()
+      .get('[data-test=uploading-complete]').should('contain', 'Upload complete')
+      .get('.file-name').should('contain', 'testImg.jpg')
+      .get('[data-test=remove-img-btn]').click()
+      .get('.notification').invoke('text')
+      .should('contain', 'Image was successfully removed.')
+      .get('.notification > .delete').click()
+      .get('.file-name').should('contain', 'example.jpeg')
+      .get('form').submit()
+      .url().should('include', '/profile')
+      .get('[data-test=profilePic]')
+      .should('have.attr', 'src', '../../../assets/images/default-img/default-profile-pic.jpg');
   });
 });

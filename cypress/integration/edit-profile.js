@@ -1,3 +1,5 @@
+require('cypress-file-upload');
+
 describe('Edit profile', () => {
   before(() => {
     Cypress.config('baseUrl', 'http://localhost:4200');
@@ -165,6 +167,96 @@ describe('Edit profile', () => {
         .get('.notification').invoke('text')
         .should('contain', 'Profile successfully deleted.')
         .url().should('include', '/');
+    });
+  });
+
+  describe('image', () => {
+    beforeEach(() => {
+      cy.request('DELETE', 'http://localhost:3000/tests/delete')
+        .request('POST', 'http://localhost:3000/tests/seed')
+        .request('POST', 'http://localhost:3000/tests/seedunverified')
+        .login('verified@email.com', 'password');
+    });
+
+    it('should update the user with only changing the image', () => {
+      cy.visit('/profile/edit')
+        .url().should('include', '/profile/edit')
+
+      // stub calls to cloudinary
+      cy.server();
+      cy.fixture('uploadedPicResponse.json').then(uploadedPicResponse => {
+        cy.route({
+          method: 'POST',      // Route all POST requests
+          url: 'https://api.cloudinary.com/v1_1/**',    // that have a URL that matches this
+          response: uploadedPicResponse // and force the response to be this
+        });
+      });
+
+      cy.fixture('testImg.jpg').then(fileContent => {
+        cy.get('[type=file]').upload({ fileContent, fileName: 'testImg.jpg', mimeType: 'image/jpeg' });
+      });
+
+      cy.get('[data-test=upload-btn]').click()
+        .get('[data-test=uploading-complete]').should('contain', 'Upload complete')
+        .get('.file-name').should('contain', 'testImg.jpg')
+        .get('form').submit()
+        .url().should('include', '/profile')
+        .get('.notification').invoke('text')
+        .should('contain', 'Profile successfully updated.')
+        .get('[data-test=profilePic]').should('have.attr', 'src', 'https://url');
+    });
+
+    it('should update the user after removing the uploaded image and not change the image url', () => {
+      cy.visit('/profile/edit')
+        .url().should('include', '/profile/edit')
+
+      // stub calls to cloudinary. This will be fine for the delete call because it 
+      // only requires a successful response
+      cy.server();
+      cy.fixture('uploadedPicResponse.json').then(uploadedPicResponse => {
+        cy.route({
+          method: 'POST',      // Route all POST requests
+          url: 'https://api.cloudinary.com/v1_1/**',    // that have a URL that matches this
+          response: uploadedPicResponse // and force the response to be this
+        });
+      });
+
+      cy.fixture('testImg.jpg').then(fileContent => {
+        cy.get('[type=file]').upload({ fileContent, fileName: 'testImg.jpg', mimeType: 'image/jpeg' });
+      });
+
+      cy.get('[data-test=upload-btn]').click()
+        .get('[data-test=uploading-complete]').should('contain', 'Upload complete')
+        .get('.file-name').should('contain', 'testImg.jpg')
+        .get('[data-test=remove-img-btn]').click()
+        .get('.notification').invoke('text')
+        .should('contain', 'Image was successfully removed.')
+        .get('.notification > .delete').click()
+        .get('.file-name').should('contain', 'example.jpeg')
+        .get('#firstName').type('James')
+        .get('form').submit()
+        .url().should('include', '/profile')
+        .get('.notification').invoke('text')
+        .should('contain', 'Profile successfully updated.')
+        .get('[data-test=profilePic]')
+        .should('have.attr', 'src', '../../../assets/images/default-img/default-profile-pic.jpg');
+    });
+  });
+
+  describe('empty form', () => {
+    beforeEach(() => {
+      cy.request('DELETE', 'http://localhost:3000/tests/delete')
+        .request('POST', 'http://localhost:3000/tests/seed')
+        .request('POST', 'http://localhost:3000/tests/seedunverified')
+        .login('verified@email.com', 'password');
+    });
+
+    it('should not submit an empty form that also does not have an image', () => {
+      cy.visit('/profile/edit')
+        .url().should('include', '/profile/edit')
+        .get('form').submit()
+        .url().should('include', '/profile/edit')
+        .get('.notification').should('contain', 'You must enter information to change your profile.');
     });
   });
 });

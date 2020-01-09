@@ -1,6 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-
 import { CloudinaryService } from './cloudinary.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { UploadedImage } from './uploadedImage';
