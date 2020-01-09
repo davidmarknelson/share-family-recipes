@@ -174,7 +174,6 @@ describe('Edit profile', () => {
     beforeEach(() => {
       cy.request('DELETE', 'http://localhost:3000/tests/delete')
         .request('POST', 'http://localhost:3000/tests/seed')
-        .request('POST', 'http://localhost:3000/tests/seedunverified')
         .login('verified@email.com', 'password');
     });
 
@@ -208,7 +207,7 @@ describe('Edit profile', () => {
 
     it('should update the user after removing the uploaded image and not change the image url', () => {
       cy.visit('/profile/edit')
-        .url().should('include', '/profile/edit')
+        .url().should('include', '/profile/edit');
 
       // stub calls to cloudinary. This will be fine for the delete call because it 
       // only requires a successful response
@@ -240,6 +239,23 @@ describe('Edit profile', () => {
         .should('contain', 'Profile successfully updated.')
         .get('[data-test=profilePic]')
         .should('have.attr', 'src', '../../../assets/images/default-img/default-profile-pic.jpg');
+    });
+
+    it('should show an error if the image is not jpeg', () => {
+      cy.visit('/profile/edit')
+        .url().should('include', '/profile/edit');
+  
+      cy.fixture('testImagePng.png').then(fileContent => {
+        cy.get('[type=file]').upload({ fileContent, fileName: 'testImagePng.png', mimeType: 'image/png' });
+      });
+  
+      cy.get('[data-test=image-err-msg]')
+        .should('contain', 'Your picture must be a JPEG image.')
+        .get('[data-test=clear-img-err-msg]').click()
+        .get('[data-test=image-err-msg]').should('not.exist')
+        .get('.file-name').should('contain', 'testImagePng.png')
+        .get('[data-test=remove-img-btn]').click()
+        .get('.file-name').should('contain', 'example.jpeg');
     });
   });
 

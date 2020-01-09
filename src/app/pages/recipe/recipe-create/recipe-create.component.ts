@@ -6,8 +6,9 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 // Services
 import { RecipeService } from '../../../utilities/services/recipe/recipe.service';
+import { UploadedImage } from '../../../utilities/services/cloudinary/uploadedImage';
 // Font Awesome
-import { faFileUpload, faArrowDown, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-recipe-create',
@@ -17,7 +18,6 @@ import { faFileUpload, faArrowDown, faTimes } from '@fortawesome/free-solid-svg-
 export class RecipeCreateComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   // Font Awesome
-  faFileUpload = faFileUpload;
   faArrowDown = faArrowDown;
   faTimes = faTimes;
   // Form
@@ -25,15 +25,16 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
   descriptionCount: number;
   sendingForm: boolean = false;
-  selectedFile: File;
-  mealPicName: string = "example.jpeg";
   // Form error messages
   formError: string;
   ingredientError: string;
   instructionError: string;
   // Available name
   availableName: boolean;
-
+  // image
+  uploadedImage: UploadedImage;
+  isImageLoading: boolean;
+  isSendingDeleteToken: boolean;
 
   constructor(
     private fb: FormBuilder, 
@@ -56,7 +57,7 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
 
   createForm() {
     this.createRecipeForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(50)]],
+      name: ['', [Validators.required, Validators.maxLength(75)]],
       description: ['', [Validators.required, Validators.maxLength(150)]],
       ingredients: this.fb.array([
         this.createIngredient()
@@ -95,17 +96,11 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
   get youtubeUrl() { return this.createRecipeForm.get('youtubeUrl'); }
   get mealPic() { return this.createRecipeForm.get('mealPic'); }
 
-  // This adds the meal picture to a variable
-  onFileSelected(event) {
-    this.selectedFile = event.target.files[0];
-    this.mealPicName = this.selectedFile.name;
-  }
-
   // This checks for available recipe names
   onNameChanges() {
     this.createRecipeForm.get('name').valueChanges
       .pipe(
-        filter(val => val.length <= 50),
+        filter(val => val.length <= 75),
         debounceTime(500),
         mergeMap(val => this.recipeService.checkRecipeNameAvailability(val)),
         takeUntil(this.ngUnsubscribe)
@@ -133,6 +128,7 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
 
   // ====================
   // Ingredient Controls
+  // ====================
   addIngredientInput(index): void {
     this.ingredients.insert(index + 1, this.createIngredient());
   }
@@ -148,10 +144,10 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
   clearIngredientErrorMessage() {
     this.ingredientError = '';
   }
-  // ====================
 
   // ====================
   // Instructions Controls
+  // ====================
   addInstructionInput(index): void {
     this.instructions.insert(index + 1, this.createInstruction());
   }
@@ -167,13 +163,36 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
   clearInstructionErrorMessage() {
     this.instructionError = '';
   }
-  // ====================
 
+  // ===========================================
+  // File upload
+  // ===========================================
+  onImageUpload(uploadedImage: UploadedImage) {
+    this.uploadedImage = uploadedImage;
+  }
+
+  onImageLoading(isImageLoading: boolean) {
+    this.isImageLoading = isImageLoading;
+  }
+  
+  onImageDelete(isSendingDeleteToken: boolean) {
+    this.isSendingDeleteToken = isSendingDeleteToken;
+  }
 
   onSubmit() {
     // This helps show errors on the form if a user tries to submit
     // the form before completing it
     this.submitted = true;
+
+    // Stops the form from submitting while the image is uploading
+    if (this.isImageLoading) {
+      return this.formError = 'You cannot submit the form while your image is loading.';
+    }
+
+    // Stops the form from submitting while the image is deleting
+    if (this.isSendingDeleteToken) {
+      return this.formError = 'You cannot submit the form while your image is deleting.';
+    }
 
     // This stops the form submission if the form is invalid
     if (this.createRecipeForm.invalid || !this.availableName) {
@@ -192,12 +211,18 @@ export class RecipeCreateComponent implements OnInit, OnDestroy {
       difficulty: this.createRecipeForm.value.difficulty,
       originalRecipeUrl: this.createRecipeForm.value.originalRecipeUrl,
       youtubeUrl: this.createRecipeForm.value.youtubeUrl,
-      mealPic: 
-        (this.createRecipeForm.value.mealPic) ? 
-        { mealPicName: this.createRecipeForm.value.mealPic.replace("C:\\fakepath\\", "") } : null
+      // set image property defaults
+      recipePicName: null,
+      publicId: null
     };
 
-    this.recipeService.createRecipe(recipe, this.selectedFile).pipe(
+    // Add image properties to recipe object if the image has uploaded
+    if (this.uploadedImage) {
+      recipe.recipePicName = this.uploadedImage.secure_url;
+      recipe.publicId = this.uploadedImage.public_id;
+    }
+
+    this.recipeService.createRecipe(recipe).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       this.router.navigate(['/recipes', res.id]);

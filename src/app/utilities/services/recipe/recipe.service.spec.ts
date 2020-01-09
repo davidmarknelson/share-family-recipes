@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { RecipeService } from './recipe.service';
 
-describe('MealService', () => {
+describe('RecipeService', () => {
   let recipeService: RecipeService;
   let http: HttpTestingController;
 
@@ -43,7 +43,7 @@ describe('MealService', () => {
       };
       let response;
 
-      recipeService.createRecipe(recipe, mealPic).subscribe(res => {
+      recipeService.createRecipe(recipe).subscribe(res => {
         response = res;
       });
 
@@ -70,7 +70,7 @@ describe('MealService', () => {
       const signupResponse = 'There was an error creating your meal.';
       let errorResponse;
     
-      recipeService.createRecipe(recipe, mealPic).subscribe(res => {}, err => {
+      recipeService.createRecipe(recipe).subscribe(res => {}, err => {
         errorResponse = err;
       });
     
@@ -102,7 +102,7 @@ describe('MealService', () => {
       const signupResponse = 'Please upload a JPEG image.';
       let errorResponse;
 
-      recipeService.createRecipe(recipe, mealPic).subscribe(res => {}, err => {
+      recipeService.createRecipe(recipe).subscribe(res => {}, err => {
         errorResponse = err;
       });
 
@@ -266,7 +266,7 @@ describe('MealService', () => {
       };
 
       let response;
-      recipeService.editRecipe(recipe, null).subscribe(res => {
+      recipeService.editRecipe(recipe).subscribe(res => {
         response = res;
       });
 
@@ -292,7 +292,7 @@ describe('MealService', () => {
       const editResponse = 'This email account is already in use.';
       let errorResponse;
 
-      recipeService.editRecipe(recipe, null).subscribe(res => {}, err => {
+      recipeService.editRecipe(recipe).subscribe(res => {}, err => {
         errorResponse = err;
       });
 

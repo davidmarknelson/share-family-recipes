@@ -16,28 +16,14 @@ export class RecipeService {
 
   constructor(private http: HttpClient) { }
 
-  createRecipe(fields, file): Observable<Recipe>  {
+  createRecipe(fields): Observable<Recipe>  {
     // Formarray makes the ingredients and instructions fields into the objects  
     // {ingredient: ''}. These functions format the fields into the array of only the 
     // values
     fields.ingredients = this.formatIngredients(fields.ingredients);
     fields.instructions = this.formatInstructions(fields.instructions);
 
-    let fd = new FormData();
-    for (let key of Object.keys(fields)) {
-      if (fields[key] && (key !== 'mealPic')) {
-        fd.append(key, fields[key]);
-      } else {
-        fd.append(key, '');
-      }
-    }
-    if (file) fd.append('mealPic', file, fields.mealPic);
-
-    return this.http.post<any>(`${this.apiUrl}meals/create`, fd, { 
-      headers: { 
-        header: 'multipart/form-data'
-      }
-    });
+    return this.http.post<any>(`${this.apiUrl}meals/create`, fields);
   }
 
   checkRecipeNameAvailability(name: string): Observable<any>  {
@@ -78,28 +64,14 @@ export class RecipeService {
     );
   }
 
-  editRecipe(fields, file): Observable<any>  {
+  editRecipe(fields): Observable<any>  {
     // Formarray makes the ingredients and instructions fields into the objects  
     // {ingredient: ''}. These functions format the fields into the array of only the 
     // values
     fields.ingredients = this.formatIngredients(fields.ingredients);
     fields.instructions = this.formatInstructions(fields.instructions);
 
-    let fd = new FormData();
-    for (let key of Object.keys(fields)) {
-      if (fields[key] && (key !== 'mealPic')) {
-        fd.append(key, fields[key]);
-      } else {
-        fd.append(key, '');
-      }
-    }
-    if (file) fd.append('mealPic', file, fields.mealPic);
-
-    return this.http.put<any>(`${this.apiUrl}meals/update`, fd, { 
-      headers: { 
-        header: 'multipart/form-data'
-      }
-    });
+    return this.http.put<any>(`${this.apiUrl}meals/update`, fields);
   }
 
   deleteRecipe(recipeid: number): Observable<any> {

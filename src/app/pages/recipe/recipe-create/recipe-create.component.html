@@ -14,7 +14,7 @@
           <label class="label" for="name">
             Recipe Name *
             <span class="has-text-weight-light is-size-7">
-              max 50 characters
+              max 75 characters
             </span>
           </label>
           <div class="control">
@@ -31,7 +31,7 @@
               required>
               <div *ngIf="name.invalid && (name.dirty || name.touched || submitted)" class="has-text-danger">
                 <p *ngIf="name.errors.required" data-test='nameRequired'>Name is required</p>
-                <p *ngIf="name.errors.maxlength" data-test='nameMaxLength'>Name has a max of 50 characters.</p>
+                <p *ngIf="name.errors.maxlength" data-test='nameMaxLength'>Name has a max of 75 characters.</p>
               </div>
               <div *ngIf="availableName && name.valid" class="has-text-success">
                 <p data-test="nameAvailable">This name is available</p>
@@ -323,7 +323,7 @@
 
     <div class="columns">
       <!-- Meal Picture -->
-      <div class="column">
+      <div class="column is-half">
         <div class="field">
           <label class="label" for="mealPic">
             Meal Picture
@@ -331,28 +331,12 @@
               must be JPEG max 5mb
             </span>
           </label>
-          <div class="file has-name">
-            <label class="file-label">
-              <input 
-                class="file-input" 
-                type="file" 
-                name="mealPic" 
-                id="mealPic" 
-                formControlName="mealPic" 
-                (change)="onFileSelected($event)">
-              <span class="file-cta">
-                <span class="file-icon">
-                  <fa-icon [icon]="faFileUpload"></fa-icon>
-                </span>
-                <span class="file-label">
-                  Choose a file…
-                </span>
-              </span>
-              <span class="file-name" [class.has-text-secondary]="selectedFile">
-                {{ mealPicName }}
-              </span>
-            </label>
-          </div>
+          <!-- image upload -->
+          <app-image-upload
+            (uploadedImage)='onImageUpload($event)'
+            (isSendingDeleteToken)='onImageDelete($event)'
+            (isImageLoading)='onImageLoading($event)'>
+          </app-image-upload>
         </div>
       </div>
     </div>

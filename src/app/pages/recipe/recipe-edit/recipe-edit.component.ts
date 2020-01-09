@@ -8,8 +8,9 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { RecipeService } from '../../../utilities/services/recipe/recipe.service';
 import { Recipe } from '../../../utilities/services/recipe/recipe';
 import { AuthService } from '../../../utilities/services/auth/auth.service';
+import { UploadedImage } from '../../../utilities/services/cloudinary/uploadedImage';
 // Font Awesome
-import { faFileUpload, faArrowDown, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faArrowDown, faTimes } from '@fortawesome/free-solid-svg-icons';
 // Environment
 import { environment } from '../../../../environments/environment';
 
@@ -22,7 +23,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   apiUrl = environment.apiUrl;
   // Font Awesome
-  faFileUpload = faFileUpload;
   faArrowDown = faArrowDown;
   faTimes = faTimes;
   // Page
@@ -36,8 +36,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
   descriptionCount: number;
   sendingForm: boolean = false;
-  selectedFile: File;
-  mealPicName: string = "example.jpeg";
   // Form error messages
   formError: string;
   ingredientError: string;
@@ -48,7 +46,10 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   isModalOpen: boolean;
   isDeleting: boolean;
   deleteError: string;
-
+  // image
+  uploadedImage: UploadedImage;
+  isImageLoading: boolean;
+  isSendingDeleteToken: boolean;
 
   constructor(
     private route: ActivatedRoute, 
@@ -126,7 +127,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   // ===========================================
   createForm() {
     this.editRecipeForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(50)]],
+      name: ['', [Validators.required, Validators.maxLength(75)]],
       description: ['', [Validators.required, Validators.maxLength(150)]],
       ingredients: this.fb.array([
         this.createIngredient()
@@ -199,12 +200,6 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   get youtubeUrl() { return this.editRecipeForm.get('youtubeUrl'); }
   get mealPic() { return this.editRecipeForm.get('mealPic'); }
 
-  // This adds the meal picture to a variable
-  onFileSelected(event) {
-    this.selectedFile = event.target.files[0];
-    this.mealPicName = this.selectedFile.name;
-  }
-
   clearErrorMessage() {
     this.formError = '';
   }
@@ -217,7 +212,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   onNameChanges() {
     this.editRecipeForm.get('name').valueChanges
       .pipe(
-        filter(val => val.length <= 50),
+        filter(val => val.length <= 75),
         debounceTime(500),
         switchMap(val => {
           // Checks if the name in the input is the same as the name of the recipe and 
@@ -298,7 +293,20 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  // ===========================================
+  // File upload
+  // ===========================================
+  onImageUpload(uploadedImage: UploadedImage) {
+    this.uploadedImage = uploadedImage;
+  }
 
+  onImageLoading(isImageLoading: boolean) {
+    this.isImageLoading = isImageLoading;
+  }
+  
+  onImageDelete(isSendingDeleteToken: boolean) {
+    this.isSendingDeleteToken = isSendingDeleteToken;
+  }
 
 
   // ===========================================
@@ -308,6 +316,16 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     // This helps show errors on the form if a user tries to submit
     // the form before completing it
     this.submitted = true;
+
+    // Stops the form from submitting while the image is uploading
+    if (this.isImageLoading) {
+      return this.formError = 'You cannot submit the form while your image is loading.';
+    }
+
+    // Stops the form from submitting while the image is deleting
+    if (this.isSendingDeleteToken) {
+      return this.formError = 'You cannot submit the form while your image is deleting.';
+    }
 
     // This stops the form submission if the form is invalid
     if (this.editRecipeForm.invalid || !this.availableName) {
@@ -327,12 +345,18 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
       difficulty: this.editRecipeForm.value.difficulty,
       originalRecipeUrl: this.editRecipeForm.value.originalRecipeUrl,
       youtubeUrl: this.editRecipeForm.value.youtubeUrl,
-      mealPic: 
-        (this.editRecipeForm.value.mealPic && this.selectedFile) ? 
-        { mealPicName: this.editRecipeForm.value.mealPic.replace("C:\\fakepath\\", "") } : null
+      // set image property defaults
+      recipePicName: null,
+      publicId: null
     };
 
-    this.recipeService.editRecipe(recipe, this.selectedFile).pipe(
+    // Add image properties to recipe object if the image has uploaded
+    if (this.uploadedImage) {
+      recipe.recipePicName = this.uploadedImage.secure_url;
+      recipe.publicId = this.uploadedImage.public_id;
+    }
+
+    this.recipeService.editRecipe(recipe).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       this.router.navigate(['/recipes', res.id]);
@@ -357,10 +381,30 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   // Delete functions
   // ===========================================
   toggleModal() {
+    // Stops the form from submitting while the image is uploading
+    if (this.isImageLoading) {
+      return this.formError = 'You cannot delete your recipe while your image is loading.';
+    }
+
+    // Stops the form from submitting while the image is deleting
+    if (this.isSendingDeleteToken) {
+      return this.formError = 'You cannot delete your recipe while your image is deleting.';
+    }
+
     this.isModalOpen = !this.isModalOpen;
   }
 
   deleteRecipe() {
+    // Stops the form from submitting while the image is uploading
+    if (this.isImageLoading) {
+      return this.formError = 'You cannot delete your recipe while your image is loading.';
+    }
+
+    // Stops the form from submitting while the image is deleting
+    if (this.isSendingDeleteToken) {
+      return this.formError = 'You cannot delete your recipe while your image is deleting.';
+    }
+
     this.isDeleting = true;
     this.recipeService.deleteRecipe(this.recipe.id).subscribe(res => {
       this.isDeleting = false;

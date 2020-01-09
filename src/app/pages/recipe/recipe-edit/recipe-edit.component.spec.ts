@@ -9,10 +9,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Location } from '@angular/common';
 import { of, throwError } from 'rxjs';
 import { RecipeModule } from '../recipe.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 function longName() {
   let string = '';
-  for (let i = 0; i < 51; i++) {
+  for (let i = 0; i < 76; i++) {
     string = string + 'a';
   }
   return string;
@@ -21,63 +22,93 @@ function longName() {
 let fixture: ComponentFixture<RecipeEditComponent>;
 let pageErrorMsg: DebugElement;
 let name: DebugElement;
+let nameRequired: DebugElement;
+let availableName: DebugElement;
+let maxlength: DebugElement;
 // ingredients
 let ingredientsArray;
 let addIngredientArray;
 let deleteIngredientArray;
 let ingredientsErrorMsg: DebugElement;
 let clearIngredientsErrorMsg: DebugElement;
+let ingredientRequired: DebugElement;
 // instructions
 let instructionsArray;
 let addInstructionArray;
 let deleteInstructionArray;
 let instructionsErrorMsg: DebugElement;
 let clearInstructionsErrorMsg: DebugElement;
+let instructionRequired: DebugElement;
 // description
 let description: DebugElement;
 let descriptionCount: DebugElement;
+let descriptionMaxLength: DebugElement;
 // cookTime
 let cookTime: DebugElement;
+let cookTimeRequired: DebugElement;
+let cookTimePattern: DebugElement;
 // difficulty
 let difficulty: DebugElement;
+let difficultyRequired: DebugElement;
+let difficultyPattern: DebugElement;
 // originalRecipeUrl
 let originalRecipeUrl: DebugElement;
 // youtubeUrl
 let youtubeUrl: DebugElement;
 // submit button
 let submitButton: DebugElement;
-
-
-
+let errorMsg: DebugElement;
+let deleteBtn: DebugElement;
+// modal
+let modalDelete: DebugElement;
+let modalClose: DebugElement;
+let modal: DebugElement;
 
 function selectElements() {
   pageErrorMsg = fixture.debugElement.query(By.css('.message-body'));
   name = fixture.debugElement.query(By.css('#name'));
+  nameRequired = fixture.debugElement.query(By.css('[data-test=nameRequired]'));
+  availableName = fixture.debugElement.query(By.css('[data-test=nameAvailable]'));
+  maxlength = fixture.debugElement.query(By.css('[data-test=nameMaxLength]'));
   // ingredients
   ingredientsArray = fixture.debugElement.queryAll(By.css('[data-test=ingredient]'));
   addIngredientArray = fixture.debugElement.queryAll(By.css('[data-test=addIngredientInput]'));
   deleteIngredientArray = fixture.debugElement.queryAll(By.css('[data-test=removeIngredient]'));
   ingredientsErrorMsg = fixture.debugElement.query(By.css('[data-test=ingredientErrorMsg]'));
   clearIngredientsErrorMsg = fixture.debugElement.query(By.css('[data-test=clearIngredientErrorMsg]'));
+  ingredientRequired = fixture.debugElement.query(By.css('[data-test=ingredientRequired]'));
   // instructions
   instructionsArray = fixture.debugElement.queryAll(By.css('[data-test=instruction]'));
   addInstructionArray = fixture.debugElement.queryAll(By.css('[data-test=addInstructionInput]'));
   deleteInstructionArray = fixture.debugElement.queryAll(By.css('[data-test=removeInstruction]'));
   instructionsErrorMsg = fixture.debugElement.query(By.css('[data-test=instructionErrorMsg]'));
   clearInstructionsErrorMsg = fixture.debugElement.query(By.css('[data-test=clearInstructionErrorMsg]'));
+  instructionRequired = fixture.debugElement.query(By.css('[data-test=instructionRequired]'));
   // description
   description = fixture.debugElement.query(By.css('[data-test=description]'));
   descriptionCount = fixture.debugElement.query(By.css('[data-test=descriptionCount]'));
+  descriptionMaxLength = fixture.debugElement.query(By.css('[data-test=descriptionMaxLength]'));
   // cookTime
   cookTime = fixture.debugElement.query(By.css('[data-test=cookTime]'));
+  cookTimeRequired = fixture.debugElement.query(By.css('[data-test=cookTimeRequired]'));
+  cookTimePattern = fixture.debugElement.query(By.css('[data-test=cookTimePattern]'));
   // difficulty
   difficulty = fixture.debugElement.query(By.css('[data-test=difficulty]'));
+  difficultyRequired = fixture.debugElement.query(By.css('[data-test=difficultyRequired]'));
+  difficultyPattern = fixture.debugElement.query(By.css('[data-test=difficultyPattern]'));
   // originalRecipeUrl
   originalRecipeUrl = fixture.debugElement.query(By.css('[data-test=originalRecipeUrl]'));
   // youtubeUrl
   youtubeUrl = fixture.debugElement.query(By.css('[data-test=youtubeUrl]'));
   // submit button
   submitButton = fixture.debugElement.query(By.css('[data-test=submit-button]'));
+  errorMsg = fixture.debugElement.query(By.css('.notification'));
+  deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
+  // modal
+  modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
+  modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
+  modal = fixture.debugElement.query(By.css('.modal'));
+
 }
 
 const creator = {
@@ -157,7 +188,7 @@ describe('RecipeEditComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RecipeModule, RouterTestingModule]
+      imports: [RecipeModule, RouterTestingModule, HttpClientTestingModule]
     })
     .overrideComponent(RecipeEditComponent, {
       set: {
@@ -292,9 +323,8 @@ describe('RecipeEditComponent', () => {
         input.setValue('');
         name.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
+        selectElements();
 
-        let nameRequired = fixture.debugElement.query(By.css('[data-test=nameRequired]'));
-        
         expect(input.errors['required']).toBeTruthy();
         expect(nameRequired).toBeTruthy();
       });
@@ -314,11 +344,11 @@ describe('RecipeEditComponent', () => {
         // This is used because the function has a 500ms wait time
         tick(1000);
         fixture.detectChanges();
+        selectElements();
 
         expect(recipeService.checkRecipeNameAvailability).toHaveBeenCalledWith('Sandwich');
         expect(input.errors).toBeFalsy();
 
-        let availableName = fixture.debugElement.query(By.css('[data-test=nameAvailable]'));
         expect(name.classes['is-success']).toBeTruthy();
         expect(availableName).toBeTruthy();
       }));
@@ -336,11 +366,12 @@ describe('RecipeEditComponent', () => {
         // This is used because the function has a 500ms wait time
         tick(1000);
         fixture.detectChanges();
+        selectElements();
+
         expect(recipeService.checkRecipeNameAvailability).toHaveBeenCalledWith('Sandwich');
         expect(input.errors).toBeFalsy();
-        let availableName = fixture.debugElement.query(By.css('[data-test=nameUnavailable]'));
         expect(name.classes['is-danger']).toBeTruthy();
-        expect(availableName).toBeTruthy();
+        expect(availableName).toBeFalsy();
       }));
 
       it('should show that a name is too long', fakeAsync(() => {
@@ -357,9 +388,10 @@ describe('RecipeEditComponent', () => {
         // This is used because the function has a 500ms wait time
         tick(1000);
         fixture.detectChanges();
+        selectElements();
+
         expect(recipeService.checkRecipeNameAvailability).not.toHaveBeenCalled();
         expect(input.errors).toBeTruthy();
-        let maxlength = fixture.debugElement.query(By.css('[data-test=nameMaxLength]'));
         expect(name.classes['is-danger']).toBeTruthy();
         expect(maxlength).toBeTruthy();
       }));
@@ -392,7 +424,8 @@ describe('RecipeEditComponent', () => {
         input.setValue(valueTooLong);
         description.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
-        let descriptionMaxLength = fixture.debugElement.query(By.css('[data-test=descriptionMaxLength]'));
+        selectElements();
+
         expect(input.errors['maxlength']).toBeTruthy();
         expect(description.classes['is-danger']).toBeTruthy();
         expect(descriptionCount.nativeElement.innerText).toEqual('151/150');
@@ -414,7 +447,8 @@ describe('RecipeEditComponent', () => {
         input.setValue(value);
         description.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
-        let descriptionMaxLength = fixture.debugElement.query(By.css('[data-test=descriptionMaxLength]'));
+        selectElements();
+
         expect(input.errors).toBeFalsy();
         expect(description.classes['is-success']).toBeTruthy();
         expect(descriptionCount.nativeElement.innerText).toEqual('50/150');
@@ -444,9 +478,7 @@ describe('RecipeEditComponent', () => {
         instructionsArray[0].nativeElement.dispatchEvent(new Event('input'));
 
         fixture.detectChanges();
-
-        let ingredientRequired = fixture.debugElement.query(By.css('[data-test=ingredientRequired]'));
-        let instructionRequired = fixture.debugElement.query(By.css('[data-test=instructionRequired]'));
+        selectElements();
 
         expect(ingredientInput['controls'][0].controls['ingredient'].errors['required']).toBeTruthy();
         expect(ingredientsArray[0].nativeElement).toHaveClass('is-danger');
@@ -527,9 +559,7 @@ describe('RecipeEditComponent', () => {
         input.setValue('20');
         cookTime.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
-
-        let cookTimeRequired = fixture.debugElement.query(By.css('[data-test=cookTimeRequired]'));
-        let cookTimePattern = fixture.debugElement.query(By.css('[data-test=cookTimePattern]'));
+        selectElements();
 
         expect(input.errors).toBeFalsy();
         expect(cookTime.nativeElement).toHaveClass('is-success');
@@ -543,9 +573,7 @@ describe('RecipeEditComponent', () => {
         input.setValue('a');
         cookTime.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
-
-        let cookTimeRequired = fixture.debugElement.query(By.css('[data-test=cookTimeRequired]'));
-        let cookTimePattern = fixture.debugElement.query(By.css('[data-test=cookTimePattern]'));
+        selectElements();
 
         expect(input.errors['pattern']).toBeTruthy();
         expect(cookTime.nativeElement).toHaveClass('is-danger');
@@ -561,8 +589,7 @@ describe('RecipeEditComponent', () => {
         input.setValue('');
         difficulty.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
-
-        let difficultyRequired = fixture.debugElement.query(By.css('[data-test=difficultyRequired]'));
+        selectElements();
 
         expect(input.errors['required']).toEqual(true);
         expect(difficulty.nativeElement).toHaveClass('is-danger');
@@ -575,9 +602,7 @@ describe('RecipeEditComponent', () => {
         input.setValue('2');
         difficulty.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
-
-        let difficultyRequired = fixture.debugElement.query(By.css('[data-test=difficultyRequired]'));
-        let difficultyPattern = fixture.debugElement.query(By.css('[data-test=difficultyPattern]'));
+        selectElements();
 
         expect(input.errors).toBeFalsy();
         expect(difficulty.nativeElement).toHaveClass('is-success');
@@ -591,9 +616,7 @@ describe('RecipeEditComponent', () => {
         input.setValue('a');
         difficulty.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
-
-        let difficultyRequired = fixture.debugElement.query(By.css('[data-test=difficultyRequired]'));
-        let difficultyPattern = fixture.debugElement.query(By.css('[data-test=difficultyPattern]'));
+        selectElements();
 
         expect(input.errors['pattern']).toBeTruthy();
         expect(difficulty.nativeElement).toHaveClass('is-danger');
@@ -607,9 +630,8 @@ describe('RecipeEditComponent', () => {
         input.setValue('6');
         difficulty.nativeElement.dispatchEvent(new Event('input'));
         fixture.detectChanges();
+        selectElements();
 
-        let difficultyRequired = fixture.debugElement.query(By.css('[data-test=difficultyRequired]'));
-        let difficultyPattern = fixture.debugElement.query(By.css('[data-test=difficultyPattern]'));
 
         expect(input.errors['pattern']).toBeTruthy();
         expect(difficulty.nativeElement).toHaveClass('is-danger');
@@ -707,6 +729,72 @@ describe('RecipeEditComponent', () => {
       expect(recipeService.editRecipe).toHaveBeenCalled();
       expect(router.navigate).toHaveBeenCalledWith(['/recipes', 1]);
     });
+    
+    it('should not submit while the image is uploading', () => {
+      let form = component.editRecipeForm.controls;
+
+      spyOn(recipeService, 'editRecipe');
+      spyOn(router, 'navigate');
+
+      // set form values
+      form.name.setValue('Sandwich');
+      form.description.setValue('A simple meat and cheese sandwich.');
+      form.ingredients['controls'][0].controls['ingredient'].setValue('1 slice of ham');
+      form.instructions['controls'][0].controls['instruction'].setValue('Put ham between bread.');
+      form.cookTime.setValue('20');
+      form.difficulty.setValue('1');
+
+      // this makes the name input valid
+      // this was already tested in the name testing suite 
+      // so we will just change the value this way
+      component.availableName = true;
+
+      component.isImageLoading = true
+      
+      // check that there should not be any errors
+      expect(component.editRecipeForm.errors).toBeFalsy();
+      
+      submitButton.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+
+      expect(recipeService.editRecipe).not.toHaveBeenCalled();
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(errorMsg.nativeElement.innerText).toContain('You cannot submit the form while your image is loading.');
+    });
+
+    it('should not submit while the image is deleting', () => {
+      let form = component.editRecipeForm.controls;
+
+      spyOn(recipeService, 'editRecipe');
+      spyOn(router, 'navigate');
+
+      // set form values
+      form.name.setValue('Sandwich');
+      form.description.setValue('A simple meat and cheese sandwich.');
+      form.ingredients['controls'][0].controls['ingredient'].setValue('1 slice of ham');
+      form.instructions['controls'][0].controls['instruction'].setValue('Put ham between bread.');
+      form.cookTime.setValue('20');
+      form.difficulty.setValue('1');
+
+      // this makes the name input valid
+      // this was already tested in the name testing suite 
+      // so we will just change the value this way
+      component.availableName = true;
+
+      component.isSendingDeleteToken = true
+      
+      // check that there should not be any errors
+      expect(component.editRecipeForm.errors).toBeFalsy();
+      
+      submitButton.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+
+      expect(recipeService.editRecipe).not.toHaveBeenCalled();
+      expect(router.navigate).not.toHaveBeenCalled();
+      expect(errorMsg.nativeElement.innerText).toContain('You cannot submit the form while your image is deleting.');
+    });
 
     it('should return an error when there is a server error', () => {
       let form = component.editRecipeForm.controls;
@@ -738,12 +826,12 @@ describe('RecipeEditComponent', () => {
       
       submitButton.nativeElement.click();
       fixture.detectChanges();
+      selectElements();
       expect(recipeService.editRecipe).toHaveBeenCalled();
       expect(router.navigate).not.toHaveBeenCalled();
 
       // show notification error
-      let notification = fixture.debugElement.query(By.css('[data-test=formErrorMsg]'));
-      expect(notification.nativeElement.innerText).toEqual('There was an error updating your recipe.');
+      expect(errorMsg.nativeElement.innerText).toEqual('There was an error updating your recipe.');
     });
   });
 
@@ -756,10 +844,6 @@ describe('RecipeEditComponent', () => {
     });
 
     it('should open the modal when clicking on the delete button and close when clicking the x', () => {
-      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
-      let modal = fixture.debugElement.query(By.css('.modal'));
-      let modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
-
       deleteBtn.nativeElement.click();
       fixture.detectChanges();
       
@@ -773,11 +857,31 @@ describe('RecipeEditComponent', () => {
       expect(modal.classes['is-active']).toEqual(false);
     });
 
-    it('should navigate to the landing page when successfully deleting the profile', () => {
-      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
-      let modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
-      let modalClose = fixture.debugElement.query(By.css('[data-test=modal-close]'));
+    it('should not open the modal when the image is uploading', () => {
+      component.isImageLoading = true;
 
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+      
+      expect(component.isModalOpen).toBeFalsy();
+      expect(modal.classes['is-active']).toEqual(false);
+      expect(errorMsg.nativeElement.innerText).toContain('You cannot delete your recipe while your image is loading.');
+    });
+
+    it('should not open the modal when the image is deleting', () => {
+      component.isSendingDeleteToken = true;
+      
+      deleteBtn.nativeElement.click();
+      fixture.detectChanges();
+      selectElements();
+      
+      expect(component.isModalOpen).toBeFalsy();
+      expect(modal.classes['is-active']).toEqual(false);
+      expect(errorMsg.nativeElement.innerText).toContain('You cannot delete your recipe while your image is deleting.');
+    });
+
+    it('should navigate to the landing page when successfully deleting the profile', () => {
       spyOn(component, 'deleteRecipe').and.callThrough();
       spyOn(recipeService, 'deleteRecipe').and.callFake(() => {
         return of({ message: 'Recipe successfully deleted.'});
@@ -800,9 +904,6 @@ describe('RecipeEditComponent', () => {
     });
 
     it('should show an error message on error', () => {
-      let deleteBtn = fixture.debugElement.query(By.css('[data-test=delete-button]'));
-      let modalDelete = fixture.debugElement.query(By.css('[data-test=modal-delete]'));
-
       spyOn(component, 'deleteRecipe').and.callThrough();
       spyOn(recipeService, 'deleteRecipe').and.callFake(() => {
         return throwError({ error: { 
@@ -816,8 +917,7 @@ describe('RecipeEditComponent', () => {
 
       modalDelete.nativeElement.click();
       fixture.detectChanges();
-
-      let errorMsg = fixture.debugElement.query(By.css('.notification'));
+      selectElements();
 
       expect(component.deleteRecipe).toHaveBeenCalled();
       expect(recipeService.deleteRecipe).toHaveBeenCalled();

@@ -24,7 +24,6 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   emailTaken: boolean;
   takenUsername: boolean;
   // Font Awesome
-  faFileUpload = faFileUpload;
   faEnvelope = faEnvelope;
   faUser = faUser;
   faChevronRight = faChevronRight;

@@ -7,6 +7,7 @@ import { RecipeCreateComponent } from './recipe-create/recipe-create.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RecipeEditComponent } from './recipe-edit/recipe-edit.component';
+import { ImageUploadModule } from '../../partials/image-upload/image-upload.module';
 
 @NgModule({
   declarations: [RecipeCreateComponent, RecipeEditComponent],
@@ -15,7 +16,8 @@ import { RecipeEditComponent } from './recipe-edit/recipe-edit.component';
     RecipeRoutingModule,
     FontAwesomeModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ImageUploadModule
   ]
 })
 export class RecipeModule { }
