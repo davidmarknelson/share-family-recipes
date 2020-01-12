@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:3000/',
-  cloudinaryUrl: '',
-  cloudName: '',
-  unsignedPreset: 'aentgn2b'
+  apiUrl: 'https://share-family-recipes-api.herokuapp.com/',
+  cloudinaryUrl: 'https://api.cloudinary.com/v1_1/',
+  cloudName: 'dcwjkxleo',
+  unsignedPreset: 'lfxvprmt'
 };
