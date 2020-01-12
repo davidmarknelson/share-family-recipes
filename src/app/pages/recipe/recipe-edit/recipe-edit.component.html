@@ -99,7 +99,7 @@
         </span>
       </label>
       <div class="columns is-mobile is-1 is-variable"  formArrayName="ingredients" 
-        *ngFor="let ingredient of ingredients.controls; let i = index;">
+        *ngFor="let ingredient of ingredients['controls']; let i = index;">
         <div class="column">
           <div [formGroupName]="i">
             <div class="control">
@@ -111,15 +111,15 @@
                 [id]="i"
                 formControlName="ingredient" 
                 placeholder="1 slice of ham"
-                [class.is-danger]="ingredients.controls[i].controls.ingredient.invalid && 
-                (ingredients.controls[i].controls.ingredient.dirty || ingredients.controls[i].controls.ingredient.touched || submitted)"
-                [class.is-success]="ingredients.controls[i].controls.ingredient.valid"
+                [class.is-danger]="ingredients['controls'][i]['controls'].ingredient.invalid && 
+                (ingredients['controls'][i]['controls'].ingredient.dirty || ingredients['controls'][i]['controls'].ingredient.touched || submitted)"
+                [class.is-success]="ingredients['controls'][i]['controls'].ingredient.valid"
                 required>
               <div 
-                *ngIf="ingredients.controls[i].controls.ingredient.invalid && 
-                (ingredients.controls[i].controls.ingredient.dirty || ingredients.controls[i].controls.ingredient.touched || submitted)" 
+                *ngIf="ingredients['controls'][i]['controls'].ingredient.invalid && 
+                (ingredients['controls'][i]['controls'].ingredient.dirty || ingredients['controls'][i]['controls'].ingredient.touched || submitted)" 
                 class="has-text-danger">
-                <p *ngIf="ingredients.controls[i].controls.ingredient.errors.required" data-test='ingredientRequired'>
+                <p *ngIf="ingredients['controls'][i]['controls'].ingredient.errors.required" data-test='ingredientRequired'>
                   An ingredient is required
                 </p>
               </div>
@@ -169,7 +169,7 @@
         </span>
       </label>
       <div class="columns is-mobile is-1 is-variable"  formArrayName="instructions" 
-        *ngFor="let instruction of instructions.controls; let i = index;">
+        *ngFor="let instruction of instructions['controls']; let i = index;">
         <div class="column">
           <div [formGroupName]="i">
             <div class="control">
@@ -181,15 +181,15 @@
                 [id]="i"
                 formControlName="instruction" 
                 placeholder="Put ham between 2 slices of bread."
-                [class.is-danger]="instructions.controls[i].controls.instruction.invalid && 
-                (instructions.controls[i].controls.instruction.dirty || instructions.controls[i].controls.instruction.touched || submitted)"
-                [class.is-success]="instructions.controls[i].controls.instruction.valid"
+                [class.is-danger]="instructions['controls'][i]['controls'].instruction.invalid && 
+                (instructions['controls'][i]['controls'].instruction.dirty || instructions['controls'][i]['controls'].instruction.touched || submitted)"
+                [class.is-success]="instructions['controls'][i]['controls'].instruction.valid"
                 required>
               <div 
                 *ngIf="instructions.controls[i].controls.instruction.invalid && 
-                (instructions.controls[i].controls.instruction.dirty || instructions.controls[i].controls.instruction.touched || submitted)" 
+                (instructions['controls'][i]['controls'].instruction.dirty || instructions['controls'][i]['controls'].instruction.touched || submitted)" 
                 class="has-text-danger">
-                <p *ngIf="instructions.controls[i].controls.instruction.errors.required" data-test='instructionRequired'>
+                <p *ngIf="instructions['controls'][i]['controls'].instruction.errors.required" data-test='instructionRequired'>
                   An instruction is required
                 </p>
               </div>

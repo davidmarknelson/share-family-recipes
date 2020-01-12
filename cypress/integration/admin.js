@@ -7,7 +7,7 @@ describe('Admin Page', () => {
       .request('POST', 'http://localhost:3000/tests/seedunverified');
   });
 
-  describe('non-admin user', () => {
+  describe('admin signup', () => {
     beforeEach(() => {
       cy.login('unverified@email.com', 'password');
     });
