@@ -114,19 +114,6 @@
   </ul>
 </div>
 
-
-<!-- Original Recipe url -->
-<div data-test='originalRecipeUrl' class="step-container" *ngIf='recipe && recipe.originalRecipeUrl && !error'>
-  <p>
-    You can view the original recipe at 
-    <a 
-      href='{{ recipe.originalRecipeUrl }}'
-      target="_blank">
-      {{ recipe.originalRecipeUrl }}
-    </a>.
-  </p>
-</div>
-
 <!-- Recipe YouTube Video -->
 <div data-test='youtubeUrl'  class="step-container" *ngIf='recipe && recipe.youtubeUrl && !error'>
   <figure class="image is-16by9">

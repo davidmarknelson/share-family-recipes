@@ -140,11 +140,10 @@ describe('Recipe edit', () => {
         .get('.page-header__title').should('contain', 'Tasty food');
     });
 
-    it('should remove the original recipe and youtube url from the database when the inputs are cleared', () => {
+    it('should remove the youtube url from the database when the inputs are cleared', () => {
       cy
         .visit('/recipes/1')
         .get('.page-header__title').should('contain', 'Chicken and fries')
-        .get('[data-test=originalRecipeUrl]').should('exist')
         .get('[data-test=youtubeUrl]').should('exist')
         .visit('/create/edit?recipe=1')
         .url().should('include', '/create/edit?recipe=1')
@@ -156,7 +155,6 @@ describe('Recipe edit', () => {
         .get('.notification').invoke('text')
         .should('contain', 'Recipe successfully updated.')
         .get('.page-header__title').should('contain', 'Chicken and fries')
-        .get('[data-test=originalRecipeUrl]').should('not.exist')
         .get('[data-test=youtubeUrl]').should('not.exist');
     });
 
@@ -169,21 +167,6 @@ describe('Recipe edit', () => {
         .get('[data-test=submit-button]').click()
         .url().should('include', '/create/edit?recipe=1')
         .get('[data-test=formErrorMsg]').should('contain', 'There was an error with your YouTube link.');
-    });
-
-    it('should not add an extra http at the beginning of the originalRecipeUrl', () => {
-      cy
-        .visit('/create/edit?recipe=1')
-        .url().should('include', '/create/edit?recipe=1')
-        .wait(1000)
-        .get('#originalRecipeUrl').clear().type('http://example.com')
-        .get('[data-test=submit-button]').click()
-        .url().should('include', '/recipes/1')
-        .get('.notification').invoke('text')
-        .should('contain', 'Recipe successfully updated.')
-        .get('.page-header__title').should('contain', 'Chicken and fries')
-        .get('[data-test=originalRecipeUrl] > p > a')
-        .should('contain', 'http://example.com');
     });
   });
 
