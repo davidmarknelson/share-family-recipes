@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 // Toast
 import { toast } from 'bulma-toast';
 // Services
+import { Recipe } from '../../utilities/services/recipe/recipe';
 import { SavedRecipesService } from '../../utilities/services/saved-recipes/saved-recipes.service';
 import { UserDecodedToken } from '../../utilities/services/auth/user-decoded-token';
 @Component({
@@ -14,7 +15,7 @@ import { UserDecodedToken } from '../../utilities/services/auth/user-decoded-tok
 export class SavedRecipeButtonComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   @Input() user: UserDecodedToken;
-  @Input() recipeId: number;
+  @Input() recipe: Recipe;
   isRecipeSaved: boolean;
 
   constructor(private savedRecipesService: SavedRecipesService) { }
@@ -33,13 +34,13 @@ export class SavedRecipeButtonComponent implements OnInit, OnDestroy {
       return this.errorToast('You must be signed in to do that.');
     }
 
-    for (let i = 0; i < this.user.savedRecipes.length; i++) {
-      if (this.recipeId === this.user.savedRecipes[i].mealId) {
-        return this.savedRecipesService.unsaveRecipe(this.recipeId).pipe(
+    for (let i = 0; i < this.recipe.savedRecipes.length; i++) {
+      if (this.recipe.savedRecipes[i].userId === this.user.id) {
+        return this.savedRecipesService.unsaveRecipe(this.recipe.id).pipe(
           takeUntil(this.ngUnsubscribe)
         ).subscribe(res => {
-          // remove recipeId for change detection
-          this.user.savedRecipes.splice(i, 1);
+          // remove userId for change detection
+          this.recipe.savedRecipes.splice(i, 1);
 
           // This removes the highlight from the saved button
           this.isRecipeSaved = false;
@@ -49,11 +50,11 @@ export class SavedRecipeButtonComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.savedRecipesService.saveRecipe(this.recipeId).pipe(
+    this.savedRecipesService.saveRecipe(this.recipe.id).pipe(
       takeUntil(this.ngUnsubscribe)
     ).subscribe(res => {
       // add recipeId for change detection
-      this.user.savedRecipes.unshift({ mealId: this.recipeId});
+      this.recipe.savedRecipes.unshift({ userId: this.user.id});
 
       // This adds the highlight from the saved button
       this.isRecipeSaved = true;
@@ -78,8 +79,8 @@ export class SavedRecipeButtonComponent implements OnInit, OnDestroy {
   // This checks savedMeals when the page loads
   checkSaved() {
     if (this.user) {
-      for (let saved of this.user.savedRecipes) {
-        if (saved.mealId === this.recipeId) {
+      for (let saved of this.recipe.savedRecipes) {
+        if (saved.userId === this.user.id) {
           this.isRecipeSaved = true;
         }
       }

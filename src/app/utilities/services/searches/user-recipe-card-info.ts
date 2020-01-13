@@ -15,6 +15,7 @@ export interface UserRecipeCardInfo {
     },
     creatorId?: number,
     likes?: Array<{userId: number}>,
+    savedRecipes?: Array<{userId: number}>,
     name?: string,
     description?: string,
     cookTime?: number,

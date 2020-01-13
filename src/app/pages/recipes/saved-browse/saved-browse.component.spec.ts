@@ -51,6 +51,7 @@ const recipesObj: UserRecipeCardInfo = {
         username: 'johndoe'
       },
       likes: [],
+      savedRecipes: [],
       description: 'An easy rice recipe',
       cookTime: 10,
       difficulty: 1,

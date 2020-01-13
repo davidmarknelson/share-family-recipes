@@ -11,6 +11,7 @@ export interface Recipe {
   },
   creatorId?: number,
   likes?: Array<{userId: number}>,
+  savedRecipes?: Array<{userId: number}>,
   name?: string,
   description?: string,
   ingredients?: Array<string>,

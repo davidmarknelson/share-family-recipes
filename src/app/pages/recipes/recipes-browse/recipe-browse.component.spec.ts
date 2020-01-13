@@ -52,6 +52,7 @@ const recipesObj = {
       creator: {
         username: 'johndoe'
       },
+      savedRecipes: [],
       likes: [],
       description: 'An easy rice recipe',
       cookTime: 10,

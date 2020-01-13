@@ -27,6 +27,7 @@ const recipeObj = {
   cookTime: 20,
   difficulty: 1,
   likes: [],
+  savedRecipes: [],
   mealPic: { 
     mealPicName: "../../../assets/images/default-img/default-meal-pic.jpg" 
   },

@@ -11,13 +11,41 @@ const userObj = {
   id: 1,
   isAdmin: false,
   username: "johndoe",
-  savedRecipes: [
-    { mealId: 1 }
-  ],
   iat: 1575496172,
   exp: 2180296172
 };
 
+const recipeObj = {
+  id: 1,
+  name: "Eggs and Rice",
+  description: "A delicious and easy dish.",
+  creatorId: 1,
+  creator: { 
+    username: "johndoe", 
+    profilePic: {
+      profilePicName: "../../../assets/images/default-img/default-profile-pic.jpg"
+    } 
+  },
+  ingredients: [ "3 eggs", "rice", "vegetables" ],
+  instructions: [ "cooks eggs", "cook rice", "mix and serve" ],
+  cookTime: 20,
+  difficulty: 1,
+  likes: [],
+  savedRecipes: [],
+  mealPic: { 
+    mealPicName: "../../../assets/images/default-img/default-meal-pic.jpg" 
+  },
+  createdAt: "Dec 04, 2019",
+  updatedAt: "Dec 04, 2019",
+};
+
+let fixture: ComponentFixture<SavedRecipeButtonComponent>;
+let saveBtn: DebugElement;
+
+function selectElements() {
+  saveBtn = fixture.debugElement.query(By.css('.button'));
+
+}
 class MockSavedRecipesService {
   saveRecipe() {
     return of();
@@ -30,7 +58,6 @@ class MockSavedRecipesService {
 describe('SavedRecipeButtonComponent', () => {
   let component: SavedRecipeButtonComponent;
   let savedRecipesService: SavedRecipesService
-  let fixture: ComponentFixture<SavedRecipeButtonComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -52,7 +79,7 @@ describe('SavedRecipeButtonComponent', () => {
   });
 
   it('should create', () => {
-    component.recipeId = 1;
+    component.recipe = recipeObj;
     component.user = userObj;
     fixture.detectChanges();
 
@@ -61,11 +88,12 @@ describe('SavedRecipeButtonComponent', () => {
 
   describe('signed in user', () => {
     beforeEach(() => {
-      component.recipeId = 1;
+      component.recipe = recipeObj;
       component.user = userObj;
       spyOn(component, 'checkSaved');
 
       fixture.detectChanges();
+      selectElements();
     });
 
     it('should call checkSaved when the page loads', () => {
@@ -73,9 +101,21 @@ describe('SavedRecipeButtonComponent', () => {
     });
 
     it('should unsave a recipe', () => {
-      let saveBtn: DebugElement = fixture.debugElement.query(By.css('.button'));
-
       spyOn(component, 'toggleSaveRecipes').and.callThrough();
+      spyOn(savedRecipesService, 'saveRecipe').and.callFake(() => {
+        return of({
+          message: 'Recipe successfully saved.'
+        })
+      });
+
+      saveBtn.nativeElement.click();
+
+      fixture.detectChanges();
+      selectElements();
+
+      expect(saveBtn.nativeElement.innerText).toContain('Saved');
+      expect(savedRecipesService.saveRecipe).toHaveBeenCalled();
+
       spyOn(savedRecipesService, 'unsaveRecipe').and.callFake(() => {
         return of({
           message: 'Recipe successfully unsaved.'
@@ -83,27 +123,16 @@ describe('SavedRecipeButtonComponent', () => {
       });
 
       saveBtn.nativeElement.click();
-
       fixture.detectChanges();
-
-      expect(component.toggleSaveRecipes).toHaveBeenCalled();
+      selectElements();
+      
+      expect(saveBtn.nativeElement.innerText).toContain('Save');
+      expect(component.toggleSaveRecipes).toHaveBeenCalledTimes(2);
       expect(savedRecipesService.unsaveRecipe).toHaveBeenCalled();
     });
 
     it('should save a recipe', () => {
-      let saveBtn: DebugElement = fixture.debugElement.query(By.css('.button'));
-
       spyOn(component, 'toggleSaveRecipes').and.callThrough();
-      spyOn(savedRecipesService, 'unsaveRecipe').and.callFake(() => {
-        return of({
-          message: 'Recipe successfully unsaved.'
-        })
-      });
-
-      saveBtn.nativeElement.click();
-
-      fixture.detectChanges();
-
       spyOn(savedRecipesService, 'saveRecipe').and.callFake(() => {
         return of({
           message: 'Recipe successfully saved.'
@@ -114,24 +143,23 @@ describe('SavedRecipeButtonComponent', () => {
 
       fixture.detectChanges();
 
-      expect(component.toggleSaveRecipes).toHaveBeenCalledTimes(2);
+      expect(component.toggleSaveRecipes).toHaveBeenCalled();
       expect(savedRecipesService.saveRecipe).toHaveBeenCalled();
     });
   });
 
   describe('user not signed in', () => {
     beforeEach(() => {
-      component.recipeId = 1;
+      component.recipe = recipeObj;
       component.user = null;
       spyOn(component, 'checkSaved');
       spyOn(component, 'errorToast');
 
       fixture.detectChanges();
+      selectElements();
     });
 
     it('should not call saved recipe service', () => {
-      let saveBtn: DebugElement = fixture.debugElement.query(By.css('.button'));
-
       spyOn(component, 'toggleSaveRecipes').and.callThrough();
       spyOn(savedRecipesService, 'saveRecipe');
 
