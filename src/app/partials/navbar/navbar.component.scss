@@ -1,7 +1,5 @@
 .transition {
-  transition: 
-    background-color 300ms,
-    color 300ms;
+  transition: background-color 300ms, color 300ms;
 }
 
 .center-btn {
@@ -22,15 +20,23 @@
     width: 100%;
   }
 
+  &__is-open {
+    background-color: #629b66;
+  }
+
+  &__is-open:hover {
+    background-color: #48834c;
+  }
+
   &__submit-btn {
-    background-color: #11672C;
+    background-color: #11672c;
     border: none;
-    color: #FFF;
+    color: #fff;
     border-radius: 0 30px 30px 0 !important;
-  
+
     &:hover {
       background-color: #114910;
-      color: #FFF;
+      color: #fff;
     }
   }
 
@@ -55,7 +61,7 @@
     margin-top: 5px;
     border-radius: 15px;
     border: 1px solid #b5b5b5;
-    background-color: #FFF;
+    background-color: #fff;
     overflow: hidden;
   }
 
@@ -67,7 +73,7 @@
   }
 
   &--highlighted {
-    background-color: #11672C;
+    background-color: #11672c;
     color: #fff;
   }
 
