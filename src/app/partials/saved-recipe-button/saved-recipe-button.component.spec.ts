@@ -102,19 +102,7 @@ describe('SavedRecipeButtonComponent', () => {
 
     it('should unsave a recipe', () => {
       spyOn(component, 'toggleSaveRecipes').and.callThrough();
-      spyOn(savedRecipesService, 'saveRecipe').and.callFake(() => {
-        return of({
-          message: 'Recipe successfully saved.'
-        })
-      });
-
-      saveBtn.nativeElement.click();
-
-      fixture.detectChanges();
-      selectElements();
-
-      expect(saveBtn.nativeElement.innerText).toContain('Saved');
-      expect(savedRecipesService.saveRecipe).toHaveBeenCalled();
+      component.recipe.savedRecipes = [{userId: 1}];
 
       spyOn(savedRecipesService, 'unsaveRecipe').and.callFake(() => {
         return of({
@@ -127,11 +115,12 @@ describe('SavedRecipeButtonComponent', () => {
       selectElements();
       
       expect(saveBtn.nativeElement.innerText).toContain('Save');
-      expect(component.toggleSaveRecipes).toHaveBeenCalledTimes(2);
+      expect(component.toggleSaveRecipes).toHaveBeenCalledTimes(1);
       expect(savedRecipesService.unsaveRecipe).toHaveBeenCalled();
     });
 
     it('should save a recipe', () => {
+      component.recipe.savedRecipes = [];
       spyOn(component, 'toggleSaveRecipes').and.callThrough();
       spyOn(savedRecipesService, 'saveRecipe').and.callFake(() => {
         return of({

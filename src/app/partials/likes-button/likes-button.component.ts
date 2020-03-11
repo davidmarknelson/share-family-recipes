@@ -88,8 +88,6 @@ export class LikesButtonComponent implements OnInit, OnDestroy {
       for (let like of this.recipe.likes) {
         if (like.userId === this.user.id) {
           this.isRecipeLiked = true;
-        } else {
-          this.isRecipeLiked = false;
         }
       }
     }

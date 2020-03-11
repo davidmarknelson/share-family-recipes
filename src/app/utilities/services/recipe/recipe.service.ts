@@ -27,8 +27,6 @@ export class RecipeService {
   }
 
   checkRecipeNameAvailability(name: string): Observable<any>  {
-    name = name.replace(' ', '%20');
-
     return this.http.get<any>(`${this.apiUrl}meals/available-names`, { params: {
       name: name
     }});
@@ -49,8 +47,6 @@ export class RecipeService {
   }
 
   getRecipeByName(name: string): Observable<Recipe> {
-    name = name.replace(' ', '%20');
-
     return this.http.get<Recipe>(`${this.apiUrl}meals/meal-by-name`, { params: {
       name: name
     }}).pipe(
