@@ -308,6 +308,20 @@ describe('SearchesService', () => {
       http.verify();
     });
 
+    it('should return an array of recipes and encode the username', () => {
+      let signupResponse = recipesObj;
+
+      let response;
+      searchesService.byUsernameAtoZ(0, 10, 'johndoe#1').subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/search/byuser-a-z?offset=0&limit=10&username=johndoe%231')
+        .flush(signupResponse, {status: 200, statusText: 'OK'});
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
     it('should return a 404 status if there are no recipes', () => {
       let signupResponse = 'There are no recipes.';
 
@@ -338,6 +352,20 @@ describe('SearchesService', () => {
       http.verify();
     });
 
+    it('should return an array of recipes and encode the username', () => {
+      let signupResponse = recipesObj;
+
+      let response;
+      searchesService.byUsernameZtoA(0, 10, 'johndoe#1').subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/search/byuser-z-a?offset=0&limit=10&username=johndoe%231')
+        .flush(signupResponse, {status: 200, statusText: 'OK'});
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
     it('should return a 404 status if there are no recipes', () => {
       let signupResponse = 'There are no recipes.';
 
@@ -363,6 +391,20 @@ describe('SearchesService', () => {
       });
 
       http.expectOne('http://localhost:3000/search/name?limit=10&name=rice')
+        .flush(signupResponse, {status: 200, statusText: 'OK'});
+      expect(response).toEqual(signupResponse);
+      http.verify();
+    });
+
+    it('should return an array of recipes and encode the username', () => {
+      let signupResponse = recipesObj;
+
+      let response;
+      searchesService.recipesByName('rice#1', 10).subscribe(res => {
+        response = res;
+      });
+
+      http.expectOne('http://localhost:3000/search/name?limit=10&name=rice%231')
         .flush(signupResponse, {status: 200, statusText: 'OK'});
       expect(response).toEqual(signupResponse);
       http.verify();

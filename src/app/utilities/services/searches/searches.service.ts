@@ -118,10 +118,11 @@ export class SearchesService {
   }
 
   byUsernameAtoZ(offset, limit, username: string): Observable<RecipeCardInfo> {
+    let encodedName = encodeURIComponent(username);
     return this.http.get<RecipeCardInfo>(`${this.apiUrl}search/byuser-a-z`, { params: {
       offset: offset,
       limit: limit,
-      username: username
+      username: decodeURIComponent(encodedName)
     }}).pipe(
       map((res: RecipeCardInfo) => {
         this.loopResposeItems(res);
@@ -131,10 +132,11 @@ export class SearchesService {
   }
 
   byUsernameZtoA(offset, limit, username: string): Observable<RecipeCardInfo> {
+    let encodedName = encodeURIComponent(username);
     return this.http.get<RecipeCardInfo>(`${this.apiUrl}search/byuser-z-a`, { params: {
       offset: offset,
       limit: limit,
-      username: username
+      username: decodeURIComponent(encodedName)
     }}).pipe(
       map((res: RecipeCardInfo) => {
         this.loopResposeItems(res);
@@ -144,9 +146,10 @@ export class SearchesService {
   }
 
   recipesByName(name: string, limit): Observable<Array<AutocompleteItems>> {
+    let encodedName = encodeURIComponent(name);
     return this.http.get<Array<AutocompleteItems>>(`${this.apiUrl}search/name`, { params: {
       limit: limit,
-      name: name
+      name: decodeURIComponent(encodedName)
     }});
   }
 

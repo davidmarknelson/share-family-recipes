@@ -60,7 +60,7 @@ export class NavbarComponent implements OnInit {
   }
 
   goToYourRecipes() {
-    let userName = this.auth.currentUser().username;
+    let userName = encodeURIComponent(this.auth.currentUser().username);
 
     this.router.navigateByUrl(`/recipes/user-recipes?username=${userName}`);
   }

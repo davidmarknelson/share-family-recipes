@@ -114,6 +114,8 @@ export class RecipeViewComponent implements OnInit, OnDestroy {
   }
 
   goToUsersRecipes(username) {
-    this.router.navigateByUrl(`/recipes/user-recipes?username=${username}`);
+    let encodedUsername = encodeURIComponent(username);
+    
+    this.router.navigateByUrl(`/recipes/user-recipes?username=${encodedUsername}`);
   }
 }

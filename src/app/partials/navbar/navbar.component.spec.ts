@@ -24,6 +24,7 @@ let searchContainer: DebugElement;
 let searchInput: DebugElement;
 let searchSubmitBtn: DebugElement;
 let searchItemsContainer: DebugElement;
+let yourRecipesLink: DebugElement;
 let searchItems;
 
 function selectElements() {
@@ -43,12 +44,13 @@ function selectElements() {
     By.css(".search__items-container")
   );
   searchItems = fixture.debugElement.queryAll(By.css(".search__items"));
+  yourRecipesLink = fixture.debugElement.query(By.css("[data-test=navbar-your-recipes]"));
 }
 
 const user = {
   id: 1,
   isAdmin: true,
-  username: "johndoe",
+  username: "johndoe#1",
   savedRecipes: []
 };
 
@@ -80,7 +82,6 @@ class MockAuthService {
     return of();
   }
   currentUser() {
-    return of();
   }
 }
 
@@ -158,6 +159,19 @@ describe("NavbarComponent", () => {
       expect(logoutBtn).toBeTruthy();
       expect(loginBtn).toBeFalsy();
       expect(signupBtn).toBeFalsy();
+    });
+
+    it("should navigate to user created list with an encoded username in the url", () => {
+      spyOn(authService, 'currentUser').and.returnValue(user);
+      spyOn(router, "navigateByUrl");
+      spyOn(component, 'goToYourRecipes').and.callThrough()
+
+      yourRecipesLink.nativeElement.click()
+      fixture.detectChanges();
+
+      expect(component.goToYourRecipes).toHaveBeenCalled();
+      expect(authService.currentUser).toHaveBeenCalled();
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/recipes/user-recipes?username=johndoe%231');
     });
   });
 

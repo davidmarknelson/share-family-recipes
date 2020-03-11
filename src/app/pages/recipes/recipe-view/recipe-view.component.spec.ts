@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
-
+import { Router } from "@angular/router";
 import { RecipeViewComponent } from './recipe-view.component';
 import { RecipesModule } from '../recipes.module';
 import { ActivatedRoute} from '@angular/router';
@@ -43,7 +43,7 @@ const recipe2Obj = {
   description: "A delicious and easy dish.",
   creatorId: 1,
   creator: { 
-    username: "johndoe", 
+    username: "johndoe#1", 
     profilePic: {
       profilePicName: "../../../assets/images/default-img/default-profile-pic.jpg"
     } 
@@ -98,10 +98,16 @@ class MockAuthService {
   currentUser() {}
 }
 
+class MockRouter {
+  navigate(path) {}
+  navigateByUrl(path) {}
+}
+
 describe('RecipeViewComponent', () => {
   let component: RecipeViewComponent;
   let authService: AuthService;
   let activatedRoute: ActivatedRoute;
+  let router: Router;
   let recipeService: RecipeService;
   let fixture: ComponentFixture<RecipeViewComponent>;
 
@@ -123,6 +129,7 @@ describe('RecipeViewComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RecipeViewComponent);
     component = fixture.componentInstance;
+    router = fixture.debugElement.injector.get(Router);
     authService = fixture.debugElement.injector.get(AuthService);
     recipeService = fixture.debugElement.injector.get(RecipeService);
     activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
@@ -251,6 +258,27 @@ describe('RecipeViewComponent', () => {
 
       expect(title.nativeElement.innerText).toEqual('Eggs and Rice');
       expect(editBtn).toBeFalsy();
+    });
+
+    it('should call navigateByUrl with an encoded username when the creator username is clicked', () => {
+      recipeItem = '1';
+
+      spyOn(component, 'getRecipeById').and.callThrough();
+      spyOn(recipeService, 'getRecipeById').and.callFake(() => {
+        return of(recipe2Obj);        
+      });
+
+      fixture.detectChanges();
+
+      spyOn(router, "navigateByUrl");
+      spyOn(component, 'goToUsersRecipes').and.callThrough()
+
+      let usernameLink: DebugElement = fixture.debugElement.query(By.css('[data-test=username-link]'));
+      usernameLink.nativeElement.click()
+      fixture.detectChanges();
+
+      expect(component.goToUsersRecipes).toHaveBeenCalled();
+      expect(router.navigateByUrl).toHaveBeenCalledWith('/recipes/user-recipes?username=johndoe%231');
     });
   });
 });

@@ -1,4 +1,4 @@
-describe('Recipe Browse', () => {
+describe('Recipe User Browse', () => {
   before(() => {
     Cypress.config('baseUrl', 'http://localhost:4200');
   });
@@ -59,6 +59,28 @@ describe('Recipe Browse', () => {
         .get('[data-test=amount-select]').should('contain', 'Show 18')
         .get('[data-test=amount-select]').select('Show 9').wait(1000)
         .get('[data-test=amount-select]').should('contain', 'Show 9');
+    });
+  });
+
+  describe("a user recipe with unsafe username", () => {
+    beforeEach(() => {
+      cy.request("DELETE", "http://localhost:3000/tests/delete")
+        .request("POST", "http://localhost:3000/tests/seed-unsafe-username")
+        .request('POST', 'http://localhost:3000/tests/seedmeal');
+    });
+
+    it("should navigate to user recipes with encoded username in the url by clicking on recipe card username link", () => {
+      cy.visit('/recipes')
+        .url().should('include', '/recipes')
+        .get('[data-test=user-recipe-link]').first().click()
+        .url().should('include', '/recipes/user-recipes?username=verifiedUser%232');
+    });
+
+    it("should navigate to user recipes with encoded username in the url by clicking on recipe page username link", () => {
+      cy.visit('/recipes/1')
+        .url().should('include', '/recipes/1')
+        .get('[data-test=username-link]').first().click()
+        .url().should('include', '/recipes/user-recipes?username=verifiedUser%232');
     });
   });
 

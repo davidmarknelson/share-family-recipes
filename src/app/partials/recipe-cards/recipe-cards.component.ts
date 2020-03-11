@@ -28,6 +28,8 @@ export class RecipeCardsComponent implements OnInit {
   }
 
   goToUsersRecipes(username) {
-    this.router.navigateByUrl(`/recipes/user-recipes?username=${username}`);
+    let encodedUsername = encodeURIComponent(username);
+
+    this.router.navigateByUrl(`/recipes/user-recipes?username=${encodedUsername}`);
   }
 }

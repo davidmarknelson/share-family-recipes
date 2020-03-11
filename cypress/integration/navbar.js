@@ -43,6 +43,23 @@ describe("Navbar", () => {
     });
   });
 
+  describe("a user who is logged in with unsafe username", () => {
+    beforeEach(() => {
+      cy.request("DELETE", "http://localhost:3000/tests/delete")
+        .request("POST", "http://localhost:3000/tests/seed-unsafe-username")
+        .login("verifiedtwo@email.com", "password");
+    });
+
+    it("should navigate to your recipes with encoded username in the url", () => {
+      cy.get("[data-target=navbarMenu]")
+        .click()
+        .get("[data-test=navbar-your-recipes]")
+        .click()
+        .url()
+        .should("include", "/recipes/user-recipes?username=verifiedUser%232");
+    });
+  });
+
   describe("searchbar", () => {
     beforeEach(() => {
       cy.request("DELETE", "http://localhost:3000/tests/delete")

@@ -17,7 +17,7 @@ const recipesObj = {
         mealPicName: 'picture.jpeg'
       },
       creator: {
-        username: 'johndoe'
+        username: 'johndoe#1'
       },
       likes: [],
       description: 'An easy rice recipe',
@@ -31,6 +31,7 @@ const recipesObj = {
 
 class MockRouter {
   navigate(path) {}
+  navigateByUrl(path) {}
 }
 
 describe('RecipeCardsComponent', () => {
@@ -74,5 +75,17 @@ describe('RecipeCardsComponent', () => {
 
     expect(component.goToRecipe).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/recipes/1']);
+  });
+
+  it('should call navigateByUrl with an encoded username when the creator username is clicked', () => {
+    spyOn(router, "navigateByUrl");
+    spyOn(component, 'goToUsersRecipes').and.callThrough()
+
+    let usernameLink: DebugElement = fixture.debugElement.query(By.css('[data-test=user-recipe-link]'));
+    usernameLink.nativeElement.click()
+    fixture.detectChanges();
+
+    expect(component.goToUsersRecipes).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/recipes/user-recipes?username=johndoe%231');
   });
 });

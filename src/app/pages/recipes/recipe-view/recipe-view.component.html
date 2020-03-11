@@ -38,7 +38,14 @@
           alt="image of {{ recipe.creator.username }}"
           class='is-rounded'>
       </figure>
-      <p>Created {{ recipe.createdAt }} by <a (click)='goToUsersRecipes(recipe.creator.username)'>{{ recipe.creator.username }}</a>.</p>    
+      <p>Created {{ recipe.createdAt }} by 
+        <a 
+          data-test="username-link"
+          (click)='goToUsersRecipes(recipe.creator.username)'>
+          {{ recipe.creator.username }}
+        </a>
+        .
+      </p>    
     </div>
   </div>
 </div>
