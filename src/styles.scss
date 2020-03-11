@@ -155,26 +155,8 @@ html, body {
     margin-right: auto;
   }
 
-  &__title::before {
-    content: '';
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background-color: $secondary;
-    margin-right: 10px;
-    margin-bottom: -2px;
-  }
-
-  &__title::after {
-    content: '';
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background-color: $secondary;
-    margin-left: 10px;
-    margin-bottom: -2px;
+  &__title {
+    color: $secondary-dark;
   }
 }
 
