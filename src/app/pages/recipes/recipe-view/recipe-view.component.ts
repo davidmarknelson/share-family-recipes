@@ -7,6 +7,8 @@ import {
   switchMap,
   catchError,
   distinctUntilChanged,
+  mergeMap,
+  retryWhen,
 } from "rxjs/operators";
 // Services
 import { RecipeService } from "@utilities/services/recipe/recipe.service";
@@ -48,23 +50,27 @@ export class RecipeViewComponent implements OnInit {
     }
   }
 
-  getRecipe$: Observable<Recipe> = this.route.params.pipe(
+  getRecipe$: Observable<Recipe | { message: string }> = this.route.params.pipe(
     map((param) => param["recipe"]),
     distinctUntilChanged(),
     switchMap((param) =>
       iif(
         () => !!Number(param),
-        this.recipeService
-          .getRecipeById(param)
-          .pipe(tap(() => this.returnUserObj())),
-        this.recipeService
-          .getRecipeByName(param)
-          .pipe(tap(() => this.returnUserObj()))
+        this.recipeService.getRecipeById(param).pipe(
+          tap(() => this.returnUserObj()),
+          catchError((err) => {
+            this.error = err.error.message;
+            return of(err.error.message);
+          })
+        ),
+        this.recipeService.getRecipeByName(param).pipe(
+          tap(() => this.returnUserObj()),
+          catchError((err) => {
+            this.error = err.error.message;
+            return of(err.error.message);
+          })
+        )
       )
-    ),
-    catchError((err) => {
-      this.error = err.error.message;
-      return of();
-    })
+    )
   );
 }
