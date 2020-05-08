@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { DebugElement } from "@angular/core";
-import { Router } from "@angular/router";
 import { RecipeViewComponent } from "./recipe-view.component";
 import { RecipesModule } from "../recipes.module";
 import { ActivatedRoute } from "@angular/router";
@@ -10,66 +9,24 @@ import { of, throwError, Observable } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TestingObjects } from "@testUtilities/testingObjects";
 
-const recipeObj = {
-  id: 1,
-  name: "Eggs and Rice",
-  description: "A delicious and easy dish.",
-  creatorId: 1,
-  creator: {
-    username: "johndoe",
-    profilePic: {
-      profilePicName:
-        "../../../assets/images/default-img/default-profile-pic.jpg",
-    },
-  },
-  ingredients: ["3 eggs", "rice", "vegetables"],
-  instructions: ["cooks eggs", "cook rice", "mix and serve"],
-  cookTime: 20,
-  difficulty: 1,
-  likes: [],
-  savedRecipes: [],
-  mealPic: {
-    mealPicName: "../../../assets/images/default-img/default-meal-pic.jpg",
-  },
-  createdAt: "Dec 04, 2019",
-  updatedAt: "Dec 04, 2019",
-  originalRecipeUrl: "http://www.originalrecipe.com",
-  youtubeUrl: "https://www.youtube-nocookie.com/embed/MV0F_XiR48Q",
-};
+// This holds objects used in tests.
+const testingObj = new TestingObjects();
 
-const recipe2Obj = {
-  id: 1,
-  name: "Eggs and Rice",
-  description: "A delicious and easy dish.",
-  creatorId: 1,
-  creator: {
-    username: "johndoe#1",
-    profilePic: {
-      profilePicName:
-        "../../../assets/images/default-img/default-profile-pic.jpg",
-    },
-  },
-  ingredients: ["3 eggs", "rice", "vegetables"],
-  instructions: ["cooks eggs", "cook rice", "mix and serve"],
-  cookTime: 20,
-  difficulty: 1,
-  likes: [],
-  mealPic: {
-    mealPicName: "../../../assets/images/default-img/default-meal-pic.jpg",
-  },
-  createdAt: "Dec 04, 2019",
-  updatedAt: "Dec 04, 2019",
-};
+// These 2 sections are used to select elements in tests.
+let fixture: ComponentFixture<RecipeViewComponent>;
+let errorMsg: DebugElement;
+let title: DebugElement;
+let editBtn: DebugElement;
+let iframeVideo: DebugElement;
 
-const userObj = {
-  id: 1,
-  isAdmin: false,
-  username: "johndoe",
-  savedRecipes: [],
-  iat: 1575496172,
-  exp: 2180296172,
-};
+function selectElements() {
+	errorMsg = fixture.debugElement.query(By.css(".message-body"));
+	title = fixture.debugElement.query(By.css(".page-header__title"));
+	editBtn = fixture.debugElement.query(By.css("[data-test=edit-btn]"));
+	iframeVideo = fixture.debugElement.query(By.css("iframe"));
+}
 
 // This allows the recipe to be changed in the tests to
 // make it a number or a string.
@@ -77,197 +34,165 @@ const userObj = {
 let recipeItem;
 
 class MockActivatedRoute {
-  params = new Observable((observer) => {
-    const recipe = {
-      recipe: recipeItem, // declared above
-    };
-    observer.next(recipe);
-    observer.complete();
-  });
+	params = new Observable(observer => {
+		const recipe = {
+			recipe: recipeItem, // declared above
+		};
+		observer.next(recipe);
+		observer.complete();
+	});
 }
 
 class MockRecipeService {
-  getRecipeByName(name) {
-    return of();
-  }
-  getRecipeById(id) {
-    return of();
-  }
+	getRecipeByName(name) {
+		return of();
+	}
+	getRecipeById(id) {
+		return of();
+	}
 }
 
 class MockAuthService {
-  isLoggedIn() {}
-  currentUser() {}
+	isLoggedIn() {}
+	currentUser() {}
 }
 
-fdescribe("RecipeViewComponent", () => {
-  let component: RecipeViewComponent;
-  let authService: AuthService;
-  let activatedRoute: ActivatedRoute;
-  let recipeService: RecipeService;
-  let fixture: ComponentFixture<RecipeViewComponent>;
+describe("RecipeViewComponent", () => {
+	let component: RecipeViewComponent;
+	let authService: AuthService;
+	let activatedRoute: ActivatedRoute;
+	let recipeService: RecipeService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [RecipesModule, RouterTestingModule, HttpClientTestingModule],
-    })
-      .overrideComponent(RecipeViewComponent, {
-        set: {
-          providers: [
-            { provide: RecipeService, useClass: MockRecipeService },
-            { provide: ActivatedRoute, useClass: MockActivatedRoute },
-            { provide: AuthService, useClass: MockAuthService },
-          ],
-        },
-      })
-      .compileComponents();
-  }));
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			imports: [RecipesModule, RouterTestingModule, HttpClientTestingModule],
+		})
+			.overrideComponent(RecipeViewComponent, {
+				set: {
+					providers: [
+						{ provide: RecipeService, useClass: MockRecipeService },
+						{ provide: ActivatedRoute, useClass: MockActivatedRoute },
+						{ provide: AuthService, useClass: MockAuthService },
+					],
+				},
+			})
+			.compileComponents();
+	}));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(RecipeViewComponent);
-    component = fixture.componentInstance;
-    authService = fixture.debugElement.injector.get(AuthService);
-    recipeService = fixture.debugElement.injector.get(RecipeService);
-    activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(RecipeViewComponent);
+		component = fixture.componentInstance;
+		authService = fixture.debugElement.injector.get(AuthService);
+		recipeService = fixture.debugElement.injector.get(RecipeService);
+		activatedRoute = fixture.debugElement.injector.get(ActivatedRoute);
+	});
 
-  it("should create", () => {
-    recipeItem = "1";
+	it("should create", () => {
+		recipeItem = "1";
 
-    fixture.detectChanges();
+		fixture.detectChanges();
 
-    expect(component).toBeTruthy();
-  });
+		expect(component).toBeTruthy();
+	});
 
-  describe("error", () => {
-    it("should show an error message with the recipe id when the recipe does not exist", () => {
-      recipeItem = "1";
+	describe("error", () => {
+		it("should show an error message with the recipe id when the recipe does not exist", () => {
+			recipeItem = "1";
 
-      spyOn(recipeService, "getRecipeById").and.callFake(() => {
-        return throwError({
-          error: {
-            message: "That meal does not exist.",
-          },
-        });
-      });
+			spyOn(recipeService, "getRecipeById").and.callFake(() => {
+				return throwError({
+					error: {
+						message: "That meal does not exist.",
+					},
+				});
+			});
 
-      fixture.detectChanges();
+			fixture.detectChanges();
+			selectElements();
 
-      expect(recipeService.getRecipeById).toHaveBeenCalled();
+			expect(recipeService.getRecipeById).toHaveBeenCalled();
+			expect(errorMsg.nativeElement.innerText).toContain(
+				"That meal does not exist."
+			);
+		});
 
-      let errorMsg: DebugElement = fixture.debugElement.query(
-        By.css(".message-body")
-      );
+		it("should show an error message with the recipe name when the recipe does not exist", () => {
+			recipeItem = "eggs";
 
-      expect(errorMsg.nativeElement.innerText).toContain(
-        "That meal does not exist."
-      );
-    });
+			spyOn(recipeService, "getRecipeByName").and.callFake(() => {
+				return throwError({
+					error: {
+						message: "That meal does not exist.",
+					},
+				});
+			});
 
-    it("should show an error message with the recipe name when the recipe does not exist", () => {
-      recipeItem = "eggs";
+			fixture.detectChanges();
+			selectElements();
 
-      spyOn(recipeService, "getRecipeByName").and.callFake(() => {
-        return throwError({
-          error: {
-            message: "That meal does not exist.",
-          },
-        });
-      });
+			expect(recipeService.getRecipeByName).toHaveBeenCalled();
+			expect(errorMsg.nativeElement.innerText).toContain(
+				"That meal does not exist."
+			);
+		});
+	});
 
-      fixture.detectChanges();
+	describe("recipe", () => {
+		it("should populate the page with the information and show the edit button for the creator", () => {
+			recipeItem = "1";
 
-      expect(recipeService.getRecipeByName).toHaveBeenCalled();
+			spyOn(authService, "isLoggedIn").and.callFake(() => true);
+			spyOn(authService, "currentUser").and.callFake(() => {
+				return { ...testingObj.nonAdminObj };
+			});
 
-      let errorMsg: DebugElement = fixture.debugElement.query(
-        By.css(".message-body")
-      );
+			spyOn(recipeService, "getRecipeById").and.callFake(() => {
+				return of({ ...testingObj.recipeFullObj });
+			});
 
-      expect(errorMsg.nativeElement.innerText).toContain(
-        "That meal does not exist."
-      );
-    });
-  });
+			fixture.detectChanges();
+			selectElements();
 
-  describe("recipe", () => {
-    it("should populate the page with the information and show the edit button for the creator", () => {
-      recipeItem = "1";
+			expect(recipeService.getRecipeById).toHaveBeenCalled();
+			expect(title.nativeElement.innerText).toEqual("Eggs and Rice");
+			expect(editBtn).toBeTruthy();
+			expect(iframeVideo).toBeTruthy();
+		});
 
-      spyOn(authService, "isLoggedIn").and.callFake(() => true);
-      spyOn(authService, "currentUser").and.callFake(() => userObj);
+		it("should populate the page with the information and show the edit button for the creator and call getRecipeByName", () => {
+			recipeItem = "eggs";
 
-      spyOn(recipeService, "getRecipeById").and.callFake(() => {
-        return of({ ...recipeObj });
-      });
+			spyOn(authService, "isLoggedIn").and.callFake(() => true);
+			spyOn(authService, "currentUser").and.callFake(() => {
+				return { ...testingObj.nonAdminObj };
+			});
 
-      fixture.detectChanges();
+			spyOn(recipeService, "getRecipeByName").and.callFake(() => {
+				return of({ ...testingObj.recipeFullObj });
+			});
 
-      expect(recipeService.getRecipeById).toHaveBeenCalled();
+			fixture.detectChanges();
+			selectElements();
 
-      let title: DebugElement = fixture.debugElement.query(
-        By.css(".page-header__title")
-      );
-      let editBtn: DebugElement = fixture.debugElement.query(
-        By.css("[data-test=edit-btn]")
-      );
-      let iframeVideo: DebugElement = fixture.debugElement.query(
-        By.css("iframe")
-      );
+			expect(recipeService.getRecipeByName).toHaveBeenCalled();
+			expect(title.nativeElement.innerText).toEqual("Eggs and Rice");
+			expect(editBtn).toBeTruthy();
+			expect(iframeVideo).toBeTruthy();
+		});
 
-      expect(title.nativeElement.innerText).toEqual("Eggs and Rice");
-      expect(editBtn).toBeTruthy();
-      expect(iframeVideo).toBeTruthy();
-    });
+		it("should populate the page with the information and not show the edit button", () => {
+			recipeItem = "1";
 
-    it("should populate the page with the information and show the edit button for the creator and call getRecipeByName", () => {
-      recipeItem = "eggs";
+			spyOn(recipeService, "getRecipeById").and.callFake(() => {
+				return of({ ...testingObj.recipeFullObj });
+			});
 
-      spyOn(authService, "isLoggedIn").and.callFake(() => true);
-      spyOn(authService, "currentUser").and.callFake(() => userObj);
+			fixture.detectChanges();
+			selectElements();
 
-      spyOn(recipeService, "getRecipeByName").and.callFake(() => {
-        return of({ ...recipeObj });
-      });
-
-      fixture.detectChanges();
-
-      expect(recipeService.getRecipeByName).toHaveBeenCalled();
-
-      let title: DebugElement = fixture.debugElement.query(
-        By.css(".page-header__title")
-      );
-      let editBtn: DebugElement = fixture.debugElement.query(
-        By.css("[data-test=edit-btn]")
-      );
-      let iframeVideo: DebugElement = fixture.debugElement.query(
-        By.css("iframe")
-      );
-
-      expect(title.nativeElement.innerText).toEqual("Eggs and Rice");
-      expect(editBtn).toBeTruthy();
-      expect(iframeVideo).toBeTruthy();
-    });
-
-    it("should populate the page with the information and not show the edit button", () => {
-      recipeItem = "1";
-
-      spyOn(recipeService, "getRecipeById").and.callFake(() => {
-        return of({ ...recipe2Obj });
-      });
-
-      fixture.detectChanges();
-
-      expect(recipeService.getRecipeById).toHaveBeenCalled();
-
-      let title: DebugElement = fixture.debugElement.query(
-        By.css(".page-header__title")
-      );
-      let editBtn: DebugElement = fixture.debugElement.query(
-        By.css("[data-test=edit-btn]")
-      );
-
-      expect(title.nativeElement.innerText).toEqual("Eggs and Rice");
-      expect(editBtn).toBeFalsy();
-    });
-  });
+			expect(recipeService.getRecipeById).toHaveBeenCalled();
+			expect(title.nativeElement.innerText).toEqual("Eggs and Rice");
+			expect(editBtn).toBeFalsy();
+		});
+	});
 });

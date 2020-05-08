@@ -1,0 +1,203 @@
+// ==================
+// Bulma Variables
+// ==================
+
+// Color
+$primary: #bee0c0;
+$secondary: #11672c; // this color does not match with light grey or the primary color
+$secondary-dark: #114910;
+$accent: #ffff77;
+$dark-black: #232323;
+$light-black: #353535;
+$primary-invert: $dark-black;
+$warning-invert: $dark-black;
+
+// Typography
+$family-sans-serif: Arial, Helvetica, sans-serif;
+$family-secondary: "Fredoka One", cursive;
+$text: $dark-black;
+$title-color: $dark-black;
+$subtitle-color: $dark-black;
+
+// Navbar
+$navbar-background-color: $primary;
+$navbar-item-color: $dark-black;
+$navbar-item-hover-background-color: $secondary;
+$navbar-item-hover-color: #fff;
+
+// Pagination
+$pagination-current-background-color: $primary;
+$pagination-current-border-color: $primary;
+$pagination-current-color: $dark-black;
+
+// Modal card
+$modal-card-head-background-color: #fff;
+$modal-card-head-border-bottom: none;
+$modal-card-foot-border-top: none;
+
+// ==================
+// Bulma Imports
+// ==================
+@import "../../node_modules/bulma/sass/utilities/_all.sass";
+@import "../../node_modules/bulma/sass/base/_all.sass";
+@import "../../node_modules/bulma/sass/layout/_all.sass";
+@import "../../node_modules/bulma/sass/components/navbar.sass";
+@import "../../node_modules/bulma/sass/components/message.sass";
+@import "../../node_modules/bulma/sass/components/pagination.sass";
+@import "../../node_modules/bulma/sass/components/modal.sass";
+@import "../../node_modules/bulma/sass/components/card.sass";
+@import "../../node_modules/bulma/sass/elements/other.sass";
+@import "../../node_modules/bulma/sass/elements/button.sass";
+@import "../../node_modules/bulma/sass/elements/container.sass";
+@import "../../node_modules/bulma/sass/elements/title.sass";
+@import "../../node_modules/bulma/sass/elements/image.sass";
+@import "../../node_modules/bulma/sass/elements/icon.sass";
+@import "../../node_modules/bulma/sass/elements/notification.sass";
+@import "../../node_modules/bulma/sass/elements/progress.sass";
+@import "../../node_modules/bulma/sass/elements/table.sass";
+@import "../../node_modules/bulma/sass/elements/tag.sass";
+@import "../../node_modules/bulma/sass/grid/columns.sass";
+@import "../../node_modules/bulma/sass/form/shared.sass";
+@import "../../node_modules/bulma/sass/form/input-textarea.sass";
+@import "../../node_modules/bulma/sass/form/file.sass";
+@import "../../node_modules/bulma/sass/form/tools.sass";
+@import "../../node_modules/bulma/sass/form/select.sass";
+// Tool tip
+@import "../../node_modules/bulma-tooltip/src/sass/index.sass";
+
+// ==================
+// ==================
+// Global Styles
+// ==================
+// ==================
+
+// ==================
+// Sticky Footer
+// ==================
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
+
+.content-wrapper {
+	min-height: 100%;
+	// Equal to height of footer
+	// the footer is 544px with the margin
+	margin-bottom: -494px;
+}
+
+// This pushes the footer below the body content
+.push {
+	height: 494px;
+}
+
+// ==================
+// Button Styles
+// ==================
+.is-accent {
+	background-color: $accent;
+	border: none;
+
+	&:hover {
+		background-color: #f7f772;
+	}
+
+	// This changes the loading spinner to a darker color
+	&.is-loading::after {
+		border: 2px solid #232323;
+		border-right-color: transparent;
+		border-top-color: transparent;
+		content: "";
+	}
+}
+
+.is-secondary {
+	background-color: $secondary;
+	border: none;
+	color: #fff;
+
+	&:hover {
+		background-color: $secondary-dark;
+		color: #fff;
+	}
+
+	&:focus {
+		color: #fff;
+	}
+}
+
+// ==================
+// Typography
+// ==================
+.has-text-secondary {
+	color: $secondary;
+}
+
+.has-text-secondary-dark {
+	color: $secondary-dark;
+}
+
+// ==================
+// Page titles
+// ==================
+.page-header {
+	margin-top: 100px;
+	margin-bottom: 100px;
+
+	&--max-width {
+		max-width: 500px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	&__title {
+		color: $secondary-dark;
+	}
+}
+
+// ==================
+// Forms
+// ==================
+.form {
+	&__container {
+		max-width: 700px;
+		margin-left: auto;
+		margin-right: auto;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	&--small {
+		max-width: 500px;
+	}
+
+	&__error-msg {
+		margin-top: 30px;
+	}
+
+	&--rounded-left {
+		border-top-left-radius: 30px;
+		border-bottom-left-radius: 30px;
+	}
+
+	&--rounded-right {
+		border-top-right-radius: 30px;
+		border-bottom-right-radius: 30px;
+	}
+
+	&__buttons {
+		margin-top: 100px;
+	}
+}
+
+// ==================
+// Border radius
+// ==================
+.rounded-corners {
+	border-radius: 30px;
+}
+
+.rounded-top {
+	border-radius: 30px 30px 0 0;
+}
