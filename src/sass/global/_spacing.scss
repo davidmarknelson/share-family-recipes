@@ -1,0 +1,103 @@
+@import "./functions";
+
+// The first letter is "m" for margin or "p" for padding.
+// 2nd letter is "t, b, l, r" for top, bottom, left, or right.
+// "x" is x-axis and "y" is y-axis
+
+$sizes: 4, 8, 14, 16, 20, 24, 32, 48, 64, 96, 176;
+
+.p-0 {
+	padding: 0;
+}
+.py-0 {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+.px-0 {
+	padding-left: 0;
+	padding-right: 0;
+}
+.pt-0 {
+	padding-top: 0;
+}
+.pr-0 {
+	padding-right: 0;
+}
+.pb-0 {
+	padding-bottom: 0;
+}
+.pl-0 {
+	padding-left: 0;
+}
+.m-0 {
+	margin: 0;
+}
+.my-0 {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.mx-0 {
+	margin-left: 0;
+	margin-right: 0;
+}
+.mt-0 {
+	margin-top: 0;
+}
+.mr-0 {
+	margin-right: 0;
+}
+.mb-0 {
+	margin-bottom: 0;
+}
+.ml-0 {
+	margin-left: 0;
+}
+
+@each $size in $sizes {
+	.p-#{$size} {
+		padding: calculateRem($size);
+	}
+	.py-#{$size} {
+		padding-top: calculateRem($size);
+		padding-bottom: calculateRem($size);
+	}
+	.px-#{$size} {
+		padding-left: calculateRem($size);
+		padding-right: calculateRem($size);
+	}
+	.pt-#{$size} {
+		padding-top: calculateRem($size);
+	}
+	.pr-#{$size} {
+		padding-right: calculateRem($size);
+	}
+	.pb-#{$size} {
+		padding-bottom: calculateRem($size);
+	}
+	.pl-#{$size} {
+		padding-left: calculateRem($size);
+	}
+	.m-#{$size} {
+		margin: calculateRem($size);
+	}
+	.my-#{$size} {
+		margin-top: calculateRem($size);
+		margin-bottom: calculateRem($size);
+	}
+	.mx-#{$size} {
+		margin-left: calculateRem($size);
+		margin-right: calculateRem($size);
+	}
+	.mt-#{$size} {
+		margin-top: calculateRem($size);
+	}
+	.mr-#{$size} {
+		margin-right: calculateRem($size);
+	}
+	.mb-#{$size} {
+		margin-bottom: calculateRem($size);
+	}
+	.ml-#{$size} {
+		margin-left: calculateRem($size);
+	}
+}

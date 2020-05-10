@@ -1,50 +1,40 @@
-<ng-template #loadingOrError>
-  <ng-container *ngIf="error; else loading">
-    <!-- Error -->
-    <div class="error-container">
-      <article class="message is-danger">
+<div class="container px-32 mt-96">
+  <ng-template #loadingOrError>
+    <ng-container *ngIf="error; else loading">
+      <!-- Error -->
+      <article class="message is-danger max-width-500 mx-auto">
         <div class="message-body">
           {{ error }} Try looking for the recipe in the
           <a routerLink="/recipes">list of recipes</a>.
         </div>
       </article>
-    </div>
-  </ng-container>
+    </ng-container>
 
-  <!-- loading -->
-  <ng-template #loading>
-    <p class="has-text-centered loading-msg">Loading...</p>
+    <!-- loading -->
+    <ng-template #loading>
+      <p class="has-text-centered">Loading...</p>
+    </ng-template>
   </ng-template>
-</ng-template>
 
-<!-- =================== -->
-<!-- Recipe -->
-<!-- =================== -->
-<ng-container *ngIf="getRecipe$ | async as recipe; else loadingOrError">
-  <!-- Title -->
-  <section class="section page-header">
-    <div class="container">
-      <h1 class="title page-header__title has-text-centered page-header--max-width">
-        {{ recipe.name }}
-      </h1>
-      <p class="subtitle has-text-centered page-header--max-width">
-        {{ recipe.description }}
-      </p>
-    </div>
-  </section>
+  <!-- =================== -->
+  <!-- Recipe -->
+  <!-- =================== -->
+  <ng-container *ngIf="getRecipe$ | async as recipe; else loadingOrError">
+    <!-- Title -->
+    <app-page-title [title]="recipe.name" [subtitle]="recipe.description">
+    </app-page-title>
 
-  <!-- Pictures -->
-  <div class="container container-padding">
+    <!-- Pictures -->
     <div class="columns">
       <div class="column">
         <!-- Meal picture -->
-        <figure class="image is-4by3 center-img__parent rounded-corners">
-          <img src="{{ recipe.mealPic.mealPicName }}" alt="image of {{ recipe.name }}" class="center-img" />
+        <figure class="image is-4by3 is-clipped rounded-corners">
+          <img src="{{ recipe.mealPic.mealPicName }}" alt="image of {{ recipe.name }}" class="recipe-img" />
         </figure>
       </div>
-      <div class="column profile-img__container">
+      <div class="column grid-centered">
         <!-- Creator's profile picture -->
-        <figure class="image profile-img--width profile-img__circles">
+        <figure class="image max-width-175 img-circles">
           <img src="{{ recipe.creator.profilePic.profilePicName }}" alt="image of {{ recipe.creator.username }}"
             class="is-rounded" />
         </figure>
@@ -58,70 +48,70 @@
         </p>
       </div>
     </div>
-  </div>
 
-  <!-- Buttons and info -->
-  <div class="info">
-    <div class="columns">
-      <div class="column info__container">
-        <!-- Likes -->
-        <div>
-          <app-likes-button *ngIf="recipe" [user]="user" [recipe]="recipe"></app-likes-button>
+    <!-- Buttons and info -->
+    <div class="info">
+      <div class="columns">
+        <div class="column info__container">
+          <!-- Likes -->
+          <div>
+            <app-likes-button [user]="user" [recipe]="recipe"></app-likes-button>
+          </div>
+
+          <!-- Difficulty -->
+          <div class="info--align info--pointer" data-tooltip="Difficulty">
+            <fa-icon [icon]="faFireAlt" size="lg"></fa-icon>
+            <span class="info__numbers">{{ recipe.difficulty }}</span>
+          </div>
+
+          <!-- Cook time -->
+          <div class="info--align info--pointer" data-tooltip="Cook time">
+            <fa-icon [icon]="faClock" size="lg"></fa-icon>
+            <span class="info__numbers">{{ recipe.cookTime }}</span>
+          </div>
         </div>
+        <div class="column info__container">
+          <a data-test="edit-btn" class="button is-primary is-rounded is-small"
+            *ngIf="user && user.id === recipe.creatorId" [routerLink]="['/create', 'edit']"
+            [queryParams]="{ recipe: recipe.id }">
+            Edit
+            <fa-icon [icon]="faChevronRight" class="info__numbers"></fa-icon>
+          </a>
 
-        <!-- Difficulty -->
-        <div class="info--align info--pointer" data-tooltip="Difficulty">
-          <fa-icon [icon]="faFireAlt" size="lg"></fa-icon>
-          <span class="info__numbers">{{ recipe.difficulty }}</span>
+          <app-saved-recipe-button [recipe]="recipe" [user]="user"></app-saved-recipe-button>
         </div>
-
-        <!-- Cook time -->
-        <div class="info--align info--pointer" data-tooltip="Cook time">
-          <fa-icon [icon]="faClock" size="lg"></fa-icon>
-          <span class="info__numbers">{{ recipe.cookTime }}</span>
-        </div>
-      </div>
-      <div class="column info__container">
-        <a data-test="edit-btn" class="button is-primary is-rounded is-small"
-          *ngIf="user && user.id === recipe.creatorId" [routerLink]="['/create', 'edit']"
-          [queryParams]="{ recipe: recipe.id }">
-          Edit
-          <fa-icon [icon]="faChevronRight" class="info__numbers"></fa-icon>
-        </a>
-
-        <app-saved-recipe-button [recipe]="recipe" [user]="user"></app-saved-recipe-button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ingredients -->
-  <div class="step-container">
-    <h2 class="title has-text-centered">Ingredients</h2>
-
-    <div class="columns is-multiline">
-      <div class="column is-half has-text-centered" *ngFor="let ingredient of recipe.ingredients">
-        {{ ingredient }}
       </div>
     </div>
-  </div>
 
-  <!-- Instructions -->
-  <div class="step-container step-container--bottom-margin">
-    <h2 class="title has-text-centered">Instructions</h2>
+    <!-- Ingredients -->
+    <div class="mt-176 max-width-750 mx-auto">
+      <h2 class="title has-text-centered">Ingredients</h2>
 
-    <ul>
-      <li *ngFor="let instruction of recipe.instructions; let i = index" [attr.data-index]="i" class="li-item">
-        {{ i + 1 }}. {{ instruction }}
-      </li>
-    </ul>
-  </div>
+      <div class="columns is-multiline">
+        <div class="column is-half has-text-centered" *ngFor="let ingredient of recipe.ingredients">
+          {{ ingredient }}
+        </div>
+      </div>
+    </div>
 
-  <!-- Recipe YouTube Video -->
-  <div data-test="youtubeUrl" class="step-container" *ngIf="recipe.youtubeUrl">
-    <figure class="image is-16by9">
-      <iframe class="has-ratio" width="560" height="315" [src]="recipe.youtubeUrl | safeUrl" frameborder="0"
-        allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-      </iframe>
-    </figure>
-  </div>
-</ng-container>
+    <!-- Instructions -->
+    <div class="mt-176 max-width-750 mx-auto">
+      <h2 class="title has-text-centered">Instructions</h2>
+
+      <ul>
+        <li *ngFor="let instruction of recipe.instructions; let i = index" [attr.data-index]="i" class="mt-8">
+          {{ i + 1 }}. {{ instruction }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Recipe YouTube Video -->
+    <div data-test="youtubeUrl" class="mt-176" *ngIf="recipe.youtubeUrl">
+      <figure class="image is-16by9">
+        <iframe class="has-ratio" width="560" height="315" [src]="recipe.youtubeUrl | safeUrl" frameborder="0"
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+        </iframe>
+      </figure>
+    </div>
+  </ng-container>
+</div>

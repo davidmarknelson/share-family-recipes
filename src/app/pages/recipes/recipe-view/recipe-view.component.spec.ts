@@ -23,7 +23,7 @@ let iframeVideo: DebugElement;
 
 function selectElements() {
 	errorMsg = fixture.debugElement.query(By.css(".message-body"));
-	title = fixture.debugElement.query(By.css(".page-header__title"));
+	title = fixture.debugElement.query(By.css("h1.title"));
 	editBtn = fixture.debugElement.query(By.css("[data-test=edit-btn]"));
 	iframeVideo = fixture.debugElement.query(By.css("iframe"));
 }

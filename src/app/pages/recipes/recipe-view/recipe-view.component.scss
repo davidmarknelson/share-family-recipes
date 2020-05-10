@@ -1,115 +1,71 @@
-.loading-msg {
-  margin: 100px auto 0 auto;
-}
-
-.error-container {
-  margin: 100px auto 0 auto;
-  max-width: 500px;
-  padding: 0 15px 0 15px;
-}
-
-.container-padding {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.step-container {
-  max-width: 750px;
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-top: 175px;
-  margin-left: auto;
-  margin-right: auto;
-
-  &--bottom-margin {
-    margin-bottom: 175px;
-  }
-}
-
 // recipe image
-.center-img {
-  // !important is needed to override properties from bulma
-  height: auto !important;
-  width: auto !important;
-  top: -9999px !important;
-  bottom: -9999px !important;
-  left: -9999px !important;
-  right: -9999px !important;
-  min-width: 100%;
-  min-height: 100%;
-  margin: auto;
-
-  &__parent {
-    overflow: hidden;
-  }
+.recipe-img {
+	// !important is needed to override properties from bulma
+	height: auto !important;
+	width: auto !important;
+	// This centers images regardless of the orientation.
+	top: -9999px !important;
+	bottom: -9999px !important;
+	left: -9999px !important;
+	right: -9999px !important;
+	min-width: 100%;
+	min-height: 100%;
+	margin: auto;
 }
 
-.profile-img {
-  &--width {
-    max-width: 175px;
-  }
+.img-circles {
+	&::before {
+		content: "";
+		display: inline-block;
+		width: 75px;
+		height: 75px;
+		border-radius: 50%;
+		background-color: #bee0c0;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		z-index: -1;
+	}
 
-  &__container {
-    display: grid;
-    place-items: center;
-  }
-
-  &__circles::before {
-    content: '';
-    display: inline-block;
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    background-color: #bee0c0;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-  }
-
-  &__circles::after {
-    content: '';
-    display: inline-block;
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    background-color: #bee0c0;
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: -1;
-  }
-}
-
-.li-item {
-  margin-top: 10px;
+	&::after {
+		content: "";
+		display: inline-block;
+		width: 75px;
+		height: 75px;
+		border-radius: 50%;
+		background-color: #bee0c0;
+		position: absolute;
+		top: 0;
+		right: 0;
+		z-index: -1;
+	}
 }
 
 ul {
-  list-style-type: none;
+	list-style-type: none;
 }
 
 .info {
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 150px;
+	max-width: 700px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 150px;
 
-  &__container {
-    display: flex;
-    justify-content: space-evenly;
-  }
+	&__container {
+		display: flex;
+		justify-content: space-evenly;
+	}
 
-  &--align {
-    display: flex;
-    align-items: center;
-  }
+	&--align {
+		display: flex;
+		align-items: center;
+	}
 
-  &__numbers {
-    margin-left: 5px;
-  }
+	&__numbers {
+		margin-left: 5px;
+	}
 
-  &--pointer {
-    cursor: default;
-  }
+	&--pointer {
+		cursor: default;
+	}
 }

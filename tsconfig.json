@@ -18,7 +18,9 @@
 			"@env/*": ["app/environments/*"],
 			"@pages/*": ["app/pages/*"],
 			"@partials/*": ["app/partials/*"],
-			"@testUtilities/*": ["app/utilities/test-utilities/*"]
+			"@testUtilities/*": ["app/utilities/test-utilities/*"],
+			"@facades/*": ["app/utilities/facades/*"],
+			"@services/*": ["app/utilities/services/*"]
 		}
 	},
 	"angularCompilerOptions": {

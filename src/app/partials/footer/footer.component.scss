@@ -1,22 +1,23 @@
 footer {
-  margin-top: 200px;
+	margin-top: 300px;
 }
 
 .info {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
 
-  &__items {
-    margin: 5px 0 5px 0;
-    color: #11571C;
-  }
+	&__items {
+		margin: 5px 0 5px 0;
+		color: #11571c;
+	}
 
-  &__link {
-    color: #11571C;
-  }
+	&__link {
+		color: #11571c;
+	}
 
-  &__items:hover, &__link:hover {
-    color: #232323;
-  }
+	&__items:hover,
+	&__link:hover {
+		color: #232323;
+	}
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Observable, iif, of } from "rxjs";
 import {
@@ -24,6 +24,7 @@ import {
 	selector: "app-recipe-view",
 	templateUrl: "./recipe-view.component.html",
 	styleUrls: ["./recipe-view.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RecipeViewComponent implements OnInit {
 	user: UserDecodedToken;
