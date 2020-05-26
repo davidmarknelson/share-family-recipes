@@ -8,12 +8,13 @@ import {
 import { AuthService } from "../../utilities/services/auth/auth.service";
 import { Router } from "@angular/router";
 import { FormBuilder, FormGroup } from "@angular/forms";
-import { switchMap } from "rxjs/operators";
+import { switchMap, share } from "rxjs/operators";
 import { of, Observable } from "rxjs";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { SearchesService } from "../../utilities/services/searches/searches.service";
 import { AutocompleteItems } from "../../utilities/interfaces/autocomplete-items";
 import { UserFacadeService } from "@facades/user-facade/user-facade.service";
+import { UserProfile } from "@utilities/interfaces/user-profile";
 
 @Component({
 	selector: "app-navbar",
@@ -30,7 +31,8 @@ export class NavbarComponent implements OnInit {
 	autocompleteItems: Array<AutocompleteItems> = [];
 	highlightedIndex: number = -1;
 	isAutocompleteOptionSelected: boolean;
-	isLoggedIn$: Observable<boolean> = this.userFacade.isLoggedIn$;
+	isLoggedIn$: Observable<boolean> = this.userFacade.isLoggedIn$.pipe(share());
+	user$: Observable<UserProfile> = this.userFacade.user$.pipe(share());
 
 	// TODO move search bar to its own module
 	constructor(
@@ -66,12 +68,6 @@ export class NavbarComponent implements OnInit {
 
 	logout() {
 		this.userFacade.logoutUser();
-	}
-
-	goToYourRecipes() {
-		const userName = encodeURIComponent(this.auth.currentUser().username);
-
-		this.router.navigateByUrl(`/recipes/user-recipes?username=${userName}`);
 	}
 
 	// =================

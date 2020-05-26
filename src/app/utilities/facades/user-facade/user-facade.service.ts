@@ -68,11 +68,11 @@ export class UserFacadeService {
 		this.auth.getProfile$().subscribe(res => this.updateUserState(res));
 	}
 
-	updateLogginState(loggedIn: boolean): void {
+	updateLogginState(isLoggedIn: boolean): void {
 		this.dispatch.next(
 			(this.state = reduce(this.state, {
 				type: UserActionTypes.UPDATE_LOG_IN,
-				payload: loggedIn
+				payload: isLoggedIn
 			}))
 		);
 	}

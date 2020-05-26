@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 
-import { HelpersService } from "./helpers.service";
+import { HelpersService } from "@services/helpers/helpers.service";
 
 const originalPicObject: object = {
 	profilePicName: "https://www.awesomeapi.com/assests/picture.jpg"

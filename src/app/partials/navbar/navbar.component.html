@@ -29,21 +29,23 @@
         </a>
 
         <a class="navbar-item transition" (click)="closeSearchBar()" routerLink="/recipes/saved-list"
-          data-test="navbar-saved" *ngIf="isLoggedIn">
+          data-test="navbar-saved" *ngIf="isLoggedIn$ | async">
           Saved
         </a>
 
-        <a class="navbar-item transition" (click)="closeSearchBar()" (click)="goToYourRecipes()"
-          data-test="navbar-your-recipes" *ngIf="isLoggedIn">
-          Your Recipes
-        </a>
+        <ng-container *ngIf='user$ | async as user'>
+          <a class="navbar-item transition" (click)="closeSearchBar()" [routerLink]="['/recipes', 'user-recipes']"
+            [queryParams]="{ username: user.username }" data-test="navbar-your-recipes">
+            Your Recipes
+          </a>
+        </ng-container>
 
         <a class="navbar-item transition" (click)="closeSearchBar()" routerLink="/create" data-test="navbar-create">
           Create
         </a>
 
         <a class="navbar-item transition" (click)="closeSearchBar()" routerLink="/profile" data-test="navbar-profile"
-          *ngIf="isLoggedIn">
+          *ngIf="isLoggedIn$ | async">
           Profile
         </a>
       </div>
