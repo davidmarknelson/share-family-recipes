@@ -17,5 +17,9 @@ export class HelpersService {
 			: { profilePicName: "assets/images/default-img/default-profile-pic.jpg" };
 	}
 
-	formatRecipePic(pic) {}
+	formatRecipePic(pic) {
+		return pic
+			? pic
+			: { profilePicName: "assets/images/default-img/default-meal-pic.jpg" };
+	}
 }
