@@ -1,0 +1,31 @@
+.is-accent {
+	background-color: $accent;
+	border: none;
+
+	&:hover {
+		background-color: #f7f772;
+	}
+
+	// This changes the loading spinner to a darker color
+	&.is-loading::after {
+		border: 2px solid #232323;
+		border-right-color: transparent;
+		border-top-color: transparent;
+		content: "";
+	}
+}
+
+.is-secondary {
+	background-color: $secondary;
+	border: none;
+	color: #fff;
+
+	&:hover {
+		background-color: $secondary-dark;
+		color: #fff;
+	}
+
+	&:focus {
+		color: #fff;
+	}
+}

@@ -1,43 +1,21 @@
 <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
   <div class="container">
     <div class="navbar-brand">
-      <a
-        class="navbar-item"
-        routerLink="/"
-        data-test="navbar-brand"
-        (click)="closeSearchBar()"
-      >
-        <img
-          src="../../../assets/images/navbar-img/sfr-logo.svg"
-          alt="website logo"
-          width="112"
-          height="28"
-        />
+      <a class="navbar-item" routerLink="/" data-test="navbar-brand" (click)="closeSearchBar()">
+        <img src="assets/images/navbar-img/sfr-logo.svg" alt="website logo" width="112" height="28" />
       </a>
 
       <div class="center-btn">
-        <button
-          [attr.data-tooltip]="
+        <button [attr.data-tooltip]="
             isSearchOpen ? 'Close search bar' : 'Open search bar'
-          "
-          [class.search__is-open]="isSearchOpen"
-          class="button is-rounded is-primary has-tooltip-left"
-          data-test="seachBarBtn"
-          (click)="toggleSearchBar()"
-        >
+          " [class.search__is-open]="isSearchOpen" class="button is-rounded is-primary has-tooltip-left"
+          data-test="seachBarBtn" (click)="toggleSearchBar()">
           <fa-icon [icon]="faSearch"></fa-icon>
         </button>
       </div>
 
-      <a
-        role="button"
-        class="navbar-burger burger"
-        [class.is-active]="isMenuOpen"
-        aria-label="menu"
-        aria-expanded="false"
-        data-target="navbarMenu"
-        (click)="toggleMenu()"
-      >
+      <a role="button" class="navbar-burger burger" [class.is-active]="isMenuOpen" aria-label="menu"
+        aria-expanded="false" data-target="navbarMenu" (click)="toggleMenu()">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -46,51 +24,26 @@
 
     <div id="navbarMenu" class="navbar-menu" [class.is-active]="isMenuOpen">
       <div class="navbar-start">
-        <a
-          class="navbar-item transition"
-          (click)="closeSearchBar()"
-          routerLink="/recipes"
-          data-test="navbar-recipes"
-        >
+        <a class="navbar-item transition" (click)="closeSearchBar()" routerLink="/recipes" data-test="navbar-recipes">
           Recipes
         </a>
 
-        <a
-          class="navbar-item transition"
-          (click)="closeSearchBar()"
-          routerLink="/recipes/saved-list"
-          data-test="navbar-saved"
-          *ngIf="isLoggedIn"
-        >
+        <a class="navbar-item transition" (click)="closeSearchBar()" routerLink="/recipes/saved-list"
+          data-test="navbar-saved" *ngIf="isLoggedIn">
           Saved
         </a>
 
-        <a
-          class="navbar-item transition"
-          (click)="closeSearchBar()"
-          (click)="goToYourRecipes()"
-          data-test="navbar-your-recipes"
-          *ngIf="isLoggedIn"
-        >
+        <a class="navbar-item transition" (click)="closeSearchBar()" (click)="goToYourRecipes()"
+          data-test="navbar-your-recipes" *ngIf="isLoggedIn">
           Your Recipes
         </a>
 
-        <a
-          class="navbar-item transition"
-          (click)="closeSearchBar()"
-          routerLink="/create"
-          data-test="navbar-create"
-        >
+        <a class="navbar-item transition" (click)="closeSearchBar()" routerLink="/create" data-test="navbar-create">
           Create
         </a>
 
-        <a
-          class="navbar-item transition"
-          (click)="closeSearchBar()"
-          routerLink="/profile"
-          data-test="navbar-profile"
-          *ngIf="isLoggedIn"
-        >
+        <a class="navbar-item transition" (click)="closeSearchBar()" routerLink="/profile" data-test="navbar-profile"
+          *ngIf="isLoggedIn">
           Profile
         </a>
       </div>
@@ -98,30 +51,22 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a
-              class="button is-primary is-rounded is-outlined is-inverted transition"
-              routerLink="/login"
-              data-test="navbar-login"
-              *ngIf="!isLoggedIn"
-            >
-              Log in
-            </a>
-            <a
-              class="button is-primary is-rounded is-outlined is-inverted transition"
-              routerLink="/signup"
-              data-test="navbar-signup"
-              *ngIf="!isLoggedIn"
-            >
-              <strong>Sign up</strong>
-            </a>
-            <a
-              class="button is-primary is-rounded is-outlined is-inverted transition"
-              (click)="logout()"
-              data-test="navbar-logout"
-              *ngIf="isLoggedIn"
-            >
-              Log Out
-            </a>
+            <ng-container *ngIf="isLoggedIn$ | async; else notSignedIn">
+              <a class="button is-primary is-rounded is-outlined is-inverted transition" (click)="logout()"
+                data-test="navbar-logout">
+                Log Out
+              </a>
+            </ng-container>
+            <ng-template #notSignedIn>
+              <a class="button is-primary is-rounded is-outlined is-inverted transition" routerLink="/login"
+                data-test="navbar-login">
+                Log in
+              </a>
+              <a class="button is-primary is-rounded is-outlined is-inverted transition" routerLink="/signup"
+                data-test="navbar-signup">
+                <strong>Sign up</strong>
+              </a>
+            </ng-template>
           </div>
         </div>
       </div>
@@ -131,24 +76,11 @@
 
 <div class="search__container" *ngIf="isSearchOpen">
   <div class="container">
-    <form
-      [formGroup]="searchBarForm"
-      (ngSubmit)="onSubmit()"
-      novalidate
-      class="search--max-width"
-    >
+    <form [formGroup]="searchBarForm" (ngSubmit)="onSubmit()" novalidate class="search--max-width">
       <div class="field has-addons search__input">
         <p class="control is-expanded">
-          <input
-            (keydown)="onKeydown($event)"
-            class="input is-rounded"
-            type="text"
-            id="name"
-            #name
-            autocomplete="off"
-            formControlName="name"
-            placeholder="Recipe Name"
-          />
+          <input (keydown)="onKeydown($event)" class="input is-rounded" type="text" id="name" #name autocomplete="off"
+            formControlName="name" placeholder="Recipe Name" />
         </p>
         <p class="control">
           <button type="submit" class="button search__submit-btn">
@@ -156,16 +88,9 @@
           </button>
         </p>
 
-        <div
-          class="search__items-container"
-          *ngIf="autocompleteItems.length > 0"
-        >
-          <p
-            *ngFor="let item of autocompleteItems; let i = index"
-            [class.search--highlighted]="highlightedIndex === i"
-            class="search__items"
-            (click)="chooseSearchItem(i)"
-          >
+        <div class="search__items-container" *ngIf="autocompleteItems.length > 0">
+          <p *ngFor="let item of autocompleteItems; let i = index" [class.search--highlighted]="highlightedIndex === i"
+            class="search__items" (click)="chooseSearchItem(i)">
             {{ item.name }}
           </p>
         </div>

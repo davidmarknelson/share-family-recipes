@@ -3,21 +3,22 @@ import {
 	OnInit,
 	ViewChild,
 	ElementRef,
-	ChangeDetectorRef,
+	ChangeDetectorRef
 } from "@angular/core";
 import { AuthService } from "../../utilities/services/auth/auth.service";
 import { Router } from "@angular/router";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { switchMap } from "rxjs/operators";
-import { of } from "rxjs";
+import { of, Observable } from "rxjs";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { SearchesService } from "../../utilities/services/searches/searches.service";
 import { AutocompleteItems } from "../../utilities/interfaces/autocomplete-items";
+import { UserFacadeService } from "@facades/user-facade/user-facade.service";
 
 @Component({
 	selector: "app-navbar",
 	templateUrl: "./navbar.component.html",
-	styleUrls: ["./navbar.component.scss"],
+	styleUrls: ["./navbar.component.scss"]
 })
 export class NavbarComponent implements OnInit {
 	@ViewChild("name", { static: false }) nameInput: ElementRef;
@@ -29,13 +30,16 @@ export class NavbarComponent implements OnInit {
 	autocompleteItems: Array<AutocompleteItems> = [];
 	highlightedIndex: number = -1;
 	isAutocompleteOptionSelected: boolean;
+	isLoggedIn$: Observable<boolean> = this.userFacade.isLoggedIn$;
 
+	// TODO move search bar to its own module
 	constructor(
 		private fb: FormBuilder,
 		private auth: AuthService,
 		private router: Router,
 		private searchesService: SearchesService,
-		private changeDetector: ChangeDetectorRef
+		private changeDetector: ChangeDetectorRef,
+		private userFacade: UserFacadeService
 	) {
 		this.auth.loggedIn.subscribe(status => (this.isLoggedIn = status));
 	}
@@ -61,12 +65,11 @@ export class NavbarComponent implements OnInit {
 	}
 
 	logout() {
-		this.auth.logout();
-		this.router.navigate(["/"]);
+		this.userFacade.logoutUser();
 	}
 
 	goToYourRecipes() {
-		let userName = encodeURIComponent(this.auth.currentUser().username);
+		const userName = encodeURIComponent(this.auth.currentUser().username);
 
 		this.router.navigateByUrl(`/recipes/user-recipes?username=${userName}`);
 	}
@@ -92,7 +95,7 @@ export class NavbarComponent implements OnInit {
 
 	createForm() {
 		this.searchBarForm = this.fb.group({
-			name: "",
+			name: ""
 		});
 	}
 

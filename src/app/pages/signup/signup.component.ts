@@ -9,11 +9,13 @@ import { faLock, faUser, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 // Services
 import { AuthService } from "../../utilities/services/auth/auth.service";
 import { UploadedImage } from "../../utilities/interfaces/uploadedImage";
+// Facade
+import { UserFacadeService } from "@facades/user-facade/user-facade.service";
 
 @Component({
 	selector: "app-signup",
 	templateUrl: "./signup.component.html",
-	styleUrls: ["./signup.component.scss"],
+	styleUrls: ["./signup.component.scss"]
 })
 export class SignupComponent implements OnInit, OnDestroy {
 	private ngUnsubscribe = new Subject();
@@ -39,7 +41,8 @@ export class SignupComponent implements OnInit, OnDestroy {
 		private fb: FormBuilder,
 		private auth: AuthService,
 		private router: Router,
-		private location: Location
+		private location: Location,
+		private userFacade: UserFacadeService
 	) {}
 
 	ngOnInit() {
@@ -100,15 +103,15 @@ export class SignupComponent implements OnInit, OnDestroy {
 					Validators.required,
 					Validators.minLength(5),
 					Validators.maxLength(15),
-					Validators.pattern("[^ ]*"),
-				],
+					Validators.pattern("[^ ]*")
+				]
 			],
 			password: ["", [Validators.required, Validators.minLength(8)]],
 			passwordConfirmation: [
 				"",
-				[Validators.required, Validators.minLength(8)],
+				[Validators.required, Validators.minLength(8)]
 			],
-			adminCode: [""],
+			adminCode: [""]
 		});
 	}
 
@@ -167,7 +170,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 		// This is to show a loading indicator
 		this.sendingForm = true;
 
-		let user = {
+		const user = {
 			firstName: this.signupForm.value.firstName,
 			lastName: this.signupForm.value.lastName,
 			email: this.signupForm.value.email,
@@ -177,7 +180,7 @@ export class SignupComponent implements OnInit, OnDestroy {
 			adminCode: this.signupForm.value.adminCode,
 			// set image property defaults
 			profilePicName: null,
-			publicId: null,
+			publicId: null
 		};
 
 		// Add image properties to user object if the image has uploaded
@@ -191,6 +194,8 @@ export class SignupComponent implements OnInit, OnDestroy {
 			.pipe(takeUntil(this.ngUnsubscribe))
 			.subscribe(
 				res => {
+					this.userFacade.updateLogginState(true);
+					this.userFacade.getUser();
 					this.router.navigate(["/profile"]);
 				},
 				err => {

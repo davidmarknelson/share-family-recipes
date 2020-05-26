@@ -9,7 +9,7 @@ import { Recipe } from "../../interfaces/recipe";
 import { environment } from "../../../../environments/environment";
 
 @Injectable({
-	providedIn: "root",
+	providedIn: "root"
 })
 export class RecipeService {
 	apiUrl = environment.apiUrl;
@@ -28,18 +28,14 @@ export class RecipeService {
 
 	checkRecipeNameAvailability(name: string): Observable<any> {
 		return this.http.get<any>(`${this.apiUrl}meals/available-names`, {
-			params: {
-				name: name,
-			},
+			params: { name }
 		});
 	}
 
 	getRecipeById(id: string): Observable<Recipe> {
 		return this.http
 			.get<Recipe>(`${this.apiUrl}meals/meal-by-id`, {
-				params: {
-					id: id,
-				},
+				params: { id }
 			})
 			.pipe(
 				map(res => {
@@ -57,9 +53,7 @@ export class RecipeService {
 	getRecipeByName(name: string): Observable<Recipe> {
 		return this.http
 			.get<Recipe>(`${this.apiUrl}meals/meal-by-name`, {
-				params: {
-					name: name,
-				},
+				params: { name }
 			})
 			.pipe(
 				map(res => {
@@ -86,7 +80,7 @@ export class RecipeService {
 
 	deleteRecipe(recipeid: number): Observable<any> {
 		return this.http.request<any>("DELETE", `${this.apiUrl}meals/delete`, {
-			body: { id: recipeid },
+			body: { id: recipeid }
 		});
 	}
 
@@ -97,7 +91,7 @@ export class RecipeService {
 	formatMealPic(pic) {
 		if (!pic) {
 			return {
-				mealPicName: "assets/images/default-img/default-meal-pic.jpg",
+				mealPicName: "assets/images/default-img/default-meal-pic.jpg"
 			};
 		} else {
 			return pic;
@@ -107,7 +101,7 @@ export class RecipeService {
 	formatProfilePic(pic) {
 		if (!pic) {
 			return {
-				profilePicName: "assets/images/default-img/default-profile-pic.jpg",
+				profilePicName: "assets/images/default-img/default-profile-pic.jpg"
 			};
 		} else {
 			return pic;

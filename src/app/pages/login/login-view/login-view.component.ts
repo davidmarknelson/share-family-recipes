@@ -8,11 +8,13 @@ import { UserLogin } from "../../../utilities/interfaces/user-login";
 import { AuthService } from "../../../utilities/services/auth/auth.service";
 // Font Awesome
 import { faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+// Facades
+import { UserFacadeService } from "@facades/user-facade/user-facade.service";
 
 @Component({
 	selector: "app-login-view",
 	templateUrl: "./login-view.component.html",
-	styleUrls: ["./login-view.component.scss"],
+	styleUrls: ["./login-view.component.scss"]
 })
 export class LoginViewComponent implements OnInit, OnDestroy {
 	private ngUnsubscribe = new Subject();
@@ -27,7 +29,8 @@ export class LoginViewComponent implements OnInit, OnDestroy {
 	constructor(
 		private auth: AuthService,
 		private router: Router,
-		private location: Location
+		private location: Location,
+		private userFacade: UserFacadeService
 	) {}
 
 	ngOnInit() {}
@@ -50,6 +53,8 @@ export class LoginViewComponent implements OnInit, OnDestroy {
 			.pipe(takeUntil(this.ngUnsubscribe))
 			.subscribe(
 				res => {
+					this.userFacade.updateLogginState(true);
+					this.userFacade.getUser();
 					this.router.navigate(["/profile"]);
 				},
 				err => {

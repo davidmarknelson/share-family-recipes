@@ -12,21 +12,25 @@ import { UserLogin } from "../../interfaces/user-login";
 import { UserDecodedToken } from "../../interfaces/user-decoded-token";
 // JWT
 import { JwtHelperService } from "@auth0/angular-jwt";
+// Services
+import { HelpersService } from "@services/helpers/helpers.service";
 
 @Injectable({
-	providedIn: "root",
+	providedIn: "root"
 })
 export class AuthService {
 	apiUrl = environment.apiUrl;
 	@Output() loggedIn: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-	constructor(private http: HttpClient, public jwtHelper: JwtHelperService) {}
+	constructor(
+		private http: HttpClient,
+		public jwtHelper: JwtHelperService,
+		private helpers: HelpersService
+	) {}
 
 	checkUsernameAvailability(username): Observable<any> {
 		return this.http.get(`${this.apiUrl}user/available-username`, {
-			params: {
-				username: username,
-			},
+			params: { username }
 		});
 	}
 
@@ -59,24 +63,27 @@ export class AuthService {
 		);
 	}
 
+	// TODO remove getProfile and move helper functions to helper service
 	getProfile(): Observable<UserProfile> {
 		return this.http.get<UserProfile>(`${this.apiUrl}user/profile`).pipe(
 			map(res => {
-				res.createdAt = this.formatDate(res.createdAt);
-				res.updatedAt = this.formatDate(res.updatedAt);
-				if (!res.profilePic) {
-					res.profilePic = {
-						profilePicName:
-							"../../../assets/images/default-img/default-profile-pic.jpg",
-					};
-				}
+				res.createdAt = this.helpers.formatDate(res.createdAt);
+				res.updatedAt = this.helpers.formatDate(res.updatedAt);
+				res.profilePic = this.helpers.formatProfilePic(res.profilePic);
 				return res;
 			})
 		);
 	}
 
-	formatDate(date) {
-		return format(new Date(date), "MMM dd, yyyy");
+	getProfile$(): Observable<UserProfile> {
+		return this.http.get<UserProfile>(`${this.apiUrl}user/profile`).pipe(
+			map(res => {
+				res.createdAt = this.helpers.formatDate(res.createdAt);
+				res.updatedAt = this.helpers.formatDate(res.updatedAt);
+				res.profilePic = this.helpers.formatProfilePic(res.profilePic);
+				return res;
+			})
+		);
 	}
 
 	updateUser(credentials): Observable<any> {
