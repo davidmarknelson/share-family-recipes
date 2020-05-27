@@ -54,18 +54,18 @@ const user = {
 	isAdmin: true,
 	username: "johndoe#1",
 	iat: 1575496172,
-	exp: 2180296172,
+	exp: 2180296172
 };
 
 const recipes = [
 	{
 		id: 1,
-		name: "Eggs",
+		name: "Eggs"
 	},
 	{
 		id: 2,
-		name: "Eggs and Rice",
-	},
+		name: "Eggs and Rice"
+	}
 ];
 
 class MockRouter {
@@ -102,16 +102,16 @@ describe("NavbarComponent", () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			imports: [AppModule, RouterTestingModule],
+			imports: [AppModule, RouterTestingModule]
 		})
 			.overrideComponent(NavbarComponent, {
 				set: {
 					providers: [
 						{ provide: AuthService, useClass: MockAuthService },
 						{ provide: ChangeDetectorRef, useClass: MockChangeDetectorRef },
-						{ provide: SearchesService, useClass: MockSearchesService },
-					],
-				},
+						{ provide: SearchesService, useClass: MockSearchesService }
+					]
+				}
 			})
 			.compileComponents();
 	}));
@@ -134,18 +134,12 @@ describe("NavbarComponent", () => {
 			authService.isLoggedIn = jasmine
 				.createSpy("isLoggedIn")
 				.and.returnValue(true);
-			spyOn(component, "renewToken").and.callFake(() =>
-				authService.renewToken()
-			);
-			spyOn(authService, "renewToken");
 			fixture.detectChanges();
 			selectElements();
 		});
 
 		it("should initialize to see if a user is logged in", () => {
 			expect(authService.isLoggedIn).toHaveBeenCalled();
-			expect(component.isLoggedIn).toEqual(true);
-			expect(component.renewToken).toHaveBeenCalled();
 			expect(authService.renewToken).toHaveBeenCalled();
 		});
 
@@ -166,12 +160,10 @@ describe("NavbarComponent", () => {
 		it("should navigate to user created list with an encoded username in the url", () => {
 			spyOn(authService, "currentUser").and.returnValue(user);
 			spyOn(router, "navigateByUrl");
-			spyOn(component, "goToYourRecipes").and.callThrough();
 
 			yourRecipesLink.nativeElement.click();
 			fixture.detectChanges();
 
-			expect(component.goToYourRecipes).toHaveBeenCalled();
 			expect(authService.currentUser).toHaveBeenCalled();
 			expect(router.navigateByUrl).toHaveBeenCalledWith(
 				"/recipes/user-recipes?username=johndoe%231"
@@ -184,16 +176,12 @@ describe("NavbarComponent", () => {
 			authService.isLoggedIn = jasmine
 				.createSpy("isLoggedIn")
 				.and.returnValue(false);
-			spyOn(component, "renewToken");
-			spyOn(authService, "renewToken");
 			fixture.detectChanges();
 			selectElements();
 		});
 
 		it("should initialize to see if a user is logged in", () => {
 			expect(authService.isLoggedIn).toHaveBeenCalled();
-			expect(component.isLoggedIn).toEqual(false);
-			expect(component.renewToken).toHaveBeenCalled();
 			expect(authService.renewToken).not.toHaveBeenCalled();
 		});
 
@@ -307,7 +295,7 @@ describe("NavbarComponent", () => {
 					// keyCode is deprecated, but other non-deprecated options like "key" and "code" do not work
 					// with these tests at this time 02.23.2020
 					// @ts-ignore
-					keyCode: "40",
+					keyCode: "40"
 				});
 
 				spyOn(component, "onKeydown").and.callThrough();
@@ -325,7 +313,7 @@ describe("NavbarComponent", () => {
 					// keyCode is deprecated, but other non-deprecated options like "key" and "code" do not work
 					// with these tests at this time 02.23.2020
 					// @ts-ignore
-					keyCode: "38",
+					keyCode: "38"
 				});
 
 				spyOn(component, "onKeydown").and.callThrough();
@@ -343,7 +331,7 @@ describe("NavbarComponent", () => {
 					// keyCode is deprecated, but other non-deprecated options like "key" and "code" do not work
 					// with these tests at this time 02.23.2020
 					// @ts-ignore
-					keyCode: "27",
+					keyCode: "27"
 				});
 
 				spyOn(component, "onKeydown").and.callThrough();
@@ -372,7 +360,7 @@ describe("NavbarComponent", () => {
 					// keyCode is deprecated, but other non-deprecated options like "key" and "code" do not work
 					// with these tests at this time 02.23.2020
 					// @ts-ignore
-					keyCode: "27",
+					keyCode: "27"
 				});
 
 				spyOn(component, "onKeydown").and.callThrough();

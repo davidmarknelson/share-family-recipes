@@ -9,10 +9,10 @@ import { of, throwError, Observable } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestingObjects } from "@testUtilities/testingObjects";
+import { RecipeTestingObjects } from "@utilities/test-utilities/recipeTestingObjects";
 
 // This holds objects used in tests.
-const testingObj = new TestingObjects();
+const testingObj = new RecipeTestingObjects();
 
 // These 2 sections are used to select elements in tests.
 let fixture: ComponentFixture<RecipeViewComponent>;
@@ -28,15 +28,11 @@ function selectElements() {
 	iframeVideo = fixture.debugElement.query(By.css("iframe"));
 }
 
-// This allows the recipe to be changed in the tests to
-// make it a number or a string.
-// It must be declared at the beginning of each test.
 let recipeItem;
-
 class MockActivatedRoute {
 	params = new Observable(observer => {
 		const recipe = {
-			recipe: recipeItem, // declared above
+			recipe: recipeItem // declared above to be assigned in tests
 		};
 		observer.next(recipe);
 		observer.complete();
@@ -65,16 +61,16 @@ describe("RecipeViewComponent", () => {
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			imports: [RecipesModule, RouterTestingModule, HttpClientTestingModule],
+			imports: [RecipesModule, RouterTestingModule, HttpClientTestingModule]
 		})
 			.overrideComponent(RecipeViewComponent, {
 				set: {
 					providers: [
 						{ provide: RecipeService, useClass: MockRecipeService },
 						{ provide: ActivatedRoute, useClass: MockActivatedRoute },
-						{ provide: AuthService, useClass: MockAuthService },
-					],
-				},
+						{ provide: AuthService, useClass: MockAuthService }
+					]
+				}
 			})
 			.compileComponents();
 	}));
@@ -102,8 +98,8 @@ describe("RecipeViewComponent", () => {
 			spyOn(recipeService, "getRecipeById").and.callFake(() => {
 				return throwError({
 					error: {
-						message: "That meal does not exist.",
-					},
+						message: "That meal does not exist."
+					}
 				});
 			});
 
@@ -122,8 +118,8 @@ describe("RecipeViewComponent", () => {
 			spyOn(recipeService, "getRecipeByName").and.callFake(() => {
 				return throwError({
 					error: {
-						message: "That meal does not exist.",
-					},
+						message: "That meal does not exist."
+					}
 				});
 			});
 

@@ -20,6 +20,6 @@ export class HelpersService {
 	formatRecipePic(pic) {
 		return pic
 			? pic
-			: { profilePicName: "assets/images/default-img/default-meal-pic.jpg" };
+			: { mealPicName: "assets/images/default-img/default-meal-pic.jpg" };
 	}
 }

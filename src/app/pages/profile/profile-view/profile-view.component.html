@@ -1,9 +1,6 @@
-<section class="section page-header">
-  <h1 class="title page-header__title has-text-centered">Profile</h1>
-  <p class="subtitle has-text-centered">View your profile information.</p>
-</section>
+<div class='container px-32 mt-96'>
+  <app-page-title [title]="'Profile'" [subtitle]="'View your profile information.'"></app-page-title>
 
-<div class='container'>
   <ng-container *ngIf='user$ | async as user; else loading'>
 
     <!-- Email verification messages -->
@@ -12,7 +9,7 @@
     </ng-container>
 
 
-    <div class="columns" *ngIf="user">
+    <div class="columns">
       <div class="column is-3"></div>
       <div class="column">
         <figure class="image img img--width img--centered">
@@ -34,22 +31,22 @@
     </div>
 
     <div class="buttons btn-field">
-      <a data-test='edit-profile' class="button is-primary is-rounded" routerLink='/profile/edit'>
+      <a data-test='editProfile' class="button is-primary is-rounded" routerLink='/profile/edit'>
         Edit Profile
       </a>
-      <a data-test='save-list-btn' class="button is-secondary is-rounded" routerLink='/recipes/saved-list'>
+      <a data-test='saveListBtn' class="button is-secondary is-rounded" routerLink='/recipes/saved-list'>
         Saved List
       </a>
-      <a data-test='your-recipes' class="button is-secondary is-rounded" [routerLink]="['/recipes', 'user-recipes']"
+      <a data-test='yourRecipes' class="button is-secondary is-rounded" [routerLink]="['/recipes', 'user-recipes']"
         [queryParams]="{ username: user.username }">
         Your Recipes
       </a>
-      <a class="button is-secondary is-rounded" routerLink='/profile/admin' *ngIf='user.isAdmin' data-test="admin-link">
+      <a class="button is-secondary is-rounded" routerLink='/profile/admin' *ngIf='user.isAdmin' data-test="adminLink">
         Admin
       </a>
     </div>
   </ng-container>
   <ng-template #loading>
-    <p class="has-text-centered">Getting profile...</p>
+    <p class="has-text-centered" data-test='loading'>Getting profile...</p>
   </ng-template>
 </div>

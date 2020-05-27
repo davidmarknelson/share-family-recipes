@@ -16,7 +16,7 @@ export class EmailVerificationService {
 		return this.http.post<any>(`${this.apiUrl}verify/send`, { email });
 	}
 
-	verifyEmail(tokenString: string): Observable<any> {
-		return this.http.post<any>(`${this.apiUrl}verify`, { token: tokenString });
+	verifyEmail(token: string): Observable<any> {
+		return this.http.post<any>(`${this.apiUrl}verify`, { token });
 	}
 }

@@ -16,9 +16,7 @@
     </ng-template>
   </ng-template>
 
-  <!-- =================== -->
   <!-- Recipe -->
-  <!-- =================== -->
   <ng-container *ngIf="getRecipe$ | async as recipe; else loadingOrError">
     <!-- Title -->
     <app-page-title [title]="recipe.name" [subtitle]="recipe.description">

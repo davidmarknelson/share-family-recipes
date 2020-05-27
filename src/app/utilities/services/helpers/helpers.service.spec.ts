@@ -2,8 +2,11 @@ import { TestBed } from "@angular/core/testing";
 
 import { HelpersService } from "@services/helpers/helpers.service";
 
-const originalPicObject: object = {
-	profilePicName: "https://www.awesomeapi.com/assests/picture.jpg"
+const originalProfilePicObject: object = {
+	profilePicName: "https://www.awesomeapi.com/assests/profilepicture.jpg"
+};
+const originalMealPicObject: object = {
+	mealPicName: "https://www.awesomeapi.com/assests/mealpicture.jpg"
 };
 
 describe("HelpersService", () => {
@@ -41,10 +44,10 @@ describe("HelpersService", () => {
 
 		it("should return the original picture object when there is a picture provided", () => {
 			const formattedPicObject = helpersService.formatProfilePic({
-				...originalPicObject
+				...originalProfilePicObject
 			});
 
-			expect(formattedPicObject).toEqual(originalPicObject);
+			expect(formattedPicObject).toEqual(originalProfilePicObject);
 		});
 	});
 
@@ -52,7 +55,7 @@ describe("HelpersService", () => {
 	describe("formatRecipePic", () => {
 		it("should return the default picture path when there is no picture provided", () => {
 			const defaultPicObject: object = {
-				profilePicName: "assets/images/default-img/default-meal-pic.jpg"
+				mealPicName: "assets/images/default-img/default-meal-pic.jpg"
 			};
 			const formattedPicObject = helpersService.formatRecipePic(null);
 
@@ -61,10 +64,10 @@ describe("HelpersService", () => {
 
 		it("should return the original picture object when there is a picture provided", () => {
 			const formattedPicObject = helpersService.formatRecipePic({
-				...originalPicObject
+				...originalMealPicObject
 			});
 
-			expect(formattedPicObject).toEqual(originalPicObject);
+			expect(formattedPicObject).toEqual(originalMealPicObject);
 		});
 	});
 });

@@ -1,13 +1,13 @@
 import { UserDecodedToken } from "@utilities/interfaces/user-decoded-token";
 import { Recipe } from "@utilities/interfaces/recipe";
 
-export class TestingObjects {
+export class RecipeTestingObjects {
 	nonAdminObj: UserDecodedToken = {
 		id: 1,
 		isAdmin: false,
 		username: "johndoe",
 		iat: 1575496172,
-		exp: 2180296172,
+		exp: 2180296172
 	};
 
 	adminObj: UserDecodedToken = {
@@ -15,7 +15,7 @@ export class TestingObjects {
 		isAdmin: true,
 		username: "johndoe",
 		iat: 1575496172,
-		exp: 2180296172,
+		exp: 2180296172
 	};
 
 	recipeFullObj: Recipe = {
@@ -26,8 +26,8 @@ export class TestingObjects {
 		creator: {
 			username: "johndoe",
 			profilePic: {
-				profilePicName: "assets/images/default-img/default-profile-pic.jpg",
-			},
+				profilePicName: "assets/images/default-img/default-profile-pic.jpg"
+			}
 		},
 		ingredients: ["3 eggs", "rice", "vegetables"],
 		instructions: ["cooks eggs", "cook rice", "mix and serve"],
@@ -36,12 +36,12 @@ export class TestingObjects {
 		likes: [{ userId: 1 }],
 		savedRecipes: [{ userId: 1 }],
 		mealPic: {
-			mealPicName: "assets/images/default-img/default-meal-pic.jpg",
+			mealPicName: "assets/images/default-img/default-meal-pic.jpg"
 		},
 		createdAt: "Dec 04, 2019",
 		updatedAt: "Dec 04, 2019",
 		originalRecipeUrl: "http://www.originalrecipe.com",
-		youtubeUrl: "https://www.youtube-nocookie.com/embed/MV0F_XiR48Q",
+		youtubeUrl: "https://www.youtube-nocookie.com/embed/MV0F_XiR48Q"
 	};
 
 	recipeEmptyObj: Recipe = {
@@ -51,7 +51,7 @@ export class TestingObjects {
 		creatorId: 1,
 		creator: {
 			username: "johndoe",
-			profilePic: null,
+			profilePic: null
 		},
 		ingredients: ["3 eggs", "rice", "vegetables"],
 		instructions: ["cooks eggs", "cook rice", "mix and serve"],
@@ -63,6 +63,6 @@ export class TestingObjects {
 		createdAt: "Dec 04, 2019",
 		updatedAt: "Dec 04, 2019",
 		originalRecipeUrl: null,
-		youtubeUrl: null,
+		youtubeUrl: null
 	};
 }
