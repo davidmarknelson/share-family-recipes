@@ -65,7 +65,7 @@ export class AuthService {
 
 	// TODO remove getProfile and move helper functions to helper service
 	getProfile(): Observable<UserProfile> {
-		return this.http.get<UserProfile>(`${this.apiUrl}user/profile`).pipe(
+		return this.http.get<any>(`${this.apiUrl}user/profile`).pipe(
 			map(res => {
 				res.createdAt = this.helpers.formatDate(res.createdAt);
 				res.updatedAt = this.helpers.formatDate(res.updatedAt);
@@ -76,7 +76,11 @@ export class AuthService {
 	}
 
 	getProfile$(): Observable<UserProfile> {
-		return this.http.get<UserProfile>(`${this.apiUrl}user/profile`).pipe(
+		return this.http.get<any>(`${this.apiUrl}user/profile`).pipe(
+			map(res => {
+				localStorage.setItem("authToken", res.jwt);
+				return res.user;
+			}),
 			map(res => {
 				res.createdAt = this.helpers.formatDate(res.createdAt);
 				res.updatedAt = this.helpers.formatDate(res.updatedAt);

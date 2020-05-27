@@ -3,81 +3,53 @@
   <p class="subtitle has-text-centered">View your profile information.</p>
 </section>
 
-<div class="container msg__container" *ngIf="user && !user.isVerified">
-  <article class="message is-info msg" *ngIf="sendingEmail" data-test='emailSending'>
-    <p class="message-body">
-      Sending email...
-      <progress class="progress is-small is-info" max="100"></progress>
-    </p>
-  </article>
-  <article class="message is-danger msg" *ngIf="emailError && !sendingEmail" data-test='emailVerifyError'>
-    <p class="message-body">
-      {{ emailError }} <a (click)="sendVerificationEmail()">Resend the verification email</a>.
-    </p>
-  </article>
-  <article class="message is-warning msg" *ngIf="!emailError && !emailSuccess && !sendingEmail" data-test='emailVerifyMsg'>
-    <p class="message-body">
-      <a (click)="sendVerificationEmail()">Send verification email</a> to verify your email. 
-      This will allow you to reset your password in the future.
-    </p>
-  </article>
-  <article class="message is-success msg" *ngIf="!emailError && emailSuccess && !sendingEmail" data-test='emailVerifySuccess'>
-    <p class="message-body">
-      An email has been sent with further instructions. 
-      If you have not received an email, check your spam folder or
-      you can <a (click)="sendVerificationEmail()">resend the verification email</a>.
-    </p>
-  </article>
-</div>
+<div class='container'>
+  <ng-container *ngIf='user$ | async as user; else loading'>
+
+    <!-- Email verification messages -->
+    <ng-container *ngIf='!user.isVerified'>
+      <app-email-message [email]='user.email'></app-email-message>
+    </ng-container>
 
 
-<div class="container">
-  <p *ngIf="gettingProfile" class="has-text-centered">Getting profile...</p>
-  <div class="columns" *ngIf="user">
-    <div class="column is-3"></div>
-    <div class="column">
-      <figure class="image img img--width img--centered">
-        <img class="is-rounded" src="{{ user.profilePic.profilePicName }}" alt="{{ user.username}} profile picture" data-test='profilePic'>
-      </figure>
-    </div>
-    <div class="column">
-      <div class="info__parent">
-        <div class="content info">
-          <h2 class="is-size-3 has-text-weight-semibold" data-test='username'>{{ user.username }}</h2>
-          <p class="is-size-4 has-text-weight-medium" data-test='name'>{{ user.firstName }} {{ user.lastName }}</p>
-          <p class="is-size-4 has-text-weight-medium" data-test='email'>{{ user.email }}</p>
-          <p data-test='date'>Signed up on {{ user.createdAt }}</p>
+    <div class="columns" *ngIf="user">
+      <div class="column is-3"></div>
+      <div class="column">
+        <figure class="image img img--width img--centered">
+          <img class="is-rounded" src="{{ user.profilePic.profilePicName }}" alt="{{ user.username}} profile picture"
+            data-test='profilePic'>
+        </figure>
+      </div>
+      <div class="column">
+        <div class="info__parent">
+          <div class="content info">
+            <h2 class="is-size-3 has-text-weight-semibold" data-test='username'>{{ user.username }}</h2>
+            <p class="is-size-4 has-text-weight-medium" data-test='name'>{{ user.firstName }} {{ user.lastName }}</p>
+            <p class="is-size-4 has-text-weight-medium" data-test='email'>{{ user.email }}</p>
+            <p data-test='date'>Signed up on {{ user.createdAt }}</p>
+          </div>
         </div>
       </div>
+      <div class="column is-3"></div>
     </div>
-    <div class="column is-3"></div>
-  </div>
-</div>
 
-<div class="buttons btn-field" *ngIf="user">
-  <a 
-    data-test='edit-profile'
-    class="button is-primary is-rounded" 
-    routerLink='/profile/edit'>
-    Edit Profile
-  </a>
-  <a 
-    data-test='save-list-btn'
-    class="button is-secondary is-rounded" 
-    routerLink='/recipes/saved-list'>
-    Saved List
-  </a>
-  <a 
-    data-test='your-recipes'
-    class="button is-secondary is-rounded" 
-    (click)='goToUsersRecipes(user.username)'>
-    Your Recipes
-  </a>
-  <a 
-    class="button is-secondary is-rounded" 
-    routerLink='/profile/admin' 
-    *ngIf='user.isAdmin'
-    data-test="admin-link">
-    Admin
-  </a>
+    <div class="buttons btn-field">
+      <a data-test='edit-profile' class="button is-primary is-rounded" routerLink='/profile/edit'>
+        Edit Profile
+      </a>
+      <a data-test='save-list-btn' class="button is-secondary is-rounded" routerLink='/recipes/saved-list'>
+        Saved List
+      </a>
+      <a data-test='your-recipes' class="button is-secondary is-rounded" [routerLink]="['/recipes', 'user-recipes']"
+        [queryParams]="{ username: user.username }">
+        Your Recipes
+      </a>
+      <a class="button is-secondary is-rounded" routerLink='/profile/admin' *ngIf='user.isAdmin' data-test="admin-link">
+        Admin
+      </a>
+    </div>
+  </ng-container>
+  <ng-template #loading>
+    <p class="has-text-centered">Getting profile...</p>
+  </ng-template>
 </div>

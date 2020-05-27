@@ -1,72 +1,20 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { Router } from "@angular/router";
-// Services
-import { AuthService } from "../../../utilities/services/auth/auth.service";
-import { EmailVerificationService } from "../../../utilities/services/email-verification/email-verification.service";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
+import { Observable } from "rxjs";
 // Interfaces
-import { UserProfile } from "../../../utilities/interfaces/user-profile";
+import { UserProfile } from "@utilities/interfaces/user-profile";
+// Facades
+import { UserFacadeService } from "@facades/user-facade/user-facade.service";
 
 @Component({
 	selector: "app-profile-view",
 	templateUrl: "./profile-view.component.html",
 	styleUrls: ["./profile-view.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileViewComponent implements OnInit, OnDestroy {
-	private ngUnsubscribe = new Subject();
-	gettingProfile: boolean;
-	user: UserProfile;
-	emailSent: boolean = false;
-	sendingEmail: boolean = false;
-	emailSuccess: boolean = false;
-	emailError: string;
+export class ProfileViewComponent implements OnInit {
+	user$: Observable<UserProfile> = this.userFacades.user$;
 
-	constructor(
-		private auth: AuthService,
-		private email: EmailVerificationService,
-		private router: Router
-	) {}
+	constructor(private userFacades: UserFacadeService) {}
 
-	ngOnInit() {
-		this.getUserProfile();
-	}
-
-	ngOnDestroy() {
-		this.ngUnsubscribe.next();
-		this.ngUnsubscribe.complete();
-	}
-
-	getUserProfile() {
-		this.gettingProfile = true;
-		this.auth
-			.getProfile()
-			.pipe(takeUntil(this.ngUnsubscribe))
-			.subscribe((res: UserProfile) => {
-				this.gettingProfile = false;
-				this.user = res;
-			});
-	}
-
-	sendVerificationEmail() {
-		this.sendingEmail = true;
-		this.email
-			.sendVerificationEmail(this.user.email)
-			.pipe(takeUntil(this.ngUnsubscribe))
-			.subscribe(
-				res => {
-					this.sendingEmail = false;
-					this.emailError = "";
-					this.emailSuccess = true;
-				},
-				err => {
-					this.sendingEmail = false;
-					this.emailError = err.error.message;
-				}
-			);
-	}
-
-	goToUsersRecipes(username) {
-		this.router.navigateByUrl(`/recipes/user-recipes?username=${username}`);
-	}
+	ngOnInit() {}
 }

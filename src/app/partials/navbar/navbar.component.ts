@@ -25,7 +25,6 @@ export class NavbarComponent implements OnInit {
 	@ViewChild("name", { static: false }) nameInput: ElementRef;
 	faSearch = faSearch;
 	isMenuOpen: boolean = false;
-	isLoggedIn: boolean;
 	searchBarForm: FormGroup;
 	isSearchOpen: boolean;
 	autocompleteItems: Array<AutocompleteItems> = [];
@@ -42,13 +41,9 @@ export class NavbarComponent implements OnInit {
 		private searchesService: SearchesService,
 		private changeDetector: ChangeDetectorRef,
 		private userFacade: UserFacadeService
-	) {
-		this.auth.loggedIn.subscribe(status => (this.isLoggedIn = status));
-	}
+	) {}
 
 	ngOnInit() {
-		this.isLoggedIn = this.auth.isLoggedIn();
-		this.renewToken();
 		this.createForm();
 		this.onNameChanges();
 	}
@@ -56,14 +51,6 @@ export class NavbarComponent implements OnInit {
 	toggleMenu() {
 		this.isMenuOpen = !this.isMenuOpen;
 		this.isSearchOpen = false;
-	}
-
-	renewToken() {
-		if (this.isLoggedIn) {
-			this.auth.renewToken().subscribe();
-		} else {
-			this.auth.logout();
-		}
 	}
 
 	logout() {

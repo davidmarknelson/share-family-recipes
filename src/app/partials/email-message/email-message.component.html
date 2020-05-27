@@ -1,0 +1,32 @@
+<div class="max-width-500 mx-auto mb-96 px-16">
+  <ng-container [ngSwitch]='emailStatus$ | async'>
+    <!-- Sending -->
+    <article *ngSwitchCase="'Sending'" class="message is-info" data-test='emailSending'>
+      <p class="message-body">
+        Sending email...
+        <progress class="progress is-small is-info" max="100"></progress>
+      </p>
+    </article>
+    <!-- Error -->
+    <article *ngSwitchCase="'Error'" class="message is-danger" data-test='emailVerifyError'>
+      <p class="message-body">
+        {{ emailError }} <a (click)="sendVerificationEmail()">Resend the verification email</a>.
+      </p>
+    </article>
+    <!-- Success -->
+    <article *ngSwitchCase="'Success'" class="message is-success" data-test='emailVerifySuccess'>
+      <p class="message-body">
+        An email has been sent with further instructions.
+        If you have not received an email, check your spam folder or
+        you can <a (click)="sendVerificationEmail()">resend the verification email</a>.
+      </p>
+    </article>
+    <!-- Default -->
+    <article *ngSwitchDefault class="message is-warning" data-test='emailVerifyMsg'>
+      <p class="message-body">
+        <a (click)="sendVerificationEmail()">Send verification email</a> to verify your email.
+        This will allow you to reset your password in the future.
+      </p>
+    </article>
+  </ng-container>
+</div>
