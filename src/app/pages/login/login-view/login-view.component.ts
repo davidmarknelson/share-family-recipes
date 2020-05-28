@@ -53,8 +53,7 @@ export class LoginViewComponent implements OnInit, OnDestroy {
 			.pipe(takeUntil(this.ngUnsubscribe))
 			.subscribe(
 				res => {
-					this.userFacade.updateLogginState(true);
-					this.userFacade.getUser();
+					this.userFacade.signinUser(res);
 					this.router.navigate(["/profile"]);
 				},
 				err => {

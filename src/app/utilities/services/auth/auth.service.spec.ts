@@ -94,12 +94,10 @@ describe("AuthService", () => {
 			authService.signup(user).subscribe(res => {
 				response = res;
 			});
-			spyOn(authService.loggedIn, "emit");
 
 			http.expectOne("http://localhost:3000/user/signup").flush(signupResponse);
 			expect(response).toEqual(signupResponse);
 			expect(localStorage.getItem("authToken")).toEqual("s3cr3tt0ken");
-			expect(authService.loggedIn.emit).toHaveBeenCalled();
 			http.verify();
 		});
 
@@ -251,12 +249,10 @@ describe("AuthService", () => {
 			authService.login(user).subscribe(res => {
 				response = res;
 			});
-			spyOn(authService.loggedIn, "emit");
 
 			http.expectOne("http://localhost:3000/user/login").flush(loginResponse);
 			expect(response).toEqual(loginResponse);
 			expect(localStorage.getItem("authToken")).toEqual("s3cr3tt0ken");
-			expect(authService.loggedIn.emit).toHaveBeenCalled();
 			http.verify();
 		});
 
@@ -305,51 +301,6 @@ describe("AuthService", () => {
 		});
 	});
 
-	describe("renewToken", () => {
-		it("should return a jwt when given a valid token", () => {
-			let signupResponse = { jwt: "s3cr3tt0ken" };
-
-			let response;
-			authService.renewToken().subscribe(res => {
-				response = res;
-			});
-
-			http.expectOne("http://localhost:3000/user/renew").flush(signupResponse);
-			expect(response).toEqual(signupResponse);
-			expect(localStorage.getItem("authToken")).toEqual("s3cr3tt0ken");
-			http.verify();
-		});
-	});
-
-	describe("getProfile", () => {
-		it("should return a jwt when given a valid token", () => {
-			let signupResponse = {
-				id: 1,
-				username: "johndoe",
-				originalUsername: "johndoe",
-				firstName: "John",
-				lastName: "Doe",
-				email: "example@email.com",
-				profilePic: null,
-				isAdmin: false,
-				isVerified: true,
-				createdAt: "2019-10-08T07:45:48.214Z",
-				updatedAt: "2019-10-08T07:45:48.214Z"
-			};
-
-			let response;
-			authService.getProfile().subscribe(res => {
-				response = res;
-			});
-
-			http
-				.expectOne("http://localhost:3000/user/profile")
-				.flush(signupResponse);
-			expect(response).toEqual(signupResponse);
-			http.verify();
-		});
-	});
-
 	describe("currentUser", () => {
 		it("should return a user object with a valid token", () => {
 			spyOn(localStorage, "getItem").and.callFake(() => "s3cr3tt0ken");
@@ -372,12 +323,10 @@ describe("AuthService", () => {
 
 	describe("logout", () => {
 		it("should clear the token from local storage", () => {
-			spyOn(authService.loggedIn, "emit");
 			localStorage.setItem("authToken", "s3cr3tt0ken");
 			expect(localStorage.getItem("authToken")).toEqual("s3cr3tt0ken");
 			authService.logout();
 			expect(localStorage.getItem("authToken")).toBeFalsy();
-			expect(authService.loggedIn.emit).toHaveBeenCalledWith(false);
 		});
 	});
 

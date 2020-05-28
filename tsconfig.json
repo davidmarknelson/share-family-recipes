@@ -15,7 +15,7 @@
 		"lib": ["es2018", "dom"],
 		"paths": {
 			"@utilities/*": ["app/utilities/*"],
-			"@env/*": ["app/environments/*"],
+			"@interfaces/*": ["app/utilities/interfaces/*"],
 			"@pages/*": ["app/pages/*"],
 			"@partials/*": ["app/partials/*"],
 			"@testUtilities/*": ["app/utilities/test-utilities/*"],

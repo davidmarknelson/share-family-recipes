@@ -57,6 +57,11 @@ export class UserFacadeService {
 		if (this.state.isLoggedIn) this.getUser();
 	}
 
+	signinUser(user: UserProfile): void {
+		this.updateUserState(user);
+		this.updateLogginState(true);
+	}
+
 	logoutUser(): void {
 		this.updateLogginState(false);
 		this.updateUserState(null);
@@ -68,7 +73,7 @@ export class UserFacadeService {
 		this.auth.getProfile$().subscribe(res => this.updateUserState(res));
 	}
 
-	updateLogginState(isLoggedIn: boolean): void {
+	private updateLogginState(isLoggedIn: boolean): void {
 		this.dispatch.next(
 			(this.state = reduce(this.state, {
 				type: UserActionTypes.UPDATE_LOG_IN,
@@ -77,7 +82,7 @@ export class UserFacadeService {
 		);
 	}
 
-	updateUserState(user: UserProfile): void {
+	private updateUserState(user: UserProfile): void {
 		this.dispatch.next(
 			(this.state = reduce(this.state, {
 				type: UserActionTypes.UPDATE_USER,
