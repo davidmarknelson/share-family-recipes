@@ -1,21 +1,4 @@
-<div class="container px-32 mt-96">
-  <ng-template #loadingOrError>
-    <ng-container *ngIf="error; else loading">
-      <!-- Error -->
-      <article class="message is-danger max-width-500 mx-auto">
-        <div class="message-body">
-          {{ error }} Try looking for the recipe in the
-          <a routerLink="/recipes">list of recipes</a>.
-        </div>
-      </article>
-    </ng-container>
-
-    <!-- loading -->
-    <ng-template #loading>
-      <p class="has-text-centered">Loading...</p>
-    </ng-template>
-  </ng-template>
-
+<app-content-container>
   <!-- Recipe -->
   <ng-container *ngIf="getRecipe$ | async as recipe; else loadingOrError">
     <!-- Title -->
@@ -112,4 +95,21 @@
       </figure>
     </div>
   </ng-container>
-</div>
+
+  <ng-template #loadingOrError>
+    <ng-container *ngIf="error; else loading">
+      <!-- Error -->
+      <article class="message is-danger max-width-500 mx-auto">
+        <div class="message-body">
+          {{ error }} Try looking for the recipe in the
+          <a routerLink="/recipes">list of recipes</a>.
+        </div>
+      </article>
+    </ng-container>
+
+    <!-- loading -->
+    <ng-template #loading>
+      <p class="has-text-centered">Loading...</p>
+    </ng-template>
+  </ng-template>
+</app-content-container>

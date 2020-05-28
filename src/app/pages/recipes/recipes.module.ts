@@ -11,6 +11,7 @@ import { SavedRecipeButtonModule } from "../../partials/saved-recipe-button/save
 import { PaginationModule } from "../../partials/pagination/pagination.module";
 import { RecipeCardsModule } from "../../partials/recipe-cards/recipe-cards.module";
 import { PageTitleModule } from "@partials/page-title/page-title.module";
+import { ContentContainerModule } from "@partials/content-container/content-container.module";
 // Pipes
 import { SafeUrlPipe } from "../../utilities/pipes/safe-url/safe-url.pipe";
 import { UserRecipesComponent } from "./user-recipes/user-recipes.component";
@@ -22,7 +23,7 @@ import { SavedBrowseComponent } from "./saved-browse/saved-browse.component";
 		RecipeViewComponent,
 		SafeUrlPipe,
 		UserRecipesComponent,
-		SavedBrowseComponent,
+		SavedBrowseComponent
 	],
 	imports: [
 		CommonModule,
@@ -34,6 +35,7 @@ import { SavedBrowseComponent } from "./saved-browse/saved-browse.component";
 		FormsModule,
 		PaginationModule,
 		PageTitleModule,
-	],
+		ContentContainerModule
+	]
 })
 export class RecipesModule {}

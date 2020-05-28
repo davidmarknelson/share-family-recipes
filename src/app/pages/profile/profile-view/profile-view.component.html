@@ -1,4 +1,4 @@
-<div class='container px-32 mt-96'>
+<app-content-container>
   <app-page-title [title]="'Profile'" [subtitle]="'View your profile information.'"></app-page-title>
 
   <ng-container *ngIf='user$ | async as user; else loading'>
@@ -49,4 +49,4 @@
   <ng-template #loading>
     <p class="has-text-centered" data-test='loading'>Getting profile...</p>
   </ng-template>
-</div>
+</app-content-container>

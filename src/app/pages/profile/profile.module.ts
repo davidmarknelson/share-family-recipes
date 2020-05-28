@@ -4,6 +4,7 @@ import { CommonModule } from "@angular/common";
 import { ProfileRoutingModule } from "./profile-routing.module";
 import { EmailMessageModule } from "@partials/email-message/email-message.module";
 import { PageTitleModule } from "@partials/page-title/page-title.module";
+import { ContentContainerModule } from "@partials/content-container/content-container.module";
 // Components
 import { ProfileViewComponent } from "./profile-view/profile-view.component";
 import { EditProfileComponent } from "./edit-profile/edit-profile.component";
@@ -25,6 +26,7 @@ import { ImageUploadModule } from "../../partials/image-upload/image-upload.modu
 		ProfileRoutingModule,
 		EmailMessageModule,
 		PageTitleModule,
+		ContentContainerModule,
 		// Forms
 		ReactiveFormsModule,
 		FormsModule,
