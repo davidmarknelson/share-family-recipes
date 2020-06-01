@@ -110,6 +110,8 @@ describe("NavbarComponent", () => {
 
 	describe("with a user who is not logged in", () => {
 		beforeEach(() => {
+			userFromFacade = null;
+			loggedInFromFacade = false;
 			fixture.detectChanges();
 			selectElements();
 		});
