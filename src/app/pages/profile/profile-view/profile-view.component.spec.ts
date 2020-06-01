@@ -72,7 +72,7 @@ describe("ProfileComponent", () => {
 
 	describe("profile with out profilePic, not an admin, and not verified", () => {
 		beforeEach(() => {
-			user = userTestingObjects.userObject;
+			user = { ...userTestingObjects.userObject };
 			fixture.detectChanges();
 			selectElements();
 		});
@@ -99,7 +99,7 @@ describe("ProfileComponent", () => {
 
 	describe("profile with a profilePic, an admin, and verified", () => {
 		beforeEach(() => {
-			user = userTestingObjects.fullUserObject;
+			user = { ...userTestingObjects.fullUserObject };
 			fixture.detectChanges();
 			selectElements();
 		});

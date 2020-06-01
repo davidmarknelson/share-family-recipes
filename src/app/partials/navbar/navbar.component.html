@@ -76,27 +76,6 @@
   </div>
 </nav>
 
-<div class="search__container" *ngIf="isSearchOpen">
-  <div class="container">
-    <form [formGroup]="searchBarForm" (ngSubmit)="onSubmit()" novalidate class="search--max-width">
-      <div class="field has-addons search__input">
-        <p class="control is-expanded">
-          <input (keydown)="onKeydown($event)" class="input is-rounded" type="text" id="name" #name autocomplete="off"
-            formControlName="name" placeholder="Recipe Name" />
-        </p>
-        <p class="control">
-          <button type="submit" class="button search__submit-btn">
-            Search
-          </button>
-        </p>
-
-        <div class="search__items-container" *ngIf="autocompleteItems.length > 0">
-          <p *ngFor="let item of autocompleteItems; let i = index" [class.search--highlighted]="highlightedIndex === i"
-            class="search__items" (click)="chooseSearchItem(i)">
-            {{ item.name }}
-          </p>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
+<ng-container *ngIf='isSearchOpen'>
+  <app-search-bar (completeSearch)='onCompleteSearch($event)'></app-search-bar>
+</ng-container>

@@ -82,7 +82,18 @@ export class AuthService {
 	}
 
 	updateUser(credentials): Observable<any> {
-		return this.http.put<any>(`${this.apiUrl}user/update`, credentials);
+		return this.http.put<any>(`${this.apiUrl}user/update`, credentials).pipe(
+			map(res => {
+				localStorage.setItem("authToken", res.jwt);
+				return res.user;
+			}),
+			map(res => {
+				res.createdAt = this.helpers.formatDate(res.createdAt);
+				res.updatedAt = this.helpers.formatDate(res.updatedAt);
+				res.profilePic = this.helpers.formatProfilePic(res.profilePic);
+				return res;
+			})
+		);
 	}
 
 	deleteUser(): Observable<any> {

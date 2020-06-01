@@ -1,84 +1,8 @@
 .transition {
-  transition: background-color 300ms, color 300ms;
+	transition: background-color 300ms, color 300ms;
 }
 
 .center-btn {
-  display: grid;
-  place-items: center;
-}
-
-.search {
-  &__container {
-    background-color: #bee0c0;
-    padding-bottom: 10px;
-    padding-right: 10px;
-    padding-left: 10px;
-    position: fixed;
-    top: 3.25rem;
-    right: 0;
-    z-index: 100;
-    width: 100%;
-  }
-
-  &__is-open {
-    background-color: #629b66;
-  }
-
-  &__is-open:hover {
-    background-color: #48834c;
-  }
-
-  &__submit-btn {
-    background-color: #11672c;
-    border: none;
-    color: #fff;
-    border-radius: 0 30px 30px 0 !important;
-
-    &:hover {
-      background-color: #114910;
-      color: #fff;
-    }
-  }
-
-  &--max-width {
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  // set the position to show the search results
-  &__input {
-    position: relative;
-  }
-
-  // container to hold the search results
-  &__items-container {
-    position: absolute;
-    z-index: 99;
-    top: 100%;
-    left: 0;
-    right: 0;
-    margin-top: 5px;
-    border-radius: 15px;
-    border: 1px solid #b5b5b5;
-    background-color: #fff;
-    overflow: hidden;
-  }
-
-  // individual search result items
-  &__items {
-    cursor: pointer;
-    padding-left: calc(calc(0.75em - 1px) + 0.375em);
-    padding-right: calc(calc(0.75em - 1px) + 0.375em);
-  }
-
-  &--highlighted {
-    background-color: #11672c;
-    color: #fff;
-  }
-
-  &__items:hover {
-    background-color: #114910;
-    color: #fff;
-  }
+	display: grid;
+	place-items: center;
 }

@@ -62,6 +62,10 @@ export class UserFacadeService {
 		this.updateLogginState(true);
 	}
 
+	updateUser(user: UserProfile): void {
+		this.updateUserState(user);
+	}
+
 	logoutUser(): void {
 		this.updateLogginState(false);
 		this.updateUserState(null);

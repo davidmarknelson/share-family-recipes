@@ -6,42 +6,12 @@ import {
 	HttpTestingController
 } from "@angular/common/http/testing";
 import { JwtModule, JwtHelperService } from "@auth0/angular-jwt";
+import { UserTestingObjects } from "@testUtilities/user-testing-objects";
+
+const userTestingObjects = new UserTestingObjects();
 
 function tokenGetter() {
 	return localStorage.getItem("authToken");
-}
-
-function testErrors(key, value, response, authService, http) {
-	let user = {
-		firstName: "John",
-		lastName: "Doe",
-		username: "myUser",
-		email: "example@email.com",
-		password: "password",
-		passwordConfirmation: "password"
-	};
-
-	user[key] = value;
-
-	const profilePic = null;
-	const signupResponse = response;
-	let errorResponse;
-
-	authService.signup(user, profilePic).subscribe(
-		res => {},
-		err => {
-			errorResponse = err;
-		}
-	);
-
-	http
-		.expectOne("http://localhost:3000/user/signup")
-		.flush(
-			{ message: signupResponse },
-			{ status: 400, statusText: "Bad Request" }
-		);
-	expect(errorResponse.error.message).toEqual(signupResponse);
-	http.verify();
 }
 
 describe("AuthService", () => {
@@ -54,20 +24,19 @@ describe("AuthService", () => {
 			imports: [
 				HttpClientTestingModule,
 				JwtModule.forRoot({
-					config: {
-						tokenGetter: tokenGetter
-					}
+					config: { tokenGetter }
 				})
 			],
 			providers: [AuthService]
 		});
 
+		localStorage.removeItem("authToken");
 		http = TestBed.get(HttpTestingController);
 		authService = TestBed.get(AuthService);
 		jwtHelper = TestBed.get(JwtHelperService);
 	});
 
-	afterEach(() => {
+	afterAll(() => {
 		localStorage.removeItem("authToken");
 	});
 
@@ -75,129 +44,9 @@ describe("AuthService", () => {
 		expect(authService).toBeTruthy();
 	});
 
-	describe("signup", () => {
-		it("should return a jwt with a valid user details", () => {
-			const user = {
-				firstName: "John",
-				lastName: "Doe",
-				username: "myUser",
-				email: "example@email.com",
-				password: "password",
-				passwordConfirmation: "password"
-			};
-			const profilePic = null;
-			const signupResponse = {
-				jwt: "s3cr3tt0ken"
-			};
-			let response;
-
-			authService.signup(user).subscribe(res => {
-				response = res;
-			});
-
-			http.expectOne("http://localhost:3000/user/signup").flush(signupResponse);
-			expect(response).toEqual(signupResponse);
-			expect(localStorage.getItem("authToken")).toEqual("s3cr3tt0ken");
-			http.verify();
-		});
-
-		it("should return an error when invalid credentials are sent", () => {
-			// Username is too short
-			testErrors(
-				"username",
-				"User",
-				"Username must be between 5 and 15 characters.",
-				authService,
-				http
-			);
-			// Username is too long
-			testErrors(
-				"username",
-				"UserNameIsWayTooLong",
-				"Username must be between 5 and 15 characters.",
-				authService,
-				http
-			);
-			// Username shouldn't have a space
-			testErrors(
-				"username",
-				"my User",
-				"Username must not include a space.",
-				authService,
-				http
-			);
-			// Username is taken
-			testErrors(
-				"username",
-				"myUser",
-				"This username is already taken.",
-				authService,
-				http
-			);
-			// Email is in use
-			testErrors(
-				"email",
-				"example@email.com",
-				"This email account is already in use.",
-				authService,
-				http
-			);
-			// Passwords don't match
-			testErrors(
-				"passwordConfirmation",
-				"notmatch",
-				"Passwords do not match.",
-				authService,
-				http
-			);
-			// Password is too short
-			testErrors(
-				"password",
-				"pass",
-				"Password must be at least 8 characters long.",
-				authService,
-				http
-			);
-		});
-
-		it("should return an error when the profile picture image is not a jpeg", () => {
-			const user = {
-				firstName: "John",
-				lastName: "Doe",
-				username: "myUser",
-				email: "example@email.com",
-				password: "password",
-				passwordConfirmation: "password"
-			};
-			let blob = new Blob([""], { type: "image/png" });
-			blob["lastModifiedDate"] = "";
-			blob["name"] = "test.png";
-			const profilePic = <File>blob;
-
-			const signupResponse = "Please upload a JPEG image.";
-			let errorResponse;
-
-			authService.signup(user).subscribe(
-				res => {},
-				err => {
-					errorResponse = err;
-				}
-			);
-
-			http
-				.expectOne("http://localhost:3000/user/signup")
-				.flush(
-					{ message: signupResponse },
-					{ status: 400, statusText: "Bad Request" }
-				);
-			expect(errorResponse.error.message).toEqual(signupResponse);
-			http.verify();
-		});
-	});
-
 	describe("checkUsernameAvailability", () => {
 		it("should return a 204 status if a username is not already used", () => {
-			let signupResponse = null;
+			const signupResponse = null;
 
 			let response;
 			authService.checkUsernameAvailability("myUser").subscribe(res => {
@@ -214,7 +63,7 @@ describe("AuthService", () => {
 		});
 
 		it("should return a 400 status if a username is already used", () => {
-			let signupResponse = null;
+			const signupResponse = null;
 
 			let errorResponse;
 			authService.checkUsernameAvailability("myUser").subscribe(
@@ -234,15 +83,58 @@ describe("AuthService", () => {
 		});
 	});
 
+	describe("signup", () => {
+		it("should return a jwt and user", () => {
+			const user = { ...userTestingObjects.userToSignin };
+			const signupResponse = {
+				jwt: "s3cr3tt0ken",
+				user: { ...userTestingObjects.userObjectBeforeFormatter }
+			};
+			let response;
+
+			authService.signup(user).subscribe(res => {
+				response = res;
+			});
+
+			http.expectOne("http://localhost:3000/user/signup").flush(signupResponse);
+			expect(response).toEqual(userTestingObjects.userObject);
+			expect(localStorage.getItem("authToken")).toEqual("s3cr3tt0ken");
+			http.verify();
+		});
+
+		it("should return an error when there is a server error", () => {
+			const user = { ...userTestingObjects.userToSignin };
+			const signupResponse = "There was an error signing up. Please try again.";
+			let errorResponse;
+
+			authService.signup(user).subscribe(
+				res => {},
+				err => {
+					errorResponse = err;
+				}
+			);
+
+			http
+				.expectOne("http://localhost:3000/user/signup")
+				.flush(
+					{ message: signupResponse },
+					{ status: 500, statusText: "Server Error" }
+				);
+			expect(errorResponse.error.message).toEqual(signupResponse);
+			http.verify();
+		});
+	});
+
 	describe("login", () => {
-		it("should return a jwt with valid credentials", () => {
+		it("should return a jwt and user", () => {
 			const user = {
 				email: "example@email.com",
 				password: "password"
 			};
 
 			const loginResponse = {
-				jwt: "s3cr3tt0ken"
+				jwt: "s3cr3tt0ken",
+				user: { ...userTestingObjects.userObjectBeforeFormatter }
 			};
 			let response;
 
@@ -251,7 +143,7 @@ describe("AuthService", () => {
 			});
 
 			http.expectOne("http://localhost:3000/user/login").flush(loginResponse);
-			expect(response).toEqual(loginResponse);
+			expect(response).toEqual(userTestingObjects.userObject);
 			expect(localStorage.getItem("authToken")).toEqual("s3cr3tt0ken");
 			http.verify();
 		});
@@ -301,7 +193,7 @@ describe("AuthService", () => {
 		});
 	});
 
-	describe("currentUser", () => {
+	xdescribe("currentUser", () => {
 		it("should return a user object with a valid token", () => {
 			spyOn(localStorage, "getItem").and.callFake(() => "s3cr3tt0ken");
 			spyOn(jwtHelper, "decodeToken").and.callFake(() => {
@@ -332,21 +224,23 @@ describe("AuthService", () => {
 
 	describe("updateUser", () => {
 		it("should return a message when the user is updated", () => {
-			let user = {
+			const user = {
 				firstName: "Joe"
 			};
-			let updateResponse = {
-				message: "User successfully updated."
+			const updateResponse = {
+				message: "User successfully updated.",
+				jwt: "s3cr3tt0ken",
+				user: { ...userTestingObjects.userObjectBeforeFormatter }
 			};
 
 			let response;
 			authService.updateUser(user).subscribe(res => {
 				response = res;
 			});
-
 			http.expectOne("http://localhost:3000/user/update").flush(updateResponse);
-			expect(response).toEqual(updateResponse);
+			expect(response).toEqual({ ...userTestingObjects.userObject });
 			http.verify();
+			expect(localStorage.getItem("authToken")).toEqual("s3cr3tt0ken");
 		});
 
 		it("should return an error when email is already being used", () => {
@@ -377,7 +271,7 @@ describe("AuthService", () => {
 
 	describe("deleteUser", () => {
 		it("should return a message when the user is deleted", () => {
-			let signupResponse = {
+			const signupResponse = {
 				message: "User successfully deleted."
 			};
 

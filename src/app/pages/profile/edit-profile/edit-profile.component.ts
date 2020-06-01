@@ -5,20 +5,21 @@ import { Router } from "@angular/router";
 // Forms
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 // Services
-import { AuthService } from "../../../utilities/services/auth/auth.service";
+import { AuthService } from "@services/auth/auth.service";
 // Font Awesome
 import {
 	faUser,
 	faEnvelope,
-	faFileUpload,
-	faChevronRight,
+	faChevronRight
 } from "@fortawesome/free-solid-svg-icons";
-import { UploadedImage } from "../../../utilities/interfaces/uploadedImage";
+import { UploadedImage } from "@interfaces/uploadedImage";
+// Facades
+import { UserFacadeService } from "@facades/user-facade/user-facade.service";
 
 @Component({
 	selector: "app-edit-profile",
 	templateUrl: "./edit-profile.component.html",
-	styleUrls: ["./edit-profile.component.scss"],
+	styleUrls: ["./edit-profile.component.scss"]
 })
 export class EditProfileComponent implements OnInit, OnDestroy {
 	private ngUnsubscribe = new Subject();
@@ -43,7 +44,8 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 	constructor(
 		private auth: AuthService,
 		private fb: FormBuilder,
-		private router: Router
+		private router: Router,
+		private userFacade: UserFacadeService
 	) {}
 
 	ngOnInit() {
@@ -67,10 +69,10 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 				[
 					Validators.minLength(5),
 					Validators.maxLength(15),
-					Validators.pattern("[^ ]*"),
-				],
+					Validators.pattern("[^ ]*")
+				]
 			],
-			profilePic: [null],
+			profilePic: [null]
 		});
 	}
 
@@ -125,8 +127,8 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 	}
 
 	createUserObject() {
-		let user = {};
-		for (let key of Object.keys(this.editProfileForm.value)) {
+		const user = {};
+		for (const key of Object.keys(this.editProfileForm.value)) {
 			if (this.editProfileForm.value[key] && key !== "profilePic") {
 				user[key] = this.editProfileForm.value[key];
 			}
@@ -147,7 +149,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 	}
 
 	onSubmit() {
-		let user: any = this.createUserObject();
+		const user: any = this.createUserObject();
 
 		// Stops the form from submitting while the image is uploading
 		if (this.isImageLoading) {
@@ -192,6 +194,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 			.pipe(takeUntil(this.ngUnsubscribe))
 			.subscribe(
 				res => {
+					this.userFacade.updateUser(res);
 					this.router.navigate(["/profile"]);
 				},
 				err => {
@@ -241,9 +244,8 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 		this.isDeleting = true;
 		this.auth.deleteUser().subscribe(
 			res => {
-				this.auth.logout();
 				this.isDeleting = false;
-				this.router.navigate(["/"]);
+				this.userFacade.logoutUser();
 			},
 			err => {
 				this.isDeleting = false;

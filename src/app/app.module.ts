@@ -13,6 +13,7 @@ import { NgxPageScrollModule } from "ngx-page-scroll";
 import { LandingPageComponent } from "./pages/landing-page/landing-page.component";
 import { NavbarComponent } from "./partials/navbar/navbar.component";
 import { FooterComponent } from "./partials/footer/footer.component";
+import { SearchBarComponent } from "@partials/search-bar/search-bar.component";
 // JWT
 import { JwtModule } from "@auth0/angular-jwt";
 // Services
@@ -27,7 +28,8 @@ export function tokenGetter() {
 		AppComponent,
 		LandingPageComponent,
 		NavbarComponent,
-		FooterComponent
+		FooterComponent,
+		SearchBarComponent
 	],
 	imports: [
 		BrowserModule,
