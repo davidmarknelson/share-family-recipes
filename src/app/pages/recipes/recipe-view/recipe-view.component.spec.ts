@@ -9,7 +9,7 @@ import { of, throwError, Observable } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { RecipeTestingObjects } from "@utilities/test-utilities/recipeTestingObjects";
+import { RecipeTestingObjects } from "@utilities/test-utilities/recipe-testing-objects";
 
 // This holds objects used in tests.
 const testingObj = new RecipeTestingObjects();

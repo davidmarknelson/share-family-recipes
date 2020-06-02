@@ -1,4 +1,4 @@
-<div class="search__container">
+<div class="search__container" data-test="searchBarContainer">
   <div class="container">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="max-width-500 mx-auto">
       <div class="field has-addons is-relative">
@@ -16,9 +16,9 @@
         <!-- Autocomplete items -->
         <ng-container *ngIf="recipes$ | async as recipes">
           <ng-container *ngIf='recipes.length > 0'>
-            <div class="search__items-container">
+            <div data-test='itemsContainer' class="search__items-container">
               <p *ngFor="let recipe of recipes; let i = index" [class.search--highlighted]="highlightedIndex === i"
-                class="search__items" (click)="chooseSearchItem(recipe.id)">
+                class="search__items" data-test="searchItem" (click)="chooseSearchItem(recipe.id)">
                 {{ recipe.name }}
               </p>
             </div>
