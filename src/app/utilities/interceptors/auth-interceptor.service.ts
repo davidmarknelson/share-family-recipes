@@ -25,7 +25,8 @@ export class AuthInterceptorService implements HttpInterceptor {
 		if (token && !req.url.startsWith("https://api.cloudinary.com/")) {
 			req = req.clone({
 				setHeaders: {
-					Authorization: `Bearer ${token}`
+					Authorization: `Bearer ${token}`,
+          'Access-Control-Allow-Origin': '*'
 				}
 			});
 		}
