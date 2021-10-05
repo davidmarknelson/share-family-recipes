@@ -34,7 +34,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (!token && !req.url.startsWith("https://api.cloudinary.com/")) {
       req = req.clone({
 				setHeaders: {
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': 'https://gifted-borg-c6bee0.netlify.app'
 				}
 			});
     }
